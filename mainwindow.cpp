@@ -52,12 +52,12 @@ void MainWindow::setListWidgetSize(QListWidget *listWidget)
     for (int i = 0; i < listWidget->count(); ++i) {
         QListWidgetItem *item = listWidget->item(i);
         totalHeight += listWidget->visualItemRect(item).height();
-        item->setSizeHint(QSize(30,listWidget->visualItemRect(item).height()+30));
+        item->setSizeHint(QSize(30,listWidget->visualItemRect(item).height()+40));
     }
     totalHeight += 2 * listWidget->frameWidth();
     listWidget->setMinimumSize(175,totalHeight+700);
     listWidget->setMaximumSize(300,totalHeight+800);
-    listWidget->setIconSize(QSize(30,totalHeight/listWidget->count()));
+    listWidget->setIconSize(QSize(30,(totalHeight/listWidget->count())+10));
 }
 
 void MainWindow::handleHideButton()
