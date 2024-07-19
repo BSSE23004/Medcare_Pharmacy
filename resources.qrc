@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>bill.ico</file>
+        <file>blind.ico</file>
+        <file>business-report.ico</file>
+        <file>customer.ico</file>
+        <file>delivery-bike.ico</file>
+        <file>ibrahim.jpeg</file>
+        <file>medical-team.ico</file>
+        <file>Medicine.ico</file>
+        <file>pharmacy.ico</file>
+        <file>unhide.ico</file>
+        <file>user.ico</file>
+    </qresource>
+</RCC>
