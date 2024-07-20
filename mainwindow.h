@@ -34,22 +34,39 @@
 #include <QDebug>
 #include <QSizeGrip>
 #include <QSizePolicy>
+#include <QStringList>
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    QVBoxLayout *vbox;
+    QHBoxLayout *hbox;
+////List Menu Items
     QListWidget *listMenu;
     QPushButton * hideButton;
-
+    QListWidgetItem *profile;
+    QListWidgetItem *medicines;
+    QListWidgetItem *ordersAndDelivery;
+    QListWidgetItem *staff;
+    QListWidgetItem *salesAndReports;
+    QListWidgetItem *bills;
+    QListWidgetItem *customers;
+    QListWidgetItem *item;
+////List Menu Items
+////Medicines Menu
+    QTableWidget *medicinesTable;
+    QPushButton *searchButton;
+    QLineEdit *searchBar;
+    QTableWidgetItem *itemTable;
+////Medicines Menu
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void makeListMenu();
     void setListWidgetSize(QListWidget *listWidget);
+    void medicinesMenu();
 
 private slots:
     void handleHideButton();
-    void changeProfileButton();
+    void currentMenu();
 };
 #endif // MAINWINDOW_H

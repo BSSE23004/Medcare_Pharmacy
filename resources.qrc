@@ -11,5 +11,6 @@
         <file>pharmacy.ico</file>
         <file>unhide.ico</file>
         <file>user.ico</file>
+        <file>search.ico</file>
     </qresource>
 </RCC>
