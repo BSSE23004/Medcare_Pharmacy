@@ -35,6 +35,13 @@ MainWindow::~MainWindow() {
     delete searchButton;
     delete searchBar;
     delete itemTable;
+    delete addButton;
+    delete name;
+    delete company;
+    delete mg;
+    delete price;
+    delete quantity;
+    delete inputMedicine;
 }
 
 void MainWindow::makeListMenu()
@@ -95,17 +102,54 @@ void MainWindow::medicinesMenu()
     for (int col = 0; col < medicinesTable->columnCount(); ++col) {
         totalWidth+=medicinesTable->columnWidth(col);
     }
-    medicinesTable->setGeometry(200,0,totalWidth,700);
+    medicinesTable->setGeometry(200,0,totalWidth+10,700);
     hbox->addWidget(medicinesTable);
     ////////////////////////////////////////Medicines Table
     searchBar =new QLineEdit(this);
     searchButton =new QPushButton(this);
     searchButton->setIcon(QIcon(":/search.ico"));
+    addButton =new QPushButton(QIcon(":/add.ico"),"Add Row",this);
+    addButton->hide();
     searchButton->hide();
     searchBar->hide();
-    searchButton->setGeometry(862,1,40,25);
-    searchBar->setGeometry(700,1,200,25);
+    searchButton->setGeometry(872,1,40,25);
+    searchBar->setGeometry(710,1,200,25);
+    addButton->setGeometry(750,40,150,60);
+    addButton->setIconSize(QSize(50,50));
+    addButton->setFont(QFont("Times New Roman",14));
+    connect(addButton,SIGNAL(clicked(bool)),this,SLOT(handleAddRowButton()));
 }
+
+void MainWindow::handleAddRowButton()
+{
+    inputMedicine =new InputDialog(this);
+    if (inputMedicine->exec() == QDialog::Accepted) {
+        if(inputMedicine->getName().isEmpty()||inputMedicine->getQuantity().isEmpty()||inputMedicine->getCompany().isEmpty()||inputMedicine->getPrice().isEmpty()||inputMedicine->getmg().isEmpty()){
+            return;
+        }
+        medicinesTable->setRowCount(medicinesTable->rowCount()+1);
+
+        name=new QTableWidgetItem(inputMedicine->getName());
+        company =new QTableWidgetItem(inputMedicine->getCompany());
+        price =new QTableWidgetItem(inputMedicine->getPrice());
+        mg =new QTableWidgetItem(inputMedicine->getmg());
+        quantity =new QTableWidgetItem(inputMedicine->getQuantity());
+        name->setFlags(name->flags()& ~Qt::ItemIsEditable);
+        company->setFlags(company->flags()& ~Qt::ItemIsEditable);
+        price->setFlags(price->flags()& ~Qt::ItemIsEditable);
+        mg->setFlags(mg->flags()& ~Qt::ItemIsEditable);
+        quantity->setFlags(quantity->flags()& ~Qt::ItemIsEditable);
+        medicinesTable->setItem(medicinesTable->rowCount()-1,0,name);
+        medicinesTable->setItem(medicinesTable->rowCount()-1,1,price);
+        medicinesTable->setItem(medicinesTable->rowCount()-1,2,quantity);
+        medicinesTable->setItem(medicinesTable->rowCount()-1,3,mg);
+        medicinesTable->setItem(medicinesTable->rowCount()-1,4,company);
+
+    }
+
+}
+
+
 
 void MainWindow::handleHideButton()
 {
@@ -126,7 +170,7 @@ void MainWindow::handleHideButton()
 
 void MainWindow::currentMenu()
 {
-
+    addButton->hide();
     searchBar->hide();
     searchButton->hide();
     medicinesTable->hide();
@@ -134,6 +178,7 @@ void MainWindow::currentMenu()
         medicinesTable->show();
         searchButton->show();
         searchBar->show();
+        addButton->show();
     }
 }
 

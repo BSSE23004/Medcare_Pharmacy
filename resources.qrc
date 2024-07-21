@@ -12,5 +12,6 @@
         <file>unhide.ico</file>
         <file>user.ico</file>
         <file>search.ico</file>
+        <file>add.ico</file>
     </qresource>
 </RCC>

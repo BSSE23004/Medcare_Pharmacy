@@ -35,6 +35,9 @@
 #include <QSizeGrip>
 #include <QSizePolicy>
 #include <QStringList>
+#include <QFormLayout>
+#include "inputdialog.h"
+
 
 class MainWindow : public QMainWindow
 {
@@ -57,6 +60,13 @@ class MainWindow : public QMainWindow
     QPushButton *searchButton;
     QLineEdit *searchBar;
     QTableWidgetItem *itemTable;
+    QPushButton *addButton;
+    QTableWidgetItem *name;
+    QTableWidgetItem *company;
+    QTableWidgetItem *mg;
+    QTableWidgetItem *price;
+    QTableWidgetItem *quantity;
+    InputDialog *inputMedicine;
 ////Medicines Menu
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -66,6 +76,7 @@ public:
     void medicinesMenu();
 
 private slots:
+    void handleAddRowButton();
     void handleHideButton();
     void currentMenu();
 };
