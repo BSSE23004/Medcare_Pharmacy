@@ -42,6 +42,7 @@ MainWindow::~MainWindow() {
     delete price;
     delete quantity;
     delete inputMedicine;
+    delete removeButton;
 }
 
 void MainWindow::makeListMenu()
@@ -109,15 +110,31 @@ void MainWindow::medicinesMenu()
     searchButton =new QPushButton(this);
     searchButton->setIcon(QIcon(":/search.ico"));
     addButton =new QPushButton(QIcon(":/add.ico"),"Add Row",this);
+    removeButton =new QPushButton(QIcon(":/removeButton.ico"),"Delete Row",this);
+    removeButton->hide();
     addButton->hide();
     searchButton->hide();
     searchBar->hide();
-    searchButton->setGeometry(872,1,40,25);
-    searchBar->setGeometry(710,1,200,25);
-    addButton->setGeometry(750,40,150,60);
-    addButton->setIconSize(QSize(50,50));
+    searchButton->setGeometry(913,1,40,25);
+    searchBar->setGeometry(751,1,200,25);
+    addButton->setGeometry(750,50,205,60);
+    removeButton->setGeometry(750,130,205,60);
+    addButton->setIconSize(QSize(55,55));
+    removeButton->setIconSize(QSize(40,40));
     addButton->setFont(QFont("Times New Roman",14));
+    removeButton->setFont(QFont("Times New Roman",14));
     connect(addButton,SIGNAL(clicked(bool)),this,SLOT(handleAddRowButton()));
+    connect(removeButton,SIGNAL(clicked(bool)),this,SLOT(handleRemoveRowButton()));
+}
+
+void MainWindow::handleRemoveRowButton()
+{
+    int rowNumber = QInputDialog ::getInt(this,"Delete Row","Enter Row number to delete");
+    if(rowNumber>0&&rowNumber<=medicinesTable->rowCount()){
+        medicinesTable->removeRow(rowNumber-1);
+    }else{
+        QMessageBox::warning(this,"Invalid Input","Enter a Number from the Table!!!");
+    }
 }
 
 void MainWindow::handleAddRowButton()
@@ -125,6 +142,7 @@ void MainWindow::handleAddRowButton()
     inputMedicine =new InputDialog(this);
     if (inputMedicine->exec() == QDialog::Accepted) {
         if(inputMedicine->getName().isEmpty()||inputMedicine->getQuantity().isEmpty()||inputMedicine->getCompany().isEmpty()||inputMedicine->getPrice().isEmpty()||inputMedicine->getmg().isEmpty()){
+            QMessageBox::warning(this,"Invalid Input","Enter complete data!!!");
             return;
         }
         medicinesTable->setRowCount(medicinesTable->rowCount()+1);
@@ -170,6 +188,7 @@ void MainWindow::handleHideButton()
 
 void MainWindow::currentMenu()
 {
+    removeButton->hide();
     addButton->hide();
     searchBar->hide();
     searchButton->hide();
@@ -179,6 +198,7 @@ void MainWindow::currentMenu()
         searchButton->show();
         searchBar->show();
         addButton->show();
+        removeButton->show();
     }
 }
 

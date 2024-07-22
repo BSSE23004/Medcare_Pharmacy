@@ -13,5 +13,6 @@
         <file>user.ico</file>
         <file>search.ico</file>
         <file>add.ico</file>
+        <file>removeButton.ico</file>
     </qresource>
 </RCC>

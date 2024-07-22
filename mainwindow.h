@@ -37,6 +37,8 @@
 #include <QStringList>
 #include <QFormLayout>
 #include "inputdialog.h"
+#include "nlohmann/json.hpp"
+#include <vector>
 
 
 class MainWindow : public QMainWindow
@@ -61,6 +63,7 @@ class MainWindow : public QMainWindow
     QLineEdit *searchBar;
     QTableWidgetItem *itemTable;
     QPushButton *addButton;
+    QPushButton *removeButton;
     QTableWidgetItem *name;
     QTableWidgetItem *company;
     QTableWidgetItem *mg;
@@ -76,6 +79,7 @@ public:
     void medicinesMenu();
 
 private slots:
+    void handleRemoveRowButton();
     void handleAddRowButton();
     void handleHideButton();
     void currentMenu();
