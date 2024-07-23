@@ -36,10 +36,13 @@
 #include <QSizePolicy>
 #include <QStringList>
 #include <QFormLayout>
+#include <fstream>
 #include "inputdialog.h"
 #include "nlohmann/json.hpp"
 #include <vector>
 
+
+using namespace nlohmann;
 
 class MainWindow : public QMainWindow
 {
@@ -77,8 +80,11 @@ public:
     void makeListMenu();
     void setListWidgetSize(QListWidget *listWidget);
     void medicinesMenu();
-
+    void filterTable(const QString &text);
+    void writeMedicinesTableToJson();
+    void readMedicineTableFromJson();
 private slots:
+    void handleSearchBarAndButton();
     void handleRemoveRowButton();
     void handleAddRowButton();
     void handleHideButton();

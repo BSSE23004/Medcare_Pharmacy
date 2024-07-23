@@ -16,10 +16,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(hideButton,SIGNAL(clicked(bool)),this,SLOT(handleHideButton()));
     connect(listMenu,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(currentMenu()));
     //building menus
-     medicinesMenu();
+    medicinesMenu();
+    readMedicineTableFromJson();
 }
 
 MainWindow::~MainWindow() {
+    writeMedicinesTableToJson();
     delete hbox;
     delete listMenu;
     delete hideButton;
@@ -125,6 +127,86 @@ void MainWindow::medicinesMenu()
     removeButton->setFont(QFont("Times New Roman",14));
     connect(addButton,SIGNAL(clicked(bool)),this,SLOT(handleAddRowButton()));
     connect(removeButton,SIGNAL(clicked(bool)),this,SLOT(handleRemoveRowButton()));
+    connect(searchBar, &QLineEdit::textChanged, this, &MainWindow::handleSearchBarAndButton);
+    connect(searchButton,SIGNAL(clicked(bool)), this,SLOT(handleSearchBarAndButton()));
+}
+
+void MainWindow::filterTable(const QString &text)
+{
+    for (int row = 0; row < medicinesTable->rowCount(); ++row) {
+        bool match = false;
+        for (int column = 0; column < medicinesTable->columnCount(); ++column) {
+            itemTable = medicinesTable->item(row, column);
+            if (itemTable && itemTable->text().contains(text, Qt::CaseInsensitive)) {
+                match = true;
+                break;
+            }
+        }
+        medicinesTable->setRowHidden(row, !match);
+    }
+}
+
+void MainWindow::writeMedicinesTableToJson()
+{
+    json medicinesFile;
+    medicinesFile["MedicinesTable"] = json::array();
+
+    for (int row = 0; row < medicinesTable->rowCount(); ++row) {
+        json jsonRow;
+        jsonRow["Name"] = medicinesTable->item(row, 0) ? medicinesTable->item(row, 0)->text().toStdString() : "";
+        jsonRow["Price"] = medicinesTable->item(row, 1) ? medicinesTable->item(row, 1)->text().toStdString() : "";
+        jsonRow["Quantity"] = medicinesTable->item(row, 2) ? medicinesTable->item(row, 2)->text().toStdString() : "";
+        jsonRow["Mg"] = medicinesTable->item(row, 3) ? medicinesTable->item(row, 3)->text().toStdString() : "";
+        jsonRow["Company"] = medicinesTable->item(row, 4) ? medicinesTable->item(row, 4)->text().toStdString() : "";
+
+        medicinesFile["MedicinesTable"].push_back(jsonRow);
+    }
+    std::ofstream fOut("Medicines.json");
+    fOut << medicinesFile.dump(4);
+    fOut.close();
+}
+
+void MainWindow::readMedicineTableFromJson()
+{
+    json medicineFile;
+    std::ifstream fIn("Medicines.json");
+    try {
+        fIn >> medicineFile;
+    } catch (json::parse_error &e) {
+        qDebug() << "Parse error: " << e.what();
+        return;
+    }
+    json medicineTableFromJson = medicineFile["MedicinesTable"];
+    medicinesTable->setRowCount(medicineTableFromJson.size());
+    int row = 0;
+    for (const auto &i : medicineTableFromJson) {
+        QString data0 = QString::fromStdString(i["Name"]);
+        QString data1 = QString::fromStdString(i["Price"]);
+        QString data2 = QString::fromStdString(i["Quantity"]);
+        QString data3 = QString::fromStdString(i["Mg"]);
+        QString data4 = QString::fromStdString(i["Company"]);
+        itemTable =new QTableWidgetItem(data0);
+        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
+        medicinesTable->setItem(row, 0, itemTable);
+        itemTable =new QTableWidgetItem(data1);
+        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
+        medicinesTable->setItem(row, 1, itemTable);
+        itemTable =new QTableWidgetItem(data2);
+        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
+        medicinesTable->setItem(row, 2, itemTable);
+        itemTable =new QTableWidgetItem(data3);
+        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
+        medicinesTable->setItem(row, 3, itemTable);
+        itemTable =new QTableWidgetItem(data4);
+        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
+        medicinesTable->setItem(row, 4, itemTable);
+        ++row;
+    }
+}
+
+void MainWindow::handleSearchBarAndButton()
+{
+    filterTable(searchBar->text());
 }
 
 void MainWindow::handleRemoveRowButton()
