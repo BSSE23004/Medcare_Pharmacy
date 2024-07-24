@@ -40,6 +40,9 @@
 #include "inputdialog.h"
 #include "nlohmann/json.hpp"
 #include <vector>
+#include <QJsonArray>
+#include <QJsonObject>
+#include "billinputdialog.h"
 
 
 using namespace nlohmann;
@@ -74,20 +77,34 @@ class MainWindow : public QMainWindow
     QTableWidgetItem *quantity;
     InputDialog *inputMedicine;
 ////Medicines Menu
+////Bill Menu
+    QPushButton *generateBillButton;
+    BillInputDialog *billInput;
+
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void makeListMenu();
     void setListWidgetSize(QListWidget *listWidget);
+    ////////////////////////////Medicine Menu
     void medicinesMenu();
     void filterTable(const QString &text);
     void writeMedicinesTableToJson();
     void readMedicineTableFromJson();
+    ////////////////////////////Medicine Menu
+    void billMenu();
 private slots:
+    ////////////////////Medicine Menu
     void handleSearchBarAndButton();
     void handleRemoveRowButton();
     void handleAddRowButton();
+    ////////////////////Medicine Menu
+    ////////////////////List Menu
     void handleHideButton();
     void currentMenu();
+    ////////////////////List Menu
+    ////////////////////Bill Menu
+    void handleBillButton();
+    ////////////////////Bill Menu
 };
 #endif // MAINWINDOW_H

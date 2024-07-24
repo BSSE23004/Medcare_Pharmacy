@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(hideButton,SIGNAL(clicked(bool)),this,SLOT(handleHideButton()));
     connect(listMenu,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(currentMenu()));
     //building menus
+    billMenu();
     medicinesMenu();
     readMedicineTableFromJson();
 }
@@ -45,6 +46,7 @@ MainWindow::~MainWindow() {
     delete quantity;
     delete inputMedicine;
     delete removeButton;
+    delete billInput;
 }
 
 void MainWindow::makeListMenu()
@@ -204,6 +206,16 @@ void MainWindow::readMedicineTableFromJson()
     }
 }
 
+void MainWindow::billMenu()
+{
+    generateBillButton =new QPushButton(QIcon(":/add.ico"),"Generate Bill",this);
+    generateBillButton->setGeometry(750,0,205,60);
+    generateBillButton->setIconSize(QSize(55,55));
+    generateBillButton->setFont(QFont("Times New Roman",14));
+    generateBillButton->hide();
+    connect(generateBillButton,SIGNAL(clicked(bool)),this,SLOT(handleBillButton()));
+}
+
 void MainWindow::handleSearchBarAndButton()
 {
     filterTable(searchBar->text());
@@ -270,11 +282,15 @@ void MainWindow::handleHideButton()
 
 void MainWindow::currentMenu()
 {
+    /////////Medicine Menu
     removeButton->hide();
     addButton->hide();
     searchBar->hide();
     searchButton->hide();
     medicinesTable->hide();
+    /////////Medicine Menu
+    /////////Bill Menu
+    generateBillButton->hide();
     if(listMenu->currentItem()->text()=="Medicines"){
         medicinesTable->show();
         searchButton->show();
@@ -282,5 +298,28 @@ void MainWindow::currentMenu()
         addButton->show();
         removeButton->show();
     }
+    if(listMenu->currentItem()->text()=="Generate Bill"){
+        medicinesTable->show();
+        generateBillButton->show();
+    }
 }
+
+void MainWindow::handleBillButton()
+{
+    billInput =new BillInputDialog (this);
+    if (billInput->exec() == QDialog::Accepted) {
+        if(billInput->getName().isEmpty()||billInput->getQuantity().isEmpty()||billInput->getCompany().isEmpty()||billInput->getmg().isEmpty()){
+            QMessageBox::warning(this,"Invalid Input","Enter complete data!!!");
+            return;
+        }
+        qDebug()<<billInput->getName()<<"\n";
+        qDebug()<<billInput->getQuantity()<<"\n";
+        qDebug()<<billInput->getCompany()<<"\n";
+        qDebug()<<billInput->getmg()<<"\n";
+        if(billInput->isAddMoreButtonClicked()){
+            handleBillButton();
+        }
+    }
+}
+
 

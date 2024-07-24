@@ -10,14 +10,16 @@ InputDialog::InputDialog(QWidget *parent)
     companyLine =new QLineEdit(this);
     okButton =new QPushButton("Ok",this);
     cancelButton =new QPushButton("Cancel",this);
-
     formLayout = new QFormLayout();
+    intValidator=new QIntValidator(this);
+    doubleValidator =new QDoubleValidator(this);
+    mgLine->setValidator(intValidator);
+    quantityLine->setValidator(doubleValidator);
     formLayout->addRow("Name:", nameLine);
     formLayout->addRow("Price:", priceLine);
     formLayout->addRow("Quantity:", quantityLine);
     formLayout->addRow("MG:", mgLine);
     formLayout->addRow("Company:", companyLine);
-
 
     buttonLayout = new QHBoxLayout;
     buttonLayout->addWidget(okButton);
@@ -69,6 +71,8 @@ InputDialog::~InputDialog()
     delete companyLine;
     delete okButton;
     delete cancelButton;
+    delete intValidator;
+    delete doubleValidator;
 }
 
 void InputDialog::accept()

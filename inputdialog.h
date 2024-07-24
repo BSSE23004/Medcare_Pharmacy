@@ -7,6 +7,8 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QFormLayout>
+#include <QIntValidator>
+#include <QDoubleValidator>
 class InputDialog : public QDialog
 {
     Q_OBJECT
@@ -20,6 +22,8 @@ class InputDialog : public QDialog
     QLineEdit *companyLine;
     QPushButton *okButton;
     QPushButton *cancelButton;
+    QIntValidator *intValidator;
+    QDoubleValidator *doubleValidator;
 public:
     explicit InputDialog(QWidget *parent = nullptr);
     QString getName();

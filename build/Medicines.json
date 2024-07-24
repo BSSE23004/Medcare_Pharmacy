@@ -1,3 +1,18 @@
 {
-    "MedicinesTable": []
+    "MedicinesTable": [
+        {
+            "Company": "Panadoll",
+            "Mg": "40",
+            "Name": "Panadoll",
+            "Price": "20.0",
+            "Quantity": "100"
+        },
+        {
+            "Company": "Paracetamol",
+            "Mg": "100",
+            "Name": "Paracetamol",
+            "Price": "50.0",
+            "Quantity": "200"
+        }
+    ]
 }
