@@ -5,7 +5,6 @@
 BillInputDialog::BillInputDialog(QWidget *parent)
     : QDialog{parent}
 {
-
     clicked =false;
     intValidator =new QIntValidator(this);
     doubleValidator =new QDoubleValidator(this);
@@ -38,6 +37,7 @@ BillInputDialog::BillInputDialog(QWidget *parent)
     connect(okButton, &QPushButton::clicked, this, &BillInputDialog::accept);
     connect(cancelButton, &QPushButton::clicked, this, &BillInputDialog::reject);
     connect(addMoreButton, &QPushButton::clicked, this, &BillInputDialog::handleAddMoreButton);
+    connect(nameLine, &QLineEdit::textChanged, this, &BillInputDialog::nameTextChanged);
 }
 
 QString BillInputDialog::getName()
@@ -81,6 +81,8 @@ BillInputDialog::~BillInputDialog()
     delete doubleValidator;
 }
 
+
+
 void BillInputDialog::accept()
 {
     QDialog::accept();
@@ -91,5 +93,7 @@ void BillInputDialog::handleAddMoreButton()
     QDialog::accept();
     clicked=true;
 }
+
+
 
 

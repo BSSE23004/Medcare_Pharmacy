@@ -3,7 +3,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-
+    checkTimer =new QTimer(this);
     medicinesTable=nullptr;
     makeListMenu();
     hideButton =new QPushButton("Hide Panel",this);
@@ -307,6 +307,8 @@ void MainWindow::currentMenu()
 void MainWindow::handleBillButton()
 {
     billInput =new BillInputDialog (this);
+    connect(checkTimer,SIGNAL(timeout()),this,SLOT(handleLineEdits()));
+    checkTimer->start(1000);
     if (billInput->exec() == QDialog::Accepted) {
         if(billInput->getName().isEmpty()||billInput->getQuantity().isEmpty()||billInput->getCompany().isEmpty()||billInput->getmg().isEmpty()){
             QMessageBox::warning(this,"Invalid Input","Enter complete data!!!");
@@ -320,6 +322,11 @@ void MainWindow::handleBillButton()
             handleBillButton();
         }
     }
+}
+
+void MainWindow::handleLineEdits()
+{
+    filterTable(billInput->getName());
 }
 
 

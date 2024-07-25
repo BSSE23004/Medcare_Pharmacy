@@ -9,6 +9,8 @@
 #include <QFormLayout>
 #include <QIntValidator>
 #include <QDoubleValidator>
+
+
 class InputDialog : public QDialog
 {
     Q_OBJECT

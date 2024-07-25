@@ -15,6 +15,7 @@ InputDialog::InputDialog(QWidget *parent)
     doubleValidator =new QDoubleValidator(this);
     mgLine->setValidator(intValidator);
     quantityLine->setValidator(doubleValidator);
+    priceLine->setValidator(doubleValidator);
     formLayout->addRow("Name:", nameLine);
     formLayout->addRow("Price:", priceLine);
     formLayout->addRow("Quantity:", quantityLine);

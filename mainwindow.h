@@ -80,6 +80,7 @@ class MainWindow : public QMainWindow
 ////Bill Menu
     QPushButton *generateBillButton;
     BillInputDialog *billInput;
+    QTimer *checkTimer;
 
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -105,6 +106,8 @@ private slots:
     ////////////////////List Menu
     ////////////////////Bill Menu
     void handleBillButton();
+    void handleLineEdits();
+
     ////////////////////Bill Menu
 };
 #endif // MAINWINDOW_H

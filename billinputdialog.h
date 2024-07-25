@@ -13,13 +13,13 @@
 #include <QIntValidator>
 #include <QDoubleValidator>
 
+
 class BillInputDialog : public QDialog
 {
     Q_OBJECT
     QVBoxLayout *mainLayout;
     QHBoxLayout *buttonLayout;
     QFormLayout *formLayout;
-    QLineEdit *nameLine;
     QLineEdit *mgLine;
     QLineEdit *quantityLine;
     QLineEdit *companyLine;
@@ -30,6 +30,7 @@ class BillInputDialog : public QDialog
     QDoubleValidator *doubleValidator;
     bool clicked;
 public:
+    QLineEdit *nameLine;
     explicit BillInputDialog(QWidget *parent = nullptr);
     QString getName();
     QString getmg();
@@ -37,6 +38,9 @@ public:
     QString getCompany();
     bool isAddMoreButtonClicked();
     ~BillInputDialog();
+
+signals:
+    void nameTextChanged(const QString &text);
 private slots:
     void accept();
     void handleAddMoreButton();

@@ -13,6 +13,27 @@
             "Name": "Paracetamol",
             "Price": "50.0",
             "Quantity": "200"
+        },
+        {
+            "Company": "Ponstan",
+            "Mg": "40",
+            "Name": "Ponstan",
+            "Price": "300",
+            "Quantity": "20"
+        },
+        {
+            "Company": "Leflox",
+            "Mg": "100",
+            "Name": "Leflox",
+            "Price": "300",
+            "Quantity": "30"
+        },
+        {
+            "Company": "Flegel",
+            "Mg": "40",
+            "Name": "Flegel",
+            "Price": "40",
+            "Quantity": "100"
         }
     ]
 }
