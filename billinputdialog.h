@@ -37,6 +37,9 @@ public:
     QString getQuantity();
     QString getCompany();
     bool isAddMoreButtonClicked();
+    void setIntValidatorRange(int start,int end);
+    void setDoubleValidatorRange(double start,double end);
+    void setCompanyLine(QString text);
     ~BillInputDialog();
 
 signals:

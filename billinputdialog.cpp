@@ -15,8 +15,6 @@ BillInputDialog::BillInputDialog(QWidget *parent)
     okButton =new QPushButton("Ok",this);
     cancelButton =new QPushButton("Cancel",this);
     addMoreButton =new QPushButton("Add More",this);
-    mgLine->setValidator(intValidator);
-    quantityLine->setValidator(doubleValidator);
     formLayout = new QFormLayout();
     formLayout->addRow("Name:", nameLine);
     formLayout->addRow("Quantity:", quantityLine);
@@ -64,6 +62,25 @@ bool BillInputDialog::isAddMoreButtonClicked()
 {
     return clicked;
 }
+
+void BillInputDialog::setIntValidatorRange(int start, int end)
+{
+    intValidator->setRange(start,end);
+    mgLine->setValidator(intValidator);
+}
+
+void BillInputDialog::setDoubleValidatorRange(double start, double end)
+{
+    doubleValidator->setRange(start,end);
+    quantityLine->setValidator(doubleValidator);
+}
+
+void BillInputDialog::setCompanyLine(QString text)
+{
+    companyLine->setText(text);
+}
+
+
 
 BillInputDialog::~BillInputDialog()
 {

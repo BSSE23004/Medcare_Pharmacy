@@ -14,5 +14,6 @@
         <file>search.ico</file>
         <file>add.ico</file>
         <file>removeButton.ico</file>
+        <file>receipt.ico</file>
     </qresource>
 </RCC>

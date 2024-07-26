@@ -47,6 +47,8 @@ MainWindow::~MainWindow() {
     delete inputMedicine;
     delete removeButton;
     delete billInput;
+    delete generateReceiptButton;
+    delete generateBillButton;
 }
 
 void MainWindow::makeListMenu()
@@ -208,12 +210,22 @@ void MainWindow::readMedicineTableFromJson()
 
 void MainWindow::billMenu()
 {
+    receiptText="";
+    receiptText.append("Receipt\n");
+    receiptText.append("========================\n");
+    receiptText.append("Name\tQuantity\tPrice\tMg\tTotalPrice/item");
     generateBillButton =new QPushButton(QIcon(":/add.ico"),"Generate Bill",this);
     generateBillButton->setGeometry(750,0,205,60);
     generateBillButton->setIconSize(QSize(55,55));
     generateBillButton->setFont(QFont("Times New Roman",14));
     generateBillButton->hide();
+    generateReceiptButton =new QPushButton(QIcon(":/receipt.ico"),"Generate Receipt",this);
+    generateReceiptButton->setGeometry(750,70,205,60);
+    generateReceiptButton->setIconSize(QSize(55,55));
+    generateReceiptButton->setFont(QFont("Times New Roman",14));
+    generateReceiptButton->hide();
     connect(generateBillButton,SIGNAL(clicked(bool)),this,SLOT(handleBillButton()));
+    connect(generateReceiptButton,SIGNAL(clicked(bool)),this,SLOT(handleReceiptButton()));
 }
 
 void MainWindow::handleSearchBarAndButton()
@@ -291,6 +303,7 @@ void MainWindow::currentMenu()
     /////////Medicine Menu
     /////////Bill Menu
     generateBillButton->hide();
+    generateReceiptButton->hide();
     if(listMenu->currentItem()->text()=="Medicines"){
         medicinesTable->show();
         searchButton->show();
@@ -301,11 +314,17 @@ void MainWindow::currentMenu()
     if(listMenu->currentItem()->text()=="Generate Bill"){
         medicinesTable->show();
         generateBillButton->show();
+        generateReceiptButton->show();
     }
 }
 
+
+
 void MainWindow::handleBillButton()
 {
+    int rowNumber;
+
+
     billInput =new BillInputDialog (this);
     connect(checkTimer,SIGNAL(timeout()),this,SLOT(handleLineEdits()));
     checkTimer->start(1000);
@@ -314,19 +333,77 @@ void MainWindow::handleBillButton()
             QMessageBox::warning(this,"Invalid Input","Enter complete data!!!");
             return;
         }
-        qDebug()<<billInput->getName()<<"\n";
-        qDebug()<<billInput->getQuantity()<<"\n";
-        qDebug()<<billInput->getCompany()<<"\n";
-        qDebug()<<billInput->getmg()<<"\n";
+        for (int row = 0; row < medicinesTable->rowCount(); ++row) {
+            itemTable =medicinesTable->item(row,0);
+            if(itemTable && itemTable->text().contains(billInput->getName(), Qt::CaseInsensitive)){
+                rowNumber=row;
+                if(billInput->getmg()!=medicinesTable->item(row,3)->text()||billInput->getQuantity().toFloat()>medicinesTable->item(row,2)->text().toFloat()) {
+                    QMessageBox::warning(this,"Invalid Input","Enter proper data!!!(Maybe Quantity OR Mg You entered is not correct)");
+                    return;
+                }
+            }
+        }
+
+        receiptText.append(billInput->getName()+"\t"+billInput->getQuantity()+"\t"+medicinesTable->item(rowNumber,1)->text()+"\t"+billInput->getmg()+"\t"+QString::number(billInput->getQuantity().toInt()*medicinesTable->item(rowNumber,1)->text().toInt())+"\n");
+
         if(billInput->isAddMoreButtonClicked()){
             handleBillButton();
         }
     }
+
 }
+
 
 void MainWindow::handleLineEdits()
 {
+    for (int row = 0; row < medicinesTable->rowCount(); ++row) {
+        itemTable =medicinesTable->item(row,0);
+        if(itemTable && itemTable->text().contains(billInput->getName(), Qt::CaseInsensitive)){
+            billInput->setIntValidatorRange(0,medicinesTable->item(row,3)->text().toInt());
+            billInput->setDoubleValidatorRange(0.0,medicinesTable->item(row,2)->text().toFloat());
+            billInput->setCompanyLine(medicinesTable->item(row,4)->text());
+        }
+    }
     filterTable(billInput->getName());
+}
+
+void MainWindow::printReceipt(QString &text)
+{
+    text.append("========================\n");
+    text.append("Thank you for your purchase!\n");
+    // Create a printer object
+    QPrinter printer;
+    printer.setPageSize(QPageSize(QPageSize::A4));
+    printer.setPageOrientation(QPageLayout::Portrait);
+
+    // Create a print dialog
+    QPrintDialog printDialog(&printer);
+    if (printDialog.exec() != QDialog::Accepted) {
+        return; // User cancelled the print dialog
+    }
+
+    // Create a painter to draw on the printer
+    QPainter painter(&printer);
+
+    // Set font and other properties
+    QFont font = painter.font();
+    font.setPointSize(12);
+    painter.setFont(font);
+
+    // Calculate the area to print
+    QRect rect = painter.viewport();
+    int margin = 50;
+    rect.adjust(margin, margin, -margin, -margin);
+
+    // Draw the text
+    painter.drawText(rect, Qt::AlignLeft | Qt::TextWordWrap, receiptText);
+
+    painter.end(); // End the painting
+}
+
+void MainWindow::handleReceiptButton()
+{
+    printReceipt(receiptText);
 }
 
 

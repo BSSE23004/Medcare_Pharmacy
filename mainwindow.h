@@ -39,10 +39,13 @@
 #include <fstream>
 #include "inputdialog.h"
 #include "nlohmann/json.hpp"
-#include <vector>
 #include <QJsonArray>
 #include <QJsonObject>
 #include "billinputdialog.h"
+#include <QtPrintSupport/QPrinter>
+#include <QPainter>
+#include <QtPrintSupport/QPrintDialog>
+#include <QString>
 
 
 using namespace nlohmann;
@@ -79,8 +82,11 @@ class MainWindow : public QMainWindow
 ////Medicines Menu
 ////Bill Menu
     QPushButton *generateBillButton;
+    QPushButton *generateReceiptButton;
     BillInputDialog *billInput;
     QTimer *checkTimer;
+    QString receiptText;
+
 
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -107,7 +113,8 @@ private slots:
     ////////////////////Bill Menu
     void handleBillButton();
     void handleLineEdits();
-
+    void printReceipt(QString& receiptText);
+    void handleReceiptButton();
     ////////////////////Bill Menu
 };
 #endif // MAINWINDOW_H
