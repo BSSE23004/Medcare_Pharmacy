@@ -46,6 +46,11 @@
 #include <QPainter>
 #include <QtPrintSupport/QPrintDialog>
 #include <QString>
+#include <QApplication>
+#include <QPrinter>
+#include <QPainter>
+#include <QPrintDialog>
+#include <QPrintPreviewDialog>
 
 
 using namespace nlohmann;
@@ -86,6 +91,7 @@ class MainWindow : public QMainWindow
     BillInputDialog *billInput;
     QTimer *checkTimer;
     QString receiptText;
+////Bill Menu
 
 
 public:
@@ -99,7 +105,10 @@ public:
     void writeMedicinesTableToJson();
     void readMedicineTableFromJson();
     ////////////////////////////Medicine Menu
+    ////////////////////////////Bill Menu
     void billMenu();
+    QString padRight(const QString& text, int width);
+    ////////////////////////////Bill Menu
 private slots:
     ////////////////////Medicine Menu
     void handleSearchBarAndButton();

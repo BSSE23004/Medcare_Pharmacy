@@ -1,4 +1,10 @@
 #include "mainwindow.h"
+const int NAME_WIDTH = 25;
+const int QUANTITY_WIDTH = 10;
+const int PRICE_WIDTH = 10;
+const int MG_WIDTH = 10;
+const int TOTAL_PRICE_WIDTH = 15;
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -212,8 +218,8 @@ void MainWindow::billMenu()
 {
     receiptText="";
     receiptText.append("Receipt\n");
-    receiptText.append("========================\n");
-    receiptText.append("Name\tQuantity\tPrice\tMg\tTotalPrice/item");
+    receiptText.append("===============================================================\n");
+    receiptText.append("Name             Quantity   Price      Mg         TotalPrice/item\n");
     generateBillButton =new QPushButton(QIcon(":/add.ico"),"Generate Bill",this);
     generateBillButton->setGeometry(750,0,205,60);
     generateBillButton->setIconSize(QSize(55,55));
@@ -221,12 +227,24 @@ void MainWindow::billMenu()
     generateBillButton->hide();
     generateReceiptButton =new QPushButton(QIcon(":/receipt.ico"),"Generate Receipt",this);
     generateReceiptButton->setGeometry(750,70,205,60);
-    generateReceiptButton->setIconSize(QSize(55,55));
+    generateReceiptButton->setIconSize(QSize(50,50));
     generateReceiptButton->setFont(QFont("Times New Roman",14));
     generateReceiptButton->hide();
     connect(generateBillButton,SIGNAL(clicked(bool)),this,SLOT(handleBillButton()));
     connect(generateReceiptButton,SIGNAL(clicked(bool)),this,SLOT(handleReceiptButton()));
 }
+
+
+
+QString MainWindow::padRight(const QString &text, int width)
+{
+    if (text.length() > width) {
+        return text.left(width); // Truncate if text is too long
+    } else {
+        return text.leftJustified(width, ' '); // Pad with spaces if text is too short
+    }
+}
+
 
 void MainWindow::handleSearchBarAndButton()
 {
@@ -343,14 +361,17 @@ void MainWindow::handleBillButton()
                 }
             }
         }
+        QString paddedName = padRight(billInput->getName(), NAME_WIDTH);
+        QString paddedQuantity = padRight(billInput->getQuantity(), QUANTITY_WIDTH);
+        QString paddedPrice = padRight(medicinesTable->item(rowNumber,1)->text(), PRICE_WIDTH);
+        QString paddedMg = padRight(billInput->getmg(), MG_WIDTH);
+        QString paddedTotalPrice = padRight(QString::number(billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat()), TOTAL_PRICE_WIDTH);
 
-        receiptText.append(billInput->getName()+"\t"+billInput->getQuantity()+"\t"+medicinesTable->item(rowNumber,1)->text()+"\t"+billInput->getmg()+"\t"+QString::number(billInput->getQuantity().toInt()*medicinesTable->item(rowNumber,1)->text().toInt())+"\n");
-
+        receiptText.append(paddedName + paddedQuantity + paddedPrice + paddedMg + paddedTotalPrice + "\n");
         if(billInput->isAddMoreButtonClicked()){
             handleBillButton();
         }
     }
-
 }
 
 
@@ -369,7 +390,7 @@ void MainWindow::handleLineEdits()
 
 void MainWindow::printReceipt(QString &text)
 {
-    text.append("========================\n");
+    text.append("===============================================================\n");
     text.append("Thank you for your purchase!\n");
     // Create a printer object
     QPrinter printer;
