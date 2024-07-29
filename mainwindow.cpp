@@ -1,14 +1,11 @@
 #include "mainwindow.h"
-const int NAME_WIDTH = 25;
-const int QUANTITY_WIDTH = 10;
-const int PRICE_WIDTH = 10;
-const int MG_WIDTH = 10;
-const int TOTAL_PRICE_WIDTH = 15;
+
 
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    total=0;
     checkTimer =new QTimer(this);
     medicinesTable=nullptr;
     makeListMenu();
@@ -219,7 +216,7 @@ void MainWindow::billMenu()
     receiptText="";
     receiptText.append("Receipt\n");
     receiptText.append("===============================================================\n");
-    receiptText.append("Name             Quantity   Price      Mg         TotalPrice/item\n");
+    receiptText.append("Name             Quantity         Price            Mg         TotalPrice/item\n");
     generateBillButton =new QPushButton(QIcon(":/add.ico"),"Generate Bill",this);
     generateBillButton->setGeometry(750,0,205,60);
     generateBillButton->setIconSize(QSize(55,55));
@@ -234,15 +231,20 @@ void MainWindow::billMenu()
     connect(generateReceiptButton,SIGNAL(clicked(bool)),this,SLOT(handleReceiptButton()));
 }
 
-
-
-QString MainWindow::padRight(const QString &text, int width)
+static int it=0;
+static int widthForString =20;
+void MainWindow::padRight(QString &text)
 {
-    if (text.length() > width) {
-        return text.left(width); // Truncate if text is too long
-    } else {
-        return text.leftJustified(width, ' '); // Pad with spaces if text is too short
+
+    for (int i = text.size(); i < widthForString; ++i) {
+        text.append(" ");
     }
+    ++it;
+    if(it%5==0){
+        widthForString=20;
+        return;
+    }
+    widthForString+=12;
 }
 
 
@@ -341,8 +343,6 @@ void MainWindow::currentMenu()
 void MainWindow::handleBillButton()
 {
     int rowNumber;
-
-
     billInput =new BillInputDialog (this);
     connect(checkTimer,SIGNAL(timeout()),this,SLOT(handleLineEdits()));
     checkTimer->start(1000);
@@ -361,13 +361,20 @@ void MainWindow::handleBillButton()
                 }
             }
         }
-        QString paddedName = padRight(billInput->getName(), NAME_WIDTH);
-        QString paddedQuantity = padRight(billInput->getQuantity(), QUANTITY_WIDTH);
-        QString paddedPrice = padRight(medicinesTable->item(rowNumber,1)->text(), PRICE_WIDTH);
-        QString paddedMg = padRight(billInput->getmg(), MG_WIDTH);
-        QString paddedTotalPrice = padRight(QString::number(billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat()), TOTAL_PRICE_WIDTH);
-
-        receiptText.append(paddedName + paddedQuantity + paddedPrice + paddedMg + paddedTotalPrice + "\n");
+        QString newLine="";
+        newLine.append(billInput->getName());
+        padRight(newLine);
+        newLine.append(billInput->getQuantity());
+        padRight(newLine);
+        newLine.append(medicinesTable->item(rowNumber,1)->text());
+        padRight(newLine);
+        newLine.append(billInput->getmg());
+        padRight(newLine);
+        newLine.append(QString::number(billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat()));
+        padRight(newLine);
+        newLine.append("\n");
+        receiptText.append(newLine);
+        total+=billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat();
         if(billInput->isAddMoreButtonClicked()){
             handleBillButton();
         }
@@ -390,8 +397,10 @@ void MainWindow::handleLineEdits()
 
 void MainWindow::printReceipt(QString &text)
 {
+    text.append("\nTotal : "+QString::number(total)+"\n");
     text.append("===============================================================\n");
     text.append("Thank you for your purchase!\n");
+    total=0;
     // Create a printer object
     QPrinter printer;
     printer.setPageSize(QPageSize(QPageSize::A4));
@@ -420,6 +429,7 @@ void MainWindow::printReceipt(QString &text)
     painter.drawText(rect, Qt::AlignLeft | Qt::TextWordWrap, receiptText);
 
     painter.end(); // End the painting
+    receiptText="";
 }
 
 void MainWindow::handleReceiptButton()

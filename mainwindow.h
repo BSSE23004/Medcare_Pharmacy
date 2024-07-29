@@ -91,6 +91,7 @@ class MainWindow : public QMainWindow
     BillInputDialog *billInput;
     QTimer *checkTimer;
     QString receiptText;
+    double total;
 ////Bill Menu
 
 
@@ -107,7 +108,7 @@ public:
     ////////////////////////////Medicine Menu
     ////////////////////////////Bill Menu
     void billMenu();
-    QString padRight(const QString& text, int width);
+    void padRight(QString& text);
     ////////////////////////////Bill Menu
 private slots:
     ////////////////////Medicine Menu
