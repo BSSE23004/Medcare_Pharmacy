@@ -51,6 +51,7 @@
 #include <QPainter>
 #include <QPrintDialog>
 #include <QPrintPreviewDialog>
+#include "kanbanboard.h"
 
 
 using namespace nlohmann;
@@ -93,6 +94,10 @@ class MainWindow : public QMainWindow
     QString receiptText;
     double total;
 ////Bill Menu
+////Orders&Delivery Menu
+    KanbanBoard *kanbanBoard;
+
+////Orders&Delivery Menu
 
 
 public:
@@ -110,6 +115,9 @@ public:
     void billMenu();
     void padRight(QString& text);
     ////////////////////////////Bill Menu
+    ////////////////////////////Orders&Delivery Menu
+    void ordersAndDeliveryMenu();
+    ////////////////////////////Orders&Delivery Menu
 private slots:
     ////////////////////Medicine Menu
     void handleSearchBarAndButton();

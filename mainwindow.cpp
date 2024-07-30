@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     //building menus
     billMenu();
     medicinesMenu();
+    ordersAndDeliveryMenu();
     readMedicineTableFromJson();
 }
 
@@ -52,6 +53,7 @@ MainWindow::~MainWindow() {
     delete billInput;
     delete generateReceiptButton;
     delete generateBillButton;
+    delete kanbanBoard;
 }
 
 void MainWindow::makeListMenu()
@@ -247,6 +249,14 @@ void MainWindow::padRight(QString &text)
     widthForString+=12;
 }
 
+void MainWindow::ordersAndDeliveryMenu()
+{
+    kanbanBoard =new KanbanBoard(this);
+    kanbanBoard->setGeometry(200,0,800,700);
+    kanbanBoard->hide();
+
+}
+
 
 void MainWindow::handleSearchBarAndButton()
 {
@@ -324,6 +334,10 @@ void MainWindow::currentMenu()
     /////////Bill Menu
     generateBillButton->hide();
     generateReceiptButton->hide();
+    /////////Bill Menu
+    /////////Orders&Delivery Menu
+    kanbanBoard->hide();
+    /////////Orders&Delivery Menu
     if(listMenu->currentItem()->text()=="Medicines"){
         medicinesTable->show();
         searchButton->show();
@@ -336,6 +350,10 @@ void MainWindow::currentMenu()
         generateBillButton->show();
         generateReceiptButton->show();
     }
+    if(listMenu->currentItem()->text()=="Orders&Delivery"){
+        kanbanBoard->show();
+    }
+
 }
 
 

@@ -12,12 +12,14 @@ CONFIG += c++17
 SOURCES += \
     billinputdialog.cpp \
     inputdialog.cpp \
+    kanbanboard.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     billinputdialog.h \
     inputdialog.h \
+    kanbanboard.h \
     mainwindow.h
 
 # Default rules for deployment.
