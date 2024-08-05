@@ -19,6 +19,7 @@ SOURCES += \
 HEADERS += \
     billinputdialog.h \
     inputdialog.h \
+    kanbanListWidget.h \
     kanbanboard.h \
     mainwindow.h
 
