@@ -1,31 +1,33 @@
 #include "kanbanboard.h"
 
+
+int KanbanBoard::id=0;
 KanbanBoard::KanbanBoard(QWidget *parent)
     : QWidget{parent}
 {
     mainLayout = new QVBoxLayout(this);
     boardLayout = new QHBoxLayout();
-
     // To Do Column
     todoLayout = new QVBoxLayout();
     todoLabel = new QLabel("To Do");
     todoList = new KanbanListWidget();
     todoLayout->addWidget(todoLabel);
     todoLayout->addWidget(todoList);
-
+    todoList->setStyleSheet("color : red");
     // In Progress Column
     inProgressLayout = new QVBoxLayout();
     inProgressLabel = new QLabel("In Progress");
     inProgressList = new KanbanListWidget();
     inProgressLayout->addWidget(inProgressLabel);
     inProgressLayout->addWidget(inProgressList);
-
+    inProgressList->setStyleSheet("color : yellow");
     // Done Column
     doneLayout = new QVBoxLayout();
     doneLabel = new QLabel("Done");
     doneList = new KanbanListWidget();
     doneLayout->addWidget(doneLabel);
     doneLayout->addWidget(doneList);
+    doneList->setStyleSheet("color : green");
     //Seting Size
     const int listIconsSizew=40;
     const int listIconsSizeh=40;
@@ -48,13 +50,6 @@ KanbanBoard::KanbanBoard(QWidget *parent)
     todoLabel->setStyleSheet("color : red");
     inProgressLabel->setStyleSheet("color : yellow");
     doneLabel->setStyleSheet("color : green");
-    //Enabling Drag And Drop
-    todoList->setDragEnabled(true);
-    todoList->setAcceptDrops(true);
-    inProgressList->setDragEnabled(true);
-    inProgressList->setAcceptDrops(true);
-    doneList->setDragEnabled(true);
-    doneList->setAcceptDrops(true);
     // making Button
     buttonLayout =new QHBoxLayout();
     addDeliveryButton =new QPushButton(QIcon(":/add.ico"),"Add Delivery",this);
@@ -71,12 +66,12 @@ KanbanBoard::KanbanBoard(QWidget *parent)
     boardLayout->addLayout(todoLayout);
     boardLayout->addLayout(inProgressLayout);
     boardLayout->addLayout(doneLayout);
-
     mainLayout->addLayout(boardLayout);
     mainLayout->addLayout(buttonLayout);
     setLayout(mainLayout);
     ///Connections
     connect(addDeliveryButton,SIGNAL(clicked(bool)),this,SLOT(handleAddDelivery()));
+    connect(removeDeliveryButton,SIGNAL(clicked(bool)),this,SLOT(handleRemoveDelivery()));
     connect(todoList,SIGNAL(currentRowChanged(int)),this,SLOT(handleListsItems()));
     connect(inProgressList,SIGNAL(currentRowChanged(int)),this,SLOT(handleListsItems()));
     connect(doneList,SIGNAL(currentRowChanged(int)),this,SLOT(handleListsItems()));
@@ -105,9 +100,41 @@ KanbanBoard::~KanbanBoard()
 
 void KanbanBoard::handleAddDelivery()
 {
-    listItem=new QListWidgetItem(QIcon(":/delivery-bike.ico"),QInputDialog::getText(this,"Delivery-Details","Enter Deatails"));
-    listItem->setSizeHint(QSize(50,60));
+    deliveryInput =new DeliveryInputDialog (this);
+    if (deliveryInput->exec() == QDialog::Accepted) {
+        if(deliveryInput->getName().isEmpty()||deliveryInput->getAddress().isEmpty()||deliveryInput->getPhoneNumber().isEmpty()||deliveryInput->getOrder().isEmpty()){
+            QMessageBox::warning(this,"Invalid Input","Enter complete data!!!");
+            return;
+        }
+    }
+    listItem=new QListWidgetItem(QIcon(":/delivery-bike.ico"),"Name : "+deliveryInput->getName()+"\nID : "+QString::number(++id)+"\nAddress : "+deliveryInput->getAddress()+"\nPhone : "+deliveryInput->getPhoneNumber()+"\nOrder : "+deliveryInput->getOrder());
     todoList->addItem(listItem);
+}
+
+void KanbanBoard::handleRemoveDelivery()
+{
+    QString id = QString::number(QInputDialog::getInt(this,"ID","Enter OrderID : ",0,1));
+    for (int row = 0; row < todoList->count(); ++row) {
+        QListWidgetItem *item = todoList->item(row);
+        if (item && item->text().contains("ID : "+id, Qt::CaseInsensitive)) {
+            delete todoList->takeItem(row);
+            break;
+        }
+    }
+    for (int row = 0; row < inProgressList->count(); ++row) {
+        QListWidgetItem *item = inProgressList->item(row);
+        if (item && item->text().contains("ID : "+id, Qt::CaseInsensitive)) {
+            delete inProgressList->takeItem(row);
+            break;
+        }
+    }
+    for (int row = 0; row < doneList->count(); ++row) {
+        QListWidgetItem *item = doneList->item(row);
+        if (item && item->text().contains("ID : "+id, Qt::CaseInsensitive)) {
+            delete doneList->takeItem(row);
+            break;
+        }
+    }
 }
 
 void KanbanBoard::handleListsItems()
@@ -118,30 +145,63 @@ void KanbanBoard::handleListsItems()
     disconnect(doneList, SIGNAL(currentRowChanged(int)), this, SLOT(handleListsItems()));
 
     // Perform the list modifications
-    for (int i = 0; i < todoList->count(); ++i) {
-        for (int j = 0; j < inProgressList->count(); ++j) {
-            if (todoList->item(i)->text() == inProgressList->item(j)->text()) {
-                delete todoList->takeItem(i);
+    // Remove items from inProgressList and todoList if they exist in doneList
+    for (int i = 0; i < doneList->count(); ++i) {
+        QString doneText = doneList->item(i)->text();
 
-                --i; // Adjust index i after deletion
-                break; // Exit inner loop since the item was removed
-            }
-        }
-    }
-    for (int j = 0; j < inProgressList->count(); ++j) {
-        for (int k = 0; k < doneList->count(); ++k) {
-            if (inProgressList->item(j)->text() == doneList->item(k)->text()) {
+        // Remove matching items from inProgressList
+        for (int j = 0; j < inProgressList->count(); ++j) {
+            if (inProgressList->item(j)->text() == doneText) {
                 delete inProgressList->takeItem(j);
-                --j; // Adjust index j after deletion
-                break; // Exit innermost loop since the item was removed
+                --j; // Adjust index after deletion
+            }
+        }
+
+        // Remove matching items from todoList
+        for (int k = 0; k < todoList->count(); ++k) {
+            if (todoList->item(k)->text() == doneText) {
+                delete todoList->takeItem(k);
+                --k; // Adjust index after deletion
             }
         }
     }
+
+    // Remove items from todoList if they exist in inProgressList
+    for (int i = 0; i < inProgressList->count(); ++i) {
+        QString inProgressText = inProgressList->item(i)->text();
+
+        for (int j = 0; j < todoList->count(); ++j) {
+            if (todoList->item(j)->text() == inProgressText) {
+                delete todoList->takeItem(j);
+                --j; // Adjust index after deletion
+            }
+        }
+    }
+
+    // for (int i = 0; i < todoList->count(); ++i) {
+    //     for (int j = 0; j < inProgressList->count(); ++j) {
+    //         if (todoList->item(i)->text() == inProgressList->item(j)->text()) {
+    //             delete todoList->takeItem(i);
+    //             --i; // Adjust index i after deletion
+    //             break; // Exit inner loop since the item was removed
+    //         }
+    //     }
+    // }
+    // for (int j = 0; j < inProgressList->count(); ++j) {
+    //     for (int k = 0; k < doneList->count(); ++k) {
+    //         if (inProgressList->item(j)->text() == doneList->item(k)->text()) {
+    //             delete inProgressList->takeItem(j);
+    //             --j;
+    //             break;
+    //         }
+    //     }
+    // }
+    // deleting duplicates
     for (int i = todoList->count() - 1; i >= 0; --i) {
         for (int j = i - 1; j >= 0; --j) {
             if (todoList->item(i)->text() == todoList->item(j)->text()) {
                 delete todoList->takeItem(i);
-                break; // No need to check further once a duplicate is removed
+                break;
             }
         }
     }
@@ -149,7 +209,7 @@ void KanbanBoard::handleListsItems()
         for (int j = i - 1; j >= 0; --j) {
             if (inProgressList->item(i)->text() == inProgressList->item(j)->text()) {
                 delete inProgressList->takeItem(i);
-                break; // No need to check further once a duplicate is removed
+                break;
             }
         }
     }
@@ -157,7 +217,7 @@ void KanbanBoard::handleListsItems()
         for (int j = i - 1; j >= 0; --j) {
             if (doneList->item(i)->text() == doneList->item(j)->text()) {
                 delete doneList->takeItem(i);
-                break; // No need to check further once a duplicate is removed
+                break;
             }
         }
     }

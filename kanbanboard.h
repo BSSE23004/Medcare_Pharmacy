@@ -10,7 +10,9 @@
 #include <QPushButton>
 #include <QInputDialog>
 #include <QDragEnterEvent>
+#include <QMessageBox>
 #include <kanbanListWidget.h>
+#include <deliveryinputdialog.h>
 
 class KanbanBoard : public QWidget
 {
@@ -27,15 +29,17 @@ class KanbanBoard : public QWidget
     QVBoxLayout *doneLayout;
     QLabel *doneLabel;
     KanbanListWidget *doneList;
-    QListWidgetItem *item;
     QPushButton *addDeliveryButton;
     QPushButton *removeDeliveryButton;
     QListWidgetItem *listItem;
+    DeliveryInputDialog * deliveryInput;
+    static int id;
 public:
     explicit KanbanBoard(QWidget *parent = nullptr);
     ~KanbanBoard();
 private slots:
     void handleAddDelivery();
+    void handleRemoveDelivery();
     void handleListsItems();
 };
 
