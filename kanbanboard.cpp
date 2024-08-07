@@ -75,6 +75,8 @@ KanbanBoard::KanbanBoard(QWidget *parent)
     connect(todoList,SIGNAL(currentRowChanged(int)),this,SLOT(handleListsItems()));
     connect(inProgressList,SIGNAL(currentRowChanged(int)),this,SLOT(handleListsItems()));
     connect(doneList,SIGNAL(currentRowChanged(int)),this,SLOT(handleListsItems()));
+    deliveryInput =new DeliveryInputDialog (this);
+    deliveryInput->hide();
 }
 
 KanbanBoard::~KanbanBoard()
@@ -100,19 +102,24 @@ KanbanBoard::~KanbanBoard()
 
 void KanbanBoard::handleAddDelivery()
 {
-    deliveryInput =new DeliveryInputDialog (this);
+    if(deliveryInput->isHidden()){
+        deliveryInput->show();
+    }
+    // deliveryInput =new DeliveryInputDialog (this);
     if (deliveryInput->exec() == QDialog::Accepted) {
         if(deliveryInput->getName().isEmpty()||deliveryInput->getAddress().isEmpty()||deliveryInput->getPhoneNumber().isEmpty()||deliveryInput->getOrder().isEmpty()){
             QMessageBox::warning(this,"Invalid Input","Enter complete data!!!");
             return;
         }
+        listItem=new QListWidgetItem(QIcon(":/delivery-bike.ico"),"Name : "+deliveryInput->getName()+"\nID : "+QString::number(++id)+"\nAddress : "+deliveryInput->getAddress()+"\nPhone : "+deliveryInput->getPhoneNumber()+"\nOrder : "+deliveryInput->getOrder()+"\nTotal  : "+QString::number(deliveryInput->getTotal()));
+        todoList->addItem(listItem);
     }
-    listItem=new QListWidgetItem(QIcon(":/delivery-bike.ico"),"Name : "+deliveryInput->getName()+"\nID : "+QString::number(++id)+"\nAddress : "+deliveryInput->getAddress()+"\nPhone : "+deliveryInput->getPhoneNumber()+"\nOrder : "+deliveryInput->getOrder());
-    todoList->addItem(listItem);
+    deliveryInput->hide();
 }
 
 void KanbanBoard::handleRemoveDelivery()
 {
+    qDebug()<<deliveryInput->getOrder();
     QString id = QString::number(QInputDialog::getInt(this,"ID","Enter OrderID : ",0,1));
     for (int row = 0; row < todoList->count(); ++row) {
         QListWidgetItem *item = todoList->item(row);

@@ -2,23 +2,29 @@
 
 
 
+void DeliveryInputDialog::setOrder(const QString &newOrder)
+{
+    order = newOrder;
+}
+
 DeliveryInputDialog::DeliveryInputDialog(QWidget *parent): QDialog{parent} {
+    total=0;
     intValidator =new QIntValidator(this);
     customerNameLine =new QLineEdit(this);
     customerAddressLine =new QLineEdit(this);
     customerPhoneNumberLine =new QLineEdit(this);
-    orderLine =new QLineEdit(this);
     customerPhoneNumberLine->setValidator(intValidator);
     okButton =new QPushButton("Ok",this);
     cancelButton =new QPushButton("Cancel",this);
+    orderButton =new QPushButton("Order",this);
     formLayout = new QFormLayout();
     formLayout->addRow("Name:", customerNameLine);
     formLayout->addRow("Address:", customerAddressLine);
     formLayout->addRow("Phone Number:", customerPhoneNumberLine);
-    formLayout->addRow("Order:", orderLine);
 
 
     buttonLayout = new QHBoxLayout;
+    buttonLayout->addWidget(orderButton);
     buttonLayout->addWidget(okButton);
     buttonLayout->addWidget(cancelButton);
 
@@ -39,6 +45,10 @@ DeliveryInputDialog::~DeliveryInputDialog()
     delete formLayout;
     delete okButton;
     delete cancelButton;
+    delete intValidator;
+    delete customerNameLine;
+    delete customerAddressLine;
+    delete customerPhoneNumberLine;
 }
 
 QString DeliveryInputDialog::getName()
@@ -58,10 +68,22 @@ QString DeliveryInputDialog::getPhoneNumber()
 
 QString DeliveryInputDialog::getOrder()
 {
-    return orderLine->text();
+    return order;
+}
+
+void DeliveryInputDialog::setTotal(double totalPrice)
+{
+    total=totalPrice;
+}
+
+double DeliveryInputDialog::getTotal()
+{
+    return total;
 }
 
 void DeliveryInputDialog::accept()
 {
     QDialog::accept();
 }
+
+

@@ -32,9 +32,9 @@ class KanbanBoard : public QWidget
     QPushButton *addDeliveryButton;
     QPushButton *removeDeliveryButton;
     QListWidgetItem *listItem;
-    DeliveryInputDialog * deliveryInput;
     static int id;
 public:
+    DeliveryInputDialog * deliveryInput;
     explicit KanbanBoard(QWidget *parent = nullptr);
     ~KanbanBoard();
 private slots:

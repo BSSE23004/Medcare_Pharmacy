@@ -5,6 +5,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    medicineTableGeometry=0;
     total=0;
     checkTimer =new QTimer(this);
     medicinesTable=nullptr;
@@ -23,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     medicinesMenu();
     ordersAndDeliveryMenu();
     readMedicineTableFromJson();
+    connect(kanbanBoard->deliveryInput->orderButton,SIGNAL(clicked(bool)),this,SLOT(handleOrderButton()));
 }
 
 MainWindow::~MainWindow() {
@@ -114,6 +116,7 @@ void MainWindow::medicinesMenu()
     for (int col = 0; col < medicinesTable->columnCount(); ++col) {
         totalWidth+=medicinesTable->columnWidth(col);
     }
+    medicineTableGeometry=totalWidth+10;
     medicinesTable->setGeometry(200,0,totalWidth+10,700);
     hbox->addWidget(medicinesTable);
     ////////////////////////////////////////Medicines Table
@@ -252,7 +255,7 @@ void MainWindow::padRight(QString &text)
 void MainWindow::ordersAndDeliveryMenu()
 {
     kanbanBoard =new KanbanBoard(this);
-    kanbanBoard->setGeometry(200,0,800,700);
+    kanbanBoard->setGeometry(175,0,650,700);
     kanbanBoard->hide();
 
 }
@@ -330,6 +333,7 @@ void MainWindow::currentMenu()
     searchBar->hide();
     searchButton->hide();
     medicinesTable->hide();
+    medicinesTable->setGeometry(200,0,medicineTableGeometry,700);
     /////////Medicine Menu
     /////////Bill Menu
     generateBillButton->hide();
@@ -352,6 +356,8 @@ void MainWindow::currentMenu()
     }
     if(listMenu->currentItem()->text()=="Orders&Delivery"){
         kanbanBoard->show();
+        medicinesTable->setGeometry(820,0,470,700);
+        medicinesTable->show();
     }
 
 }
@@ -393,6 +399,38 @@ void MainWindow::handleBillButton()
         newLine.append("\n");
         receiptText.append(newLine);
         total+=billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat();
+        if(billInput->isAddMoreButtonClicked()){
+
+            handleBillButton();
+        }
+    }
+}
+
+void MainWindow::handleOrderButton()
+{
+    int rowNumber;
+    billInput =new BillInputDialog (this);
+    connect(checkTimer,SIGNAL(timeout()),this,SLOT(handleLineEdits()));
+    checkTimer->start(1000);
+    if (billInput->exec() == QDialog::Accepted) {
+        if(billInput->getName().isEmpty()||billInput->getQuantity().isEmpty()||billInput->getCompany().isEmpty()||billInput->getmg().isEmpty()){
+            QMessageBox::warning(this,"Invalid Input","Enter complete data!!!");
+            return;
+        }
+        for (int row = 0; row < medicinesTable->rowCount(); ++row) {
+            itemTable =medicinesTable->item(row,0);
+            if(itemTable && itemTable->text().contains(billInput->getName(), Qt::CaseInsensitive)){
+                rowNumber=row;
+                if(billInput->getmg()!=medicinesTable->item(row,3)->text()||billInput->getQuantity().toFloat()>medicinesTable->item(row,2)->text().toFloat()) {
+                    QMessageBox::warning(this,"Invalid Input","Enter proper data!!!(Maybe Quantity OR Mg You entered is not correct)");
+                    return;
+                }
+            }
+        }
+        total+=billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat();
+        kanbanBoard->deliveryInput->setTotal(kanbanBoard->deliveryInput->getTotal()+total);
+        kanbanBoard->deliveryInput->setOrder(kanbanBoard->deliveryInput->getOrder()+"Medicine : "+billInput->getName()+" Quantity : "+billInput->getQuantity()+" Price : "+medicinesTable->item(rowNumber,1)->text()+" Price/Quantity : "+QString::number(billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat())+"\n");
+        total=0;
         if(billInput->isAddMoreButtonClicked()){
             handleBillButton();
         }

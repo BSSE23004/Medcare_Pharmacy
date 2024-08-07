@@ -12,7 +12,7 @@
 #include <QLabel>
 #include <QIntValidator>
 #include <QDoubleValidator>
-
+#include <billinputdialog.h>
 
 
 class DeliveryInputDialog : public QDialog
@@ -25,16 +25,22 @@ class DeliveryInputDialog : public QDialog
     QLineEdit *customerNameLine;
     QLineEdit *customerAddressLine;
     QLineEdit *customerPhoneNumberLine;
-    QLineEdit *orderLine;
-    QPushButton *okButton;
     QPushButton *cancelButton;
+    double total;
+    QString order;
 public:
+    QPushButton *okButton;
+    QPushButton *orderButton;
     DeliveryInputDialog(QWidget *parent = nullptr);
     ~DeliveryInputDialog();
     QString getName();
     QString getAddress();
     QString getPhoneNumber();
     QString getOrder();
+    void setTotal(double totalPrice);
+    double getTotal();
+    void setOrder(const QString &newOrder);
+
 private slots:
     void accept();
 };

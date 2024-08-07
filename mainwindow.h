@@ -85,6 +85,7 @@ class MainWindow : public QMainWindow
     QTableWidgetItem *price;
     QTableWidgetItem *quantity;
     InputDialog *inputMedicine;
+    int medicineTableGeometry;
 ////Medicines Menu
 ////Bill Menu
     QPushButton *generateBillButton;
@@ -96,7 +97,6 @@ class MainWindow : public QMainWindow
 ////Bill Menu
 ////Orders&Delivery Menu
     KanbanBoard *kanbanBoard;
-
 ////Orders&Delivery Menu
 
 
@@ -130,6 +130,7 @@ private slots:
     ////////////////////List Menu
     ////////////////////Bill Menu
     void handleBillButton();
+    void handleOrderButton();
     void handleLineEdits();
     void printReceipt(QString& receiptText);
     void handleReceiptButton();
