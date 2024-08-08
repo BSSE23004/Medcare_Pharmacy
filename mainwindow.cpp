@@ -368,7 +368,7 @@ void MainWindow::currentMenu()
 
 void MainWindow::handleBillButton()
 {
-    int rowNumber;
+    int rowNumber=-1;
     billInput =new BillInputDialog (this);
     connect(checkTimer,SIGNAL(timeout()),this,SLOT(handleLineEdits()));
     checkTimer->start(1000);
@@ -400,7 +400,11 @@ void MainWindow::handleBillButton()
         padRight(newLine);
         newLine.append("\n");
         receiptText.append(newLine);
-        total+=billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat();
+        if(rowNumber==-1){
+            total+=0;
+        }else {
+            total+=billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat();
+        }
         if(billInput->isAddMoreButtonClicked()){
             handleBillButton();
         }
@@ -413,7 +417,8 @@ void MainWindow::handleBillButton()
 
 void MainWindow::handleOrderButton()
 {
-    int rowNumber;
+    int rowNumber=-1;
+    int totalPricePerItem=0;
     billInput =new BillInputDialog (this);
     connect(checkTimer,SIGNAL(timeout()),this,SLOT(handleLineEdits()));
     checkTimer->start(1000);
@@ -432,10 +437,13 @@ void MainWindow::handleOrderButton()
                 }
             }
         }
-        total+=billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat();
-        kanbanBoard->deliveryInput->setTotal(kanbanBoard->deliveryInput->getTotal()+total);
-        kanbanBoard->deliveryInput->setOrder(kanbanBoard->deliveryInput->getOrder()+"Medicine : "+billInput->getName()+" Quantity : "+billInput->getQuantity()+" Price : "+medicinesTable->item(rowNumber,1)->text()+" Price/Quantity : "+QString::number(billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat())+"\n");
-        total=0;
+        if(rowNumber==-1){
+            totalPricePerItem+=0;
+        }else{
+            totalPricePerItem+=billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat();
+        }
+        kanbanBoard->deliveryInput->setTotal(kanbanBoard->deliveryInput->getTotal()+totalPricePerItem);
+        kanbanBoard->deliveryInput->setOrder(kanbanBoard->deliveryInput->getOrder()+"Medicine : "+billInput->getName()+" Quantity : "+billInput->getQuantity()+" Price : "+medicinesTable->item(rowNumber,1)->text()+" Price/Quantity : "+QString::number(totalPricePerItem)+"\n");
         if(billInput->isAddMoreButtonClicked()){
             handleOrderButton();
         }

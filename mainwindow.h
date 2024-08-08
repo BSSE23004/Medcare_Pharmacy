@@ -37,11 +37,11 @@
 #include <QStringList>
 #include <QFormLayout>
 #include <fstream>
-#include "inputdialog.h"
-#include "nlohmann/json.hpp"
+#include <inputdialog.h>
+#include <nlohmann/json.hpp>
 #include <QJsonArray>
 #include <QJsonObject>
-#include "billinputdialog.h"
+#include <billinputdialog.h>
 #include <QtPrintSupport/QPrinter>
 #include <QPainter>
 #include <QtPrintSupport/QPrintDialog>
@@ -51,7 +51,7 @@
 #include <QPainter>
 #include <QPrintDialog>
 #include <QPrintPreviewDialog>
-#include "kanbanboard.h"
+#include <kanbanboard.h>
 
 
 using namespace nlohmann;

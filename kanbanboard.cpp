@@ -157,12 +157,13 @@ void KanbanBoard::handleAddDelivery()
     // deliveryInput =new DeliveryInputDialog (this);
     if (deliveryInput->exec() == QDialog::Accepted) {
         if(deliveryInput->getName().isEmpty()||deliveryInput->getAddress().isEmpty()||deliveryInput->getPhoneNumber().isEmpty()||deliveryInput->getOrder().isEmpty()){
-            QMessageBox::warning(this,"Invalid Input","Enter complete data!!!");
+            QMessageBox::warning(this,"Invalid Input","Enter complete data!!!From DeliveryInput");
             return;
         }
         listItem=new QListWidgetItem(QIcon(":/delivery-bike.ico"),"Name : "+deliveryInput->getName()+"\nID : "+QString::number(++id)+"\nAddress : "+deliveryInput->getAddress()+"\nPhone : "+deliveryInput->getPhoneNumber()+"\nOrder : "+deliveryInput->getOrder()+"Total  : "+QString::number(deliveryInput->getTotal()));
         todoList->addItem(listItem);
         deliveryInput->setOrder("");
+        deliveryInput->setTotal(0.0);
 
     }
     deliveryInput->hide();

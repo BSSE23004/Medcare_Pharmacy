@@ -41,6 +41,13 @@
             "Name": "Moven",
             "Price": "100.0",
             "Quantity": "50"
+        },
+        {
+            "Company": "MXR",
+            "Mg": "501000",
+            "Name": "Tagipmet",
+            "Price": "360.0",
+            "Quantity": "300"
         }
     ]
 }
