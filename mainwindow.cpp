@@ -24,11 +24,13 @@ MainWindow::MainWindow(QWidget *parent)
     medicinesMenu();
     ordersAndDeliveryMenu();
     readMedicineTableFromJson();
+    kanbanBoard->readFromJson();
     connect(kanbanBoard->deliveryInput->orderButton,SIGNAL(clicked(bool)),this,SLOT(handleOrderButton()));
 }
 
 MainWindow::~MainWindow() {
     writeMedicinesTableToJson();
+    kanbanBoard->writeToJson();
     delete hbox;
     delete listMenu;
     delete hideButton;
@@ -400,9 +402,12 @@ void MainWindow::handleBillButton()
         receiptText.append(newLine);
         total+=billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat();
         if(billInput->isAddMoreButtonClicked()){
-
             handleBillButton();
         }
+    }
+    billInput->setName("");
+    for (int row = 0; row < medicinesTable->rowCount(); ++row) {
+        medicinesTable->showRow(row);
     }
 }
 
@@ -432,8 +437,12 @@ void MainWindow::handleOrderButton()
         kanbanBoard->deliveryInput->setOrder(kanbanBoard->deliveryInput->getOrder()+"Medicine : "+billInput->getName()+" Quantity : "+billInput->getQuantity()+" Price : "+medicinesTable->item(rowNumber,1)->text()+" Price/Quantity : "+QString::number(billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat())+"\n");
         total=0;
         if(billInput->isAddMoreButtonClicked()){
-            handleBillButton();
+            handleOrderButton();
         }
+    }
+    billInput->setName("");
+    for (int row = 0; row < medicinesTable->rowCount(); ++row) {
+        medicinesTable->showRow(row);
     }
 }
 

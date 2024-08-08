@@ -43,6 +43,11 @@ QString BillInputDialog::getName()
     return nameLine->text();
 }
 
+void BillInputDialog::setName(const QString &newName)
+{
+    nameLine->setText(newName);
+}
+
 QString BillInputDialog::getmg()
 {
     return mgLine->text();

@@ -96,6 +96,55 @@ KanbanBoard::~KanbanBoard()
     delete listItem;
 }
 
+void KanbanBoard::writeToJson()
+{
+    json kanbanFile;
+    kanbanFile["ToDo"]=json::array();
+    for (int i = 0; i < todoList->count(); ++i) {
+        json obj;
+        obj["content"]=todoList->item(i)->text().toStdString();
+        kanbanFile["ToDo"].push_back(obj);
+    }
+    kanbanFile["InProgress"]=json::array();
+    for (int i = 0; i < inProgressList->count(); ++i) {
+        json obj;
+        obj["content"]=inProgressList->item(i)->text().toStdString();
+        kanbanFile["InProgress"].push_back(obj);
+    }
+    kanbanFile["Done"]=json::array();
+    for (int i = 0; i < doneList->count(); ++i) {
+        json obj;
+        obj["content"]=doneList->item(i)->text().toStdString();
+        kanbanFile["Done"].push_back(obj);
+    }
+    std::ofstream fOut ("Kanban.json");
+    fOut<<kanbanFile.dump(4);
+    fOut.close();
+}
+
+void KanbanBoard::readFromJson()
+{
+    json kanbanFile;
+    std::ifstream fIn("Kanban.json");
+    try {
+        fIn >> kanbanFile;
+    } catch (json::parse_error &e) {
+        qDebug() << "Parse error: " << e.what();
+        return;
+    }
+    for (const auto & i  : kanbanFile["ToDo"]) {
+        listItem =new QListWidgetItem(QIcon(":/delivery-bike.ico"),QString::fromStdString(i["content"]));
+        todoList->addItem(listItem);
+    }
+    for (const auto & i  : kanbanFile["InProgress"]) {
+        listItem =new QListWidgetItem(QIcon(":/delivery-bike.ico"),QString::fromStdString(i["content"]));
+        inProgressList->addItem(listItem);
+    }for (const auto & i  : kanbanFile["Done"]) {
+        listItem =new QListWidgetItem(QIcon(":/delivery-bike.ico"),QString::fromStdString(i["content"]));
+        doneList->addItem(listItem);
+    }
+}
+
 
 
 
@@ -111,15 +160,16 @@ void KanbanBoard::handleAddDelivery()
             QMessageBox::warning(this,"Invalid Input","Enter complete data!!!");
             return;
         }
-        listItem=new QListWidgetItem(QIcon(":/delivery-bike.ico"),"Name : "+deliveryInput->getName()+"\nID : "+QString::number(++id)+"\nAddress : "+deliveryInput->getAddress()+"\nPhone : "+deliveryInput->getPhoneNumber()+"\nOrder : "+deliveryInput->getOrder()+"\nTotal  : "+QString::number(deliveryInput->getTotal()));
+        listItem=new QListWidgetItem(QIcon(":/delivery-bike.ico"),"Name : "+deliveryInput->getName()+"\nID : "+QString::number(++id)+"\nAddress : "+deliveryInput->getAddress()+"\nPhone : "+deliveryInput->getPhoneNumber()+"\nOrder : "+deliveryInput->getOrder()+"Total  : "+QString::number(deliveryInput->getTotal()));
         todoList->addItem(listItem);
+        deliveryInput->setOrder("");
+
     }
     deliveryInput->hide();
 }
 
 void KanbanBoard::handleRemoveDelivery()
 {
-    qDebug()<<deliveryInput->getOrder();
     QString id = QString::number(QInputDialog::getInt(this,"ID","Enter OrderID : ",0,1));
     for (int row = 0; row < todoList->count(); ++row) {
         QListWidgetItem *item = todoList->item(row);

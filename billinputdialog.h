@@ -13,7 +13,6 @@
 #include <QIntValidator>
 #include <QDoubleValidator>
 
-
 class BillInputDialog : public QDialog
 {
     Q_OBJECT
@@ -29,16 +28,18 @@ class BillInputDialog : public QDialog
     QIntValidator *intValidator;
     QDoubleValidator *doubleValidator;
     bool clicked;
+
 public:
     QLineEdit *nameLine;
     explicit BillInputDialog(QWidget *parent = nullptr);
     QString getName();
+    void setName(const QString &newName);
     QString getmg();
     QString getQuantity();
     QString getCompany();
     bool isAddMoreButtonClicked();
-    void setIntValidatorRange(int start,int end);
-    void setDoubleValidatorRange(double start,double end);
+    void setIntValidatorRange(int start, int end);
+    void setDoubleValidatorRange(double start, double end);
     void setCompanyLine(QString text);
     ~BillInputDialog();
 

@@ -13,6 +13,9 @@
 #include <QMessageBox>
 #include <kanbanListWidget.h>
 #include <deliveryinputdialog.h>
+#include <nlohmann/json.hpp>
+#include <fstream>
+using namespace nlohmann;
 
 class KanbanBoard : public QWidget
 {
@@ -37,6 +40,8 @@ public:
     DeliveryInputDialog * deliveryInput;
     explicit KanbanBoard(QWidget *parent = nullptr);
     ~KanbanBoard();
+    void writeToJson();
+    void readFromJson();
 private slots:
     void handleAddDelivery();
     void handleRemoveDelivery();
