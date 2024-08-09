@@ -52,6 +52,7 @@
 #include <QPrintDialog>
 #include <QPrintPreviewDialog>
 #include <kanbanboard.h>
+#include <salesandreports.h>
 
 
 using namespace nlohmann;
@@ -98,6 +99,9 @@ class MainWindow : public QMainWindow
 ////Orders&Delivery Menu
     KanbanBoard *kanbanBoard;
 ////Orders&Delivery Menu
+////Sales&Reports Menu
+    SalesAndReports *salesMenu;
+////Sales&Reports Menu
 
 
 public:
@@ -118,6 +122,9 @@ public:
     ////////////////////////////Orders&Delivery Menu
     void ordersAndDeliveryMenu();
     ////////////////////////////Orders&Delivery Menu
+    ////////////////////////////Sales&Reports Menu
+    void salesAndReportsMenu();
+    ////////////////////////////Sales&Reports Menu
 private slots:
     ////////////////////Medicine Menu
     void handleSearchBarAndButton();

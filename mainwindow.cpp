@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     //building menus
     billMenu();
     medicinesMenu();
+    salesAndReportsMenu();
     ordersAndDeliveryMenu();
     readMedicineTableFromJson();
     kanbanBoard->readFromJson();
@@ -58,6 +59,7 @@ MainWindow::~MainWindow() {
     delete generateReceiptButton;
     delete generateBillButton;
     delete kanbanBoard;
+    delete salesMenu;
 }
 
 void MainWindow::makeListMenu()
@@ -99,11 +101,11 @@ void MainWindow::medicinesMenu()
 {
     ////////////////////////////////////////Medicines Table
     int totalWidth=0;
-    if(medicinesTable!=nullptr){
-        hbox->removeWidget(medicinesTable);
-        delete medicinesTable;
-        delete searchButton;
-    }
+    // if(medicinesTable!=nullptr){
+    //     hbox->removeWidget(medicinesTable);
+    //     delete medicinesTable;
+    //     delete searchButton;
+    // }
     medicinesTable =new QTableWidget(0,5,this);
     QStringList headers = { "Name","Price", "Quantity", "MG", "Company" };
     medicinesTable->setHorizontalHeaderLabels(headers);
@@ -262,6 +264,13 @@ void MainWindow::ordersAndDeliveryMenu()
 
 }
 
+void MainWindow::salesAndReportsMenu()
+{
+    salesMenu =new SalesAndReports(this);
+    salesMenu->setGeometry(175,0,750,700);
+    salesMenu->hide();
+}
+
 
 void MainWindow::handleSearchBarAndButton()
 {
@@ -344,6 +353,9 @@ void MainWindow::currentMenu()
     /////////Orders&Delivery Menu
     kanbanBoard->hide();
     /////////Orders&Delivery Menu
+    /////////Sales&Reports Menu
+    salesMenu->hide();
+    /////////Sales&Reports Menu
     if(listMenu->currentItem()->text()=="Medicines"){
         medicinesTable->show();
         searchButton->show();
@@ -360,6 +372,9 @@ void MainWindow::currentMenu()
         kanbanBoard->show();
         medicinesTable->setGeometry(820,0,470,700);
         medicinesTable->show();
+    }
+    if(listMenu->currentItem()->text()=="Sales And Reports"){
+        salesMenu->show();
     }
 
 }
@@ -413,6 +428,7 @@ void MainWindow::handleBillButton()
     for (int row = 0; row < medicinesTable->rowCount(); ++row) {
         medicinesTable->showRow(row);
     }
+    salesMenu->addSalesRow(total);
 }
 
 void MainWindow::handleOrderButton()
@@ -452,6 +468,7 @@ void MainWindow::handleOrderButton()
     for (int row = 0; row < medicinesTable->rowCount(); ++row) {
         medicinesTable->showRow(row);
     }
+    salesMenu->addSalesRow(kanbanBoard->deliveryInput->getTotal(),false,kanbanBoard->deliveryInput->getName());
 }
 
 

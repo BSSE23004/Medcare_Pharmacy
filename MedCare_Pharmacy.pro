@@ -15,7 +15,8 @@ SOURCES += \
     inputdialog.cpp \
     kanbanboard.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    salesandreports.cpp
 
 HEADERS += \
     billinputdialog.h \
@@ -23,7 +24,8 @@ HEADERS += \
     inputdialog.h \
     kanbanListWidget.h \
     kanbanboard.h \
-    mainwindow.h
+    mainwindow.h \
+    salesandreports.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -32,6 +34,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
    resources.qrc
+
+
+# RC_FILE =resources.rc
 
 
 

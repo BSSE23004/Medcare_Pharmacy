@@ -15,6 +15,7 @@
 #include <deliveryinputdialog.h>
 #include <nlohmann/json.hpp>
 #include <fstream>
+#include <QAbstractFileIconProvider>
 using namespace nlohmann;
 
 class KanbanBoard : public QWidget
