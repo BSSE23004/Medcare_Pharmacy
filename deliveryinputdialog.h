@@ -10,21 +10,22 @@
 #include <QFormLayout>
 #include <QString>
 #include <QLabel>
-#include <QIntValidator>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 #include <QDoubleValidator>
 #include <billinputdialog.h>
+#include <phonelineedit.h>
 
 
 class DeliveryInputDialog : public QDialog
 {
     Q_OBJECT
-    QIntValidator *intValidator;
     QVBoxLayout *mainLayout;
     QHBoxLayout *buttonLayout;
     QFormLayout *formLayout;
     QLineEdit *customerNameLine;
     QLineEdit *customerAddressLine;
-    QLineEdit *customerPhoneNumberLine;
+    PhoneLineEdit *customerPhoneNumberLine;
     QPushButton *cancelButton;
     double total;
     QString order;

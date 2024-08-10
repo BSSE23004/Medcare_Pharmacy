@@ -32,12 +32,14 @@ class KanbanBoard : public QWidget
     KanbanListWidget *inProgressList;
     QVBoxLayout *doneLayout;
     QLabel *doneLabel;
-    KanbanListWidget *doneList;
     QPushButton *addDeliveryButton;
     QPushButton *removeDeliveryButton;
     QListWidgetItem *listItem;
     static int id;
 public:
+    QStringList customersName;
+    QStringList customersPhoneNumbers;
+    KanbanListWidget *doneList;
     DeliveryInputDialog * deliveryInput;
     explicit KanbanBoard(QWidget *parent = nullptr);
     ~KanbanBoard();

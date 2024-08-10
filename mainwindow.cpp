@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     readMedicineTableFromJson();
     kanbanBoard->readFromJson();
     connect(kanbanBoard->deliveryInput->orderButton,SIGNAL(clicked(bool)),this,SLOT(handleOrderButton()));
+    connect(kanbanBoard->doneList,SIGNAL(itemEntered(QListWidgetItem*)),this,SLOT(handleDoneList()));
 }
 
 MainWindow::~MainWindow() {
@@ -267,7 +268,7 @@ void MainWindow::ordersAndDeliveryMenu()
 void MainWindow::salesAndReportsMenu()
 {
     salesMenu =new SalesAndReports(this);
-    salesMenu->setGeometry(175,0,750,700);
+    salesMenu->setGeometry(175,0,1100,700);
     salesMenu->hide();
 }
 
@@ -526,5 +527,19 @@ void MainWindow::handleReceiptButton()
 {
     printReceipt(receiptText);
 }
+
+void MainWindow::handleDoneList()
+{
+    for (int i = 0; i < kanbanBoard->customersName.count(); ++i) {
+        for (int j = 0; j < kanbanBoard->doneList->count(); ++j) {
+            QListWidgetItem *item = kanbanBoard->doneList->item(j);
+            if(item && item->text().contains(kanbanBoard->customersName.at(i), Qt::CaseInsensitive)&& item->text().contains(kanbanBoard->customersPhoneNumbers.at(i), Qt::CaseInsensitive)){
+                salesMenu->setDeliveryStatus(kanbanBoard->customersName.at(i));
+            }
+        }
+    }
+}
+
+
 
 

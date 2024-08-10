@@ -10,6 +10,16 @@
 #include <QVBoxLayout>
 #include <QTableWidgetItem>
 #include <QDate>
+// #include <QTabWidget>
+#include <QPushButton>
+#include <QtCharts/QChartView>
+#include <QtCharts/QBarSeries>
+#include <QtCharts/QBarSet>
+#include <QtCharts/QBarCategoryAxis>
+#include <QtCharts/QValueAxis>
+#include <QtCharts/QChart>
+
+
 class SalesAndReports : public QWidget
 {
     Q_OBJECT
@@ -17,14 +27,16 @@ class SalesAndReports : public QWidget
     QHBoxLayout *boardLayout;
     QTableWidget *salesTable;
     QTableWidgetItem *tableItem;
-    QLabel *totalRevenue;
+    QPushButton *totalRevenue;
     double revenue;
-
+    int noOfPaidTransactions;
+    int noOfUnPaidTransactions;
 
 public:
     explicit SalesAndReports(QWidget *parent = nullptr);
     void addSalesRow(double total=0.0,bool physical=true,QString customerName="N/A");
     void removeRow(int row);
+    void setDeliveryStatus(QString customerName);
     ~SalesAndReports();
 
 signals:

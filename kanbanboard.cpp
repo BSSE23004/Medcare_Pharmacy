@@ -162,6 +162,8 @@ void KanbanBoard::handleAddDelivery()
         }
         listItem=new QListWidgetItem(QIcon(":/delivery-bike.ico"),"Name : "+deliveryInput->getName()+"\nID : "+QString::number(++id)+"\nAddress : "+deliveryInput->getAddress()+"\nPhone : "+deliveryInput->getPhoneNumber()+"\nOrder : "+deliveryInput->getOrder()+"Total  : "+QString::number(deliveryInput->getTotal()));
         todoList->addItem(listItem);
+        customersName.append(deliveryInput->getName());
+        customersPhoneNumbers.append(deliveryInput->getPhoneNumber());
         deliveryInput->setOrder("");
         deliveryInput->setTotal(0.0);
 

@@ -18,5 +18,8 @@
         <file>resources.rc</file>
         <file>calender.ico</file>
         <file>cash.ico</file>
+        <file>growth.ico</file>
+        <file>done.ico</file>
+        <file>unpaid.ico</file>
     </qresource>
 </RCC>

@@ -25,6 +25,7 @@ HEADERS += \
     kanbanListWidget.h \
     kanbanboard.h \
     mainwindow.h \
+    phonelineedit.h \
     salesandreports.h
 
 # Default rules for deployment.

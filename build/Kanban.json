@@ -1,18 +1,12 @@
 {
-    "Done": [],
-    "InProgress": [],
-    "ToDo": [
+    "Done": [
         {
-            "content": "Name : Sabun\nID : 1\nAddress : Hafiz Street\nPhone : 3216160617\nOrder : Medicine : Flegel Quantity : 10.0 Price : 40 Price/Quantity : 400\nMedicine : Leflox Quantity : 30 Price : 300 Price/Quantity : 9000\nTotal  : 9400"
+            "content": "Name : Ibrahim\nID : 1\nAddress : Hafiz Street\nPhone : 0321-6160617\nOrder : Medicine : Flegel Quantity : 1 Price : 40 Price/Quantity : 40\nTotal  : 40"
         },
         {
-            "content": "Name : Ibbi\nID : 1\nAddress : 321\nPhone : 312\nOrder : Medicine : Flegel Quantity : 1.11 Price : 40 Price/Quantity : 44\nTotal  : 44"
-        },
-        {
-            "content": "Name : Abdul Sattar\nID : 1\nAddress : Hafiz Street\nPhone : 3207891011\nOrder : Medicine : Flegel Quantity : 10 Price : 40 Price/Quantity : 400\nTotal  : 400"
-        },
-        {
-            "content": "Name : Kousar\nID : 1\nAddress : hafiz Street\nPhone : 3210213\nOrder : Medicine : Tagipmet Quantity : 1.11 Price : 360.0 Price/Quantity : 399\nTotal  : 399"
+            "content": "Name : Ibrahim\nID : 1\nAddress : Hafiz\nPhone : 0320-7891011\nOrder : Medicine : Tagipmet Quantity : 0.5 Price : 360.0 Price/Quantity : 180\nTotal  : 180"
         }
-    ]
+    ],
+    "InProgress": [],
+    "ToDo": []
 }

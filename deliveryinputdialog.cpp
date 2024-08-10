@@ -9,11 +9,9 @@ void DeliveryInputDialog::setOrder(const QString &newOrder)
 
 DeliveryInputDialog::DeliveryInputDialog(QWidget *parent): QDialog{parent} {
     total=0;
-    intValidator =new QIntValidator(this);
     customerNameLine =new QLineEdit(this);
     customerAddressLine =new QLineEdit(this);
-    customerPhoneNumberLine =new QLineEdit(this);
-    customerPhoneNumberLine->setValidator(intValidator);
+    customerPhoneNumberLine =new PhoneLineEdit(this);
     okButton =new QPushButton("Ok",this);
     cancelButton =new QPushButton("Cancel",this);
     orderButton =new QPushButton("Order",this);
@@ -45,7 +43,6 @@ DeliveryInputDialog::~DeliveryInputDialog()
     delete formLayout;
     delete okButton;
     delete cancelButton;
-    delete intValidator;
     delete customerNameLine;
     delete customerAddressLine;
     delete customerPhoneNumberLine;

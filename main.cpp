@@ -5,6 +5,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    a.setStyle("Fusion");
     MainWindow w;
     w.setWindowTitle("Pharmacy");
     w.setWindowOpacity(0.9);

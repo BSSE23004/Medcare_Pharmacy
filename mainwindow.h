@@ -142,5 +142,8 @@ private slots:
     void printReceipt(QString& receiptText);
     void handleReceiptButton();
     ////////////////////Bill Menu
+    ////////////////////SalesAndReports Menu
+    void handleDoneList();
+    ////////////////////SalesAndReports Menu
 };
 #endif // MAINWINDOW_H
