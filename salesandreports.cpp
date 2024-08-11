@@ -3,8 +3,6 @@
 SalesAndReports::SalesAndReports(QWidget *parent)
     : QWidget{parent}
 {
-    noOfPaidTransactions=0;
-    noOfUnPaidTransactions=0;
     revenue=0.0;
     mainLayout = new QVBoxLayout(this);
     boardLayout = new QHBoxLayout();
@@ -22,7 +20,7 @@ SalesAndReports::SalesAndReports(QWidget *parent)
     totalRevenue->setMinimumWidth(200);
     totalRevenue->setIcon(QIcon(":/cash.ico"));
     totalRevenue->setIconSize(QSize(70,70));
-    totalRevenue->setText("Total Revenue : "+QString::number(revenue)+"PKR"+"\n-----------------------\n"+"Paid = "+QString::number(noOfPaidTransactions)+"\n-----------------------\n"+"Unpaid = "+QString::number(noOfUnPaidTransactions));
+    totalRevenue->setText("Total Revenue : "+QString::number(revenue)+"PKR"+"\n-----------------------\n"+"Paid = "+QString::number(getNumberOfPaidTransactions())+"\n-----------------------\n"+"Unpaid = "+QString::number(getNumberOfUnPaidTransactions()));
     totalRevenue->setFont(QFont("Times New Roman",18));
     totalRevenue->setStyleSheet("color : green");
     boardLayout->addWidget(salesTable);
@@ -41,19 +39,20 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
     QString date =currentDate.toString("dd/MMM/yyyy");
     QString time=currentTime.toString("hh:mm");
     salesTable->setRowCount(salesTable->rowCount()+1);
+    ////////////Date & Time
     tableItem =new QTableWidgetItem(QIcon(":/calender.ico"),time+"\n"+date);
     tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
     salesTable->setItem(salesTable->rowCount()-1,0,tableItem);
-    tableItem =new QTableWidgetItem(QIcon(":/customer.ico"),customerName);
-    tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
-    salesTable->setItem(salesTable->rowCount()-1,1,tableItem);
+    ////////////customer NAME
+    customer =new QPushButton(QIcon(":/customer.ico"),customerName);
+    customer->setIconSize(QSize(50,40));
+    salesTable->setCellWidget(salesTable->rowCount()-1,1,customer);
+    ///////////Sales Type
     if(physical){
         tableItem =new QTableWidgetItem(QIcon(":/user.ico"),"Physical");
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
         salesTable->setItem(salesTable->rowCount()-1,2,tableItem);
         tableItem =new QTableWidgetItem(QIcon(":/done.ico"),"Paid");
-        /////increasing counter
-        ++noOfPaidTransactions;
         tableItem->setForeground(QColor(Qt::green));
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
         salesTable->setItem(salesTable->rowCount()-1,3,tableItem);
@@ -62,8 +61,6 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
         salesTable->setItem(salesTable->rowCount()-1,2,tableItem);
         tableItem =new QTableWidgetItem(QIcon(":/unpaid.ico"),"UnPaid");
-        /////increasing counter
-        ++noOfUnPaidTransactions;
         tableItem->setForeground(QColor(Qt::red));
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
         salesTable->setItem(salesTable->rowCount()-1,3,tableItem);
@@ -74,9 +71,10 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
     for (int i = 0; i < salesTable->rowCount(); ++i) {
         salesTable->setRowHeight(i,60);
     }
-    totalRevenue->setText("Total Revenue : "+QString::number(revenue)+"PKR"+"\n-----------------------\n"+"Paid = "+QString::number(noOfPaidTransactions)+"\n-----------------------\n"+"Unpaid = "+QString::number(noOfUnPaidTransactions));
+    totalRevenue->setText("Total Revenue : "+QString::number(revenue)+"PKR"+"\n-----------------------\n"+"Paid = "+QString::number(getNumberOfPaidTransactions())+"\n-----------------------\n"+"Unpaid = "+QString::number(getNumberOfUnPaidTransactions()));
 
 }
+
 
 void SalesAndReports::removeRow(int row)
 {
@@ -86,17 +84,36 @@ void SalesAndReports::removeRow(int row)
 void SalesAndReports::setDeliveryStatus(QString customerName)
 {
     for (int rows = 0; rows < salesTable->rowCount(); ++rows) {
-        if(salesTable->item(rows,1)->text()==customerName){
+        if(qobject_cast<QPushButton*>(salesTable->cellWidget(rows,1))->text()==customerName){
             tableItem =new QTableWidgetItem(QIcon(":/done.ico"),"Paid");
-            ///////MaintainingCounter
-            ++noOfPaidTransactions;
-            --noOfUnPaidTransactions;
             tableItem->setForeground(QColor(Qt::green));
             tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
             salesTable->setItem(rows,3,tableItem);
         }
     }
-    totalRevenue->setText("Total Revenue : "+QString::number(revenue)+"PKR"+"\n-----------------------\n"+"Paid = "+QString::number(noOfPaidTransactions)+"\n-----------------------\n"+"Unpaid = "+QString::number(noOfUnPaidTransactions));
+    totalRevenue->setText("Total Revenue : "+QString::number(revenue)+"PKR"+"\n-----------------------\n"+"Paid = "+QString::number(getNumberOfPaidTransactions())+"\n-----------------------\n"+"Unpaid = "+QString::number(getNumberOfUnPaidTransactions()));
+}
+
+int SalesAndReports::getNumberOfPaidTransactions()
+{
+    int total=0;
+    for (int rows = 0; rows < salesTable->rowCount(); ++rows) {
+        if(salesTable->item(rows,3)->text()=="Paid"){
+            ++total;
+        }
+    }
+    return total;
+}
+
+int SalesAndReports::getNumberOfUnPaidTransactions()
+{
+    int total=0;
+    for (int rows = 0; rows < salesTable->rowCount(); ++rows) {
+        if(salesTable->item(rows,3)->text()=="UnPaid"){
+            ++total;
+        }
+    }
+    return total;
 }
 
 SalesAndReports::~SalesAndReports()

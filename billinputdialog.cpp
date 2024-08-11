@@ -5,7 +5,8 @@
 BillInputDialog::BillInputDialog(QWidget *parent)
     : QDialog{parent}
 {
-    clicked =false;
+    addMoreButtonClicked =false;
+    okButtonClicked =false;
     intValidator =new QIntValidator(this);
     doubleValidator =new QDoubleValidator(this);
     nameLine =new QLineEdit(this);
@@ -65,7 +66,12 @@ QString BillInputDialog::getCompany()
 
 bool BillInputDialog::isAddMoreButtonClicked()
 {
-    return clicked;
+    return addMoreButtonClicked;
+}
+
+bool BillInputDialog::isOkButtonClicked()
+{
+    return okButtonClicked;
 }
 
 void BillInputDialog::setIntValidatorRange(int start, int end)
@@ -108,12 +114,14 @@ BillInputDialog::~BillInputDialog()
 void BillInputDialog::accept()
 {
     QDialog::accept();
+    okButtonClicked=true;
+
 }
 
 void BillInputDialog::handleAddMoreButton()
 {
     QDialog::accept();
-    clicked=true;
+    addMoreButtonClicked=true;
 }
 
 

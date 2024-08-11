@@ -16,7 +16,9 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <QAbstractFileIconProvider>
+#include <salesandreports.h>
 using namespace nlohmann;
+
 
 class KanbanBoard : public QWidget
 {
@@ -35,13 +37,14 @@ class KanbanBoard : public QWidget
     QPushButton *addDeliveryButton;
     QPushButton *removeDeliveryButton;
     QListWidgetItem *listItem;
+    SalesAndReports *salesMenu;
     static int id;
 public:
     QStringList customersName;
     QStringList customersPhoneNumbers;
     KanbanListWidget *doneList;
     DeliveryInputDialog * deliveryInput;
-    explicit KanbanBoard(QWidget *parent = nullptr);
+    explicit KanbanBoard(QWidget *parent = nullptr,SalesAndReports *menu=nullptr);
     ~KanbanBoard();
     void writeToJson();
     void readFromJson();

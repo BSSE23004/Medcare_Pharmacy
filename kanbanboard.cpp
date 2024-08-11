@@ -2,9 +2,10 @@
 
 
 int KanbanBoard::id=0;
-KanbanBoard::KanbanBoard(QWidget *parent)
+KanbanBoard::KanbanBoard(QWidget *parent, SalesAndReports *menu)
     : QWidget{parent}
 {
+    salesMenu=menu;
     mainLayout = new QVBoxLayout(this);
     boardLayout = new QHBoxLayout();
     // To Do Column
@@ -153,6 +154,7 @@ void KanbanBoard::handleAddDelivery()
 {
     if(deliveryInput->isHidden()){
         deliveryInput->show();
+        deliveryInput->setOkButtonClicked(false);
     }
     // deliveryInput =new DeliveryInputDialog (this);
     if (deliveryInput->exec() == QDialog::Accepted) {
@@ -168,6 +170,8 @@ void KanbanBoard::handleAddDelivery()
         deliveryInput->setTotal(0.0);
 
     }
+
+    deliveryInput->setOkButtonClicked(true);
     deliveryInput->hide();
 }
 

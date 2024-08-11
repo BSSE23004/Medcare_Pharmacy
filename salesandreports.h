@@ -28,15 +28,16 @@ class SalesAndReports : public QWidget
     QTableWidget *salesTable;
     QTableWidgetItem *tableItem;
     QPushButton *totalRevenue;
+    QPushButton *customer;
     double revenue;
-    int noOfPaidTransactions;
-    int noOfUnPaidTransactions;
 
 public:
     explicit SalesAndReports(QWidget *parent = nullptr);
     void addSalesRow(double total=0.0,bool physical=true,QString customerName="N/A");
     void removeRow(int row);
     void setDeliveryStatus(QString customerName);
+    int getNumberOfPaidTransactions();
+    int getNumberOfUnPaidTransactions();
     ~SalesAndReports();
 
 signals:

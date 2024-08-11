@@ -27,7 +27,8 @@ class BillInputDialog : public QDialog
     QPushButton *addMoreButton;
     QIntValidator *intValidator;
     QDoubleValidator *doubleValidator;
-    bool clicked;
+    bool addMoreButtonClicked;
+    bool okButtonClicked;
 
 public:
     QLineEdit *nameLine;
@@ -38,6 +39,7 @@ public:
     QString getQuantity();
     QString getCompany();
     bool isAddMoreButtonClicked();
+    bool isOkButtonClicked();
     void setIntValidatorRange(int start, int end);
     void setDoubleValidatorRange(double start, double end);
     void setCompanyLine(QString text);

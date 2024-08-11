@@ -15,7 +15,7 @@
 #include <QDoubleValidator>
 #include <billinputdialog.h>
 #include <phonelineedit.h>
-
+#include <salesandreports.h>
 
 class DeliveryInputDialog : public QDialog
 {
@@ -28,6 +28,7 @@ class DeliveryInputDialog : public QDialog
     PhoneLineEdit *customerPhoneNumberLine;
     QPushButton *cancelButton;
     double total;
+    bool okButtonClicked;
     QString order;
 public:
     QPushButton *okButton;
@@ -41,9 +42,11 @@ public:
     void setTotal(double totalPrice);
     double getTotal();
     void setOrder(const QString &newOrder);
+    bool isOkButtonClicked();
+    void setOkButtonClicked(bool click);
 
 private slots:
-    void accept();
+    void accept() ;
 };
 
 #endif // DELIVERYINPUTDIALOG_H
