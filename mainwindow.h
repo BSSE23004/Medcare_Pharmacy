@@ -36,9 +36,12 @@
 #include <QSizePolicy>
 #include <QStringList>
 #include <QFormLayout>
-#include <fstream>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QDebug>
 #include <inputdialog.h>
-#include <nlohmann/json.hpp>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <billinputdialog.h>

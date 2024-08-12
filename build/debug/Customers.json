@@ -1,0 +1,13 @@
+{
+    "Customers": [
+        {
+            "Address": "HAfiz Strreet",
+            "Name": "Abdul Sattar",
+            "Order": "Medicine : Aspirin Quantity : 1 Price : 12.0 Price/Quantity : 12\nMedicine : Losartan Quantity : 1 Price : 55.0 Price/Quantity : 55\n",
+            "OrderID": "1",
+            "PaymentType": "Delivery",
+            "PhoneNumber": "0320-7891011",
+            "Total": 67
+        }
+    ]
+}

@@ -28,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent)
     kanbanBoard->readFromJson();
     connect(kanbanBoard->deliveryInput->orderButton,SIGNAL(clicked(bool)),this,SLOT(handleOrderButton()));
     connect(kanbanBoard->doneList,SIGNAL(itemEntered(QListWidgetItem*)),this,SLOT(handleDoneList()));
+    connect(searchBar, &QLineEdit::textChanged, this, &MainWindow::handleSearchBarAndButton);
+    connect(searchButton,SIGNAL(clicked(bool)), this,SLOT(handleSearchBarAndButton()));
 }
 
 MainWindow::~MainWindow() {
@@ -144,8 +146,7 @@ void MainWindow::medicinesMenu()
     removeButton->setFont(QFont("Times New Roman",14));
     connect(addButton,SIGNAL(clicked(bool)),this,SLOT(handleAddRowButton()));
     connect(removeButton,SIGNAL(clicked(bool)),this,SLOT(handleRemoveRowButton()));
-    connect(searchBar, &QLineEdit::textChanged, this, &MainWindow::handleSearchBarAndButton);
-    connect(searchButton,SIGNAL(clicked(bool)), this,SLOT(handleSearchBarAndButton()));
+
 }
 
 void MainWindow::filterTable(const QString &text)
@@ -165,60 +166,109 @@ void MainWindow::filterTable(const QString &text)
 
 void MainWindow::writeMedicinesTableToJson()
 {
-    json medicinesFile;
-    medicinesFile["MedicinesTable"] = json::array();
+    QJsonObject medicinesFile;
 
+    // Create a QJsonArray to hold the rows of the table
+    QJsonArray medicinesArray;
+
+    // Iterate through each row in the medicinesTable
     for (int row = 0; row < medicinesTable->rowCount(); ++row) {
-        json jsonRow;
-        jsonRow["Name"] = medicinesTable->item(row, 0) ? medicinesTable->item(row, 0)->text().toStdString() : "";
-        jsonRow["Price"] = medicinesTable->item(row, 1) ? medicinesTable->item(row, 1)->text().toStdString() : "";
-        jsonRow["Quantity"] = medicinesTable->item(row, 2) ? medicinesTable->item(row, 2)->text().toStdString() : "";
-        jsonRow["Mg"] = medicinesTable->item(row, 3) ? medicinesTable->item(row, 3)->text().toStdString() : "";
-        jsonRow["Company"] = medicinesTable->item(row, 4) ? medicinesTable->item(row, 4)->text().toStdString() : "";
+        QJsonObject jsonRow;
 
-        medicinesFile["MedicinesTable"].push_back(jsonRow);
+        // Populate jsonRow with data from each cell in the row
+        jsonRow["Name"] = medicinesTable->item(row, 0) ? medicinesTable->item(row, 0)->text() : "";
+        jsonRow["Price"] = medicinesTable->item(row, 1) ? medicinesTable->item(row, 1)->text() : "";
+        jsonRow["Quantity"] = medicinesTable->item(row, 2) ? medicinesTable->item(row, 2)->text() : "";
+        jsonRow["Mg"] = medicinesTable->item(row, 3) ? medicinesTable->item(row, 3)->text() : "";
+        jsonRow["Company"] = medicinesTable->item(row, 4) ? medicinesTable->item(row, 4)->text() : "";
+
+        // Append the jsonRow to the QJsonArray
+        medicinesArray.append(jsonRow);
     }
-    std::ofstream fOut("Medicines.json");
-    fOut << medicinesFile.dump(4);
-    fOut.close();
+
+    // Add the array to the root object
+    medicinesFile["MedicinesTable"] = medicinesArray;
+
+    // Create a QJsonDocument from the QJsonObject
+    QJsonDocument jsonDoc(medicinesFile);
+
+    // Write the JSON data to the file
+    QFile fOut("Medicines.json");
+    if (fOut.open(QIODevice::WriteOnly)) {
+        fOut.write(jsonDoc.toJson(QJsonDocument::Indented));
+        fOut.close();
+    } else {
+        qDebug() << "Unable to open file for writing.";
+    }
 }
 
 void MainWindow::readMedicineTableFromJson()
 {
-    json medicineFile;
-    std::ifstream fIn("Medicines.json");
-    try {
-        fIn >> medicineFile;
-    } catch (json::parse_error &e) {
-        qDebug() << "Parse error: " << e.what();
+    // Load the JSON file
+    QFile file("Medicines.json");
+    if (!file.open(QIODevice::ReadOnly)) {
+        qDebug() << "Unable to open file.";
         return;
     }
-    json medicineTableFromJson = medicineFile["MedicinesTable"];
-    medicinesTable->setRowCount(medicineTableFromJson.size());
-    int row = 0;
-    for (const auto &i : medicineTableFromJson) {
-        QString data0 = QString::fromStdString(i["Name"]);
-        QString data1 = QString::fromStdString(i["Price"]);
-        QString data2 = QString::fromStdString(i["Quantity"]);
-        QString data3 = QString::fromStdString(i["Mg"]);
-        QString data4 = QString::fromStdString(i["Company"]);
-        itemTable =new QTableWidgetItem(data0);
-        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
-        medicinesTable->setItem(row, 0, itemTable);
-        itemTable =new QTableWidgetItem(data1);
-        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
-        medicinesTable->setItem(row, 1, itemTable);
-        itemTable =new QTableWidgetItem(data2);
-        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
-        medicinesTable->setItem(row, 2, itemTable);
-        itemTable =new QTableWidgetItem(data3);
-        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
-        medicinesTable->setItem(row, 3, itemTable);
-        itemTable =new QTableWidgetItem(data4);
-        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
-        medicinesTable->setItem(row, 4, itemTable);
-        ++row;
+
+    // Parse the JSON data
+    QByteArray jsonData = file.readAll();
+    QJsonDocument jsonDoc(QJsonDocument::fromJson(jsonData));
+    file.close();
+
+    if (!jsonDoc.isObject()) {
+        qDebug() << "JSON document is not an object.";
+        return;
     }
+
+    QJsonObject jsonObj = jsonDoc.object();
+
+    // Check if the JSON object contains the necessary key
+    if (!jsonObj.contains("MedicinesTable") || !jsonObj["MedicinesTable"].isArray()) {
+        qDebug() << "JSON object is missing 'MedicinesTable' or it is not an array.";
+        return;
+    }
+
+    QJsonArray medicineTableFromJson = jsonObj["MedicinesTable"].toArray();
+    medicinesTable->setRowCount(medicineTableFromJson.size());
+
+    int row = 0;
+    for (const QJsonValue &value : medicineTableFromJson) {
+        if (value.isObject()) {
+            QJsonObject obj = value.toObject();
+
+            QString data0 = obj["Name"].toString();
+            QString data1 = obj["Price"].toString();
+            QString data2 = obj["Quantity"].toString();
+            QString data3 = obj["Mg"].toString();
+            QString data4 = obj["Company"].toString();
+
+            QTableWidgetItem *itemTable = new QTableWidgetItem(data0);
+            itemTable->setFlags(itemTable->flags() & ~Qt::ItemIsEditable);
+            medicinesTable->setItem(row, 0, itemTable);
+
+            itemTable = new QTableWidgetItem(data1);
+            itemTable->setFlags(itemTable->flags() & ~Qt::ItemIsEditable);
+            medicinesTable->setItem(row, 1, itemTable);
+
+            itemTable = new QTableWidgetItem(data2);
+            itemTable->setFlags(itemTable->flags() & ~Qt::ItemIsEditable);
+            medicinesTable->setItem(row, 2, itemTable);
+
+            itemTable = new QTableWidgetItem(data3);
+            itemTable->setFlags(itemTable->flags() & ~Qt::ItemIsEditable);
+            medicinesTable->setItem(row, 3, itemTable);
+
+            itemTable = new QTableWidgetItem(data4);
+            itemTable->setFlags(itemTable->flags() & ~Qt::ItemIsEditable);
+            medicinesTable->setItem(row, 4, itemTable);
+
+            ++row;
+        } else {
+            qDebug() << "Invalid JSON object in array.";
+        }
+    }
+
 }
 
 void MainWindow::billMenu()
@@ -384,6 +434,7 @@ void MainWindow::currentMenu()
 
 void MainWindow::handleBillButton()
 {
+    static QString order;
     static double totalForSalesAndReports=0.0;
     billInput =new BillInputDialog (this);
     int rowNumber=-1;
@@ -406,16 +457,22 @@ void MainWindow::handleBillButton()
         }
         QString newLine="";
         newLine.append(billInput->getName());
+        order.append(billInput->getName()+"  ");
         padRight(newLine);
         newLine.append(billInput->getQuantity());
+        order.append(billInput->getQuantity()+"  ");
         padRight(newLine);
         newLine.append(medicinesTable->item(rowNumber,1)->text());
+        order.append(medicinesTable->item(rowNumber,1)->text()+"  ");
         padRight(newLine);
         newLine.append(billInput->getmg());
+        order.append(billInput->getmg()+"  ");
         padRight(newLine);
         newLine.append(QString::number(billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat()));
+        order.append(QString::number(billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat())+"  ");
         padRight(newLine);
         newLine.append("\n");
+        order.append("\n");
         receiptText.append(newLine);
         if(rowNumber==-1){
             total+=0;
@@ -424,8 +481,13 @@ void MainWindow::handleBillButton()
             total+=billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat();
             totalForSalesAndReports+=billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat();
         }
+        billInput->setName("");
+        for (int row = 0; row < medicinesTable->rowCount(); ++row) {
+            medicinesTable->showRow(row);
+        }
         if(billInput->isOkButtonClicked()){
-            salesMenu->addSalesRow(totalForSalesAndReports);
+            salesMenu->addSalesRow(totalForSalesAndReports,true,"N/A","N/A","N/A",order);
+            order="";
             totalForSalesAndReports=0.0;
             return;
         }
@@ -433,10 +495,7 @@ void MainWindow::handleBillButton()
             handleBillButton();
         }
     }
-    billInput->setName("");
-    for (int row = 0; row < medicinesTable->rowCount(); ++row) {
-        medicinesTable->showRow(row);
-    }
+
 
 }
 
@@ -478,7 +537,7 @@ void MainWindow::handleOrderButton()
             medicinesTable->showRow(row);
         }
         if(billInput->isOkButtonClicked()){
-            salesMenu->addSalesRow(totalForSalesAndReports,false,kanbanBoard->deliveryInput->getName());
+            salesMenu->addSalesRow(totalForSalesAndReports,false,kanbanBoard->deliveryInput->getName(),kanbanBoard->deliveryInput->getPhoneNumber(),kanbanBoard->deliveryInput->getAddress(),kanbanBoard->deliveryInput->getOrder(),QString::number(kanbanBoard->getOrderID()));
             totalForSalesAndReports=0.0;
             return;
         }
@@ -550,8 +609,8 @@ void MainWindow::handleDoneList()
     for (int i = 0; i < kanbanBoard->customersName.count(); ++i) {
         for (int j = 0; j < kanbanBoard->doneList->count(); ++j) {
             QListWidgetItem *item = kanbanBoard->doneList->item(j);
-            if(item && item->text().contains(kanbanBoard->customersName.at(i), Qt::CaseInsensitive)&& item->text().contains(kanbanBoard->customersPhoneNumbers.at(i), Qt::CaseInsensitive)){
-                salesMenu->setDeliveryStatus(kanbanBoard->customersName.at(i));
+            if(item && item->text().contains(kanbanBoard->customersName.at(i), Qt::CaseInsensitive)&& item->text().contains(kanbanBoard->customersPhoneNumbers.at(i), Qt::CaseInsensitive)&& item->text().contains(kanbanBoard->customersAddresses.at(i), Qt::CaseInsensitive)){
+                salesMenu->setDeliveryStatus(kanbanBoard->customersName.at(i),kanbanBoard->customersAddresses.at(i),kanbanBoard->customersPhoneNumbers.at(i));
             }
         }
     }

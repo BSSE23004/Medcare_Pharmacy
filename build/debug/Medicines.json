@@ -1,0 +1,193 @@
+{
+    "MedicinesTable": [
+        {
+            "Company": "GSK",
+            "Mg": "500",
+            "Name": "Panadol",
+            "Price": "20.0",
+            "Quantity": "100"
+        },
+        {
+            "Company": "Bayer",
+            "Mg": "500",
+            "Name": "Paracetamol",
+            "Price": "25.0",
+            "Quantity": "150"
+        },
+        {
+            "Company": "Pfizer",
+            "Mg": "400",
+            "Name": "Ibuprofen",
+            "Price": "15.0",
+            "Quantity": "200"
+        },
+        {
+            "Company": "Abbott",
+            "Mg": "500",
+            "Name": "Amoxicillin",
+            "Price": "50.0",
+            "Quantity": "80"
+        },
+        {
+            "Company": "Bayer",
+            "Mg": "300",
+            "Name": "Aspirin",
+            "Price": "12.0",
+            "Quantity": "120"
+        },
+        {
+            "Company": "Zyrtec",
+            "Mg": "10",
+            "Name": "Cetirizine",
+            "Price": "18.0",
+            "Quantity": "100"
+        },
+        {
+            "Company": "Claritin",
+            "Mg": "10",
+            "Name": "Loratadine",
+            "Price": "22.0",
+            "Quantity": "90"
+        },
+        {
+            "Company": "Glucophage",
+            "Mg": "500",
+            "Name": "Metformin",
+            "Price": "40.0",
+            "Quantity": "70"
+        },
+        {
+            "Company": "Merck",
+            "Mg": "20",
+            "Name": "Simvastatin",
+            "Price": "45.0",
+            "Quantity": "60"
+        },
+        {
+            "Company": "Cozaar",
+            "Mg": "50",
+            "Name": "Losartan",
+            "Price": "55.0",
+            "Quantity": "50"
+        },
+        {
+            "Company": "Microzide",
+            "Mg": "25",
+            "Name": "Hydrochlorothiazide",
+            "Price": "30.0",
+            "Quantity": "110"
+        },
+        {
+            "Company": "Leflox",
+            "Mg": "100",
+            "Name": "Leflox",
+            "Price": "60.0",
+            "Quantity": "30"
+        },
+        {
+            "Company": "Flegel",
+            "Mg": "40",
+            "Name": "Flegel",
+            "Price": "25.0",
+            "Quantity": "100"
+        },
+        {
+            "Company": "Nestle",
+            "Mg": "50",
+            "Name": "Nestle",
+            "Price": "120.0",
+            "Quantity": "50"
+        },
+        {
+            "Company": "MXR",
+            "Mg": "500",
+            "Name": "Tagipmet",
+            "Price": "350.0",
+            "Quantity": "250"
+        },
+        {
+            "Company": "Prilosec",
+            "Mg": "20",
+            "Name": "Omeprazole",
+            "Price": "28.0",
+            "Quantity": "90"
+        },
+        {
+            "Company": "Ativan",
+            "Mg": "2",
+            "Name": "Lorazepam",
+            "Price": "35.0",
+            "Quantity": "60"
+        },
+        {
+            "Company": "Vibramycin",
+            "Mg": "100",
+            "Name": "Doxycycline",
+            "Price": "45.0",
+            "Quantity": "70"
+        },
+        {
+            "Company": "Zithromax",
+            "Mg": "250",
+            "Name": "Azithromycin",
+            "Price": "55.0",
+            "Quantity": "50"
+        },
+        {
+            "Company": "Klonopin",
+            "Mg": "2",
+            "Name": "Clonazepam",
+            "Price": "60.0",
+            "Quantity": "80"
+        },
+        {
+            "Company": "Zoloft",
+            "Mg": "50",
+            "Name": "Sertraline",
+            "Price": "65.0",
+            "Quantity": "90"
+        },
+        {
+            "Company": "Deltasone",
+            "Mg": "20",
+            "Name": "Prednisone",
+            "Price": "70.0",
+            "Quantity": "40"
+        },
+        {
+            "Company": "Norvasc",
+            "Mg": "5",
+            "Name": "Amlodipine",
+            "Price": "22.0",
+            "Quantity": "110"
+        },
+        {
+            "Company": "Singulair",
+            "Mg": "10",
+            "Name": "Montelukast",
+            "Price": "50.0",
+            "Quantity": "60"
+        },
+        {
+            "Company": "Xanax",
+            "Mg": "2",
+            "Name": "Alprazolam",
+            "Price": "35.0",
+            "Quantity": "70"
+        },
+        {
+            "Company": "Zebeta",
+            "Mg": "10",
+            "Name": "Bisoprolol",
+            "Price": "40.0",
+            "Quantity": "50"
+        },
+        {
+            "Company": "Lopressor",
+            "Mg": "50",
+            "Name": "Metoprolol",
+            "Price": "32.0",
+            "Quantity": "90"
+        }
+    ]
+}

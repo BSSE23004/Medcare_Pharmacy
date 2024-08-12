@@ -1,7 +1,7 @@
 #include "kanbanboard.h"
 
 
-int KanbanBoard::id=0;
+int KanbanBoard::orderId=0;
 KanbanBoard::KanbanBoard(QWidget *parent, SalesAndReports *menu)
     : QWidget{parent}
 {
@@ -99,56 +99,121 @@ KanbanBoard::~KanbanBoard()
 
 void KanbanBoard::writeToJson()
 {
-    json kanbanFile;
-    kanbanFile["ToDo"]=json::array();
+    // Create a QJsonObject to hold the JSON data
+    QJsonObject kanbanFile;
+
+    // Create QJsonArray for "ToDo" and populate it
+    QJsonArray todoArray;
     for (int i = 0; i < todoList->count(); ++i) {
-        json obj;
-        obj["content"]=todoList->item(i)->text().toStdString();
-        kanbanFile["ToDo"].push_back(obj);
+        QJsonObject obj;
+        obj["content"] = todoList->item(i)->text();
+        todoArray.append(obj);
     }
-    kanbanFile["InProgress"]=json::array();
+    kanbanFile["ToDo"] = todoArray;
+
+    // Create QJsonArray for "InProgress" and populate it
+    QJsonArray inProgressArray;
     for (int i = 0; i < inProgressList->count(); ++i) {
-        json obj;
-        obj["content"]=inProgressList->item(i)->text().toStdString();
-        kanbanFile["InProgress"].push_back(obj);
+        QJsonObject obj;
+        obj["content"] = inProgressList->item(i)->text();
+        inProgressArray.append(obj);
     }
-    kanbanFile["Done"]=json::array();
+    kanbanFile["InProgress"] = inProgressArray;
+
+    // Create QJsonArray for "Done" and populate it
+    QJsonArray doneArray;
     for (int i = 0; i < doneList->count(); ++i) {
-        json obj;
-        obj["content"]=doneList->item(i)->text().toStdString();
-        kanbanFile["Done"].push_back(obj);
+        QJsonObject obj;
+        obj["content"] = doneList->item(i)->text();
+        doneArray.append(obj);
     }
-    std::ofstream fOut ("Kanban.json");
-    fOut<<kanbanFile.dump(4);
-    fOut.close();
+    kanbanFile["Done"] = doneArray;
+
+    // Create QJsonDocument from the QJsonObject
+    QJsonDocument jsonDoc(kanbanFile);
+
+    // Write the JSON data to file
+    QFile fOut("Kanban.json");
+    if (fOut.open(QIODevice::WriteOnly)) {
+        fOut.write(jsonDoc.toJson(QJsonDocument::Indented));
+        fOut.close();
+    } else {
+        qDebug() << "Unable to open file for writing.";
+    }
+
 }
 
 void KanbanBoard::readFromJson()
 {
-    json kanbanFile;
-    std::ifstream fIn("Kanban.json");
-    try {
-        fIn >> kanbanFile;
-    } catch (json::parse_error &e) {
-        qDebug() << "Parse error: " << e.what();
+    QFile file("Kanban.json");
+    if (!file.open(QIODevice::ReadOnly)) {
+        qDebug() << "Unable to open file.";
         return;
     }
-    for (const auto & i  : kanbanFile["ToDo"]) {
-        listItem =new QListWidgetItem(QIcon(":/delivery-bike.ico"),QString::fromStdString(i["content"]));
-        todoList->addItem(listItem);
+
+    QByteArray jsonData = file.readAll();
+    QJsonDocument jsonDoc(QJsonDocument::fromJson(jsonData));
+
+    if (!jsonDoc.isObject()) {
+        qDebug() << "JSON document is not an object.";
+        return;
     }
-    for (const auto & i  : kanbanFile["InProgress"]) {
-        listItem =new QListWidgetItem(QIcon(":/delivery-bike.ico"),QString::fromStdString(i["content"]));
-        inProgressList->addItem(listItem);
-    }for (const auto & i  : kanbanFile["Done"]) {
-        listItem =new QListWidgetItem(QIcon(":/delivery-bike.ico"),QString::fromStdString(i["content"]));
-        doneList->addItem(listItem);
+
+    QJsonObject jsonObj = jsonDoc.object();
+
+    // Check if the JSON object contains the necessary keys
+    if (!jsonObj.contains("ToDo") || !jsonObj.contains("InProgress") || !jsonObj.contains("Done")) {
+        qDebug() << "JSON object is missing required keys.";
+        return;
     }
+
+    QJsonArray todoArray = jsonObj["ToDo"].toArray();
+    QJsonArray inProgressArray = jsonObj["InProgress"].toArray();
+    QJsonArray doneArray = jsonObj["Done"].toArray();
+
+    // Populate the ToDo list
+    for (const QJsonValue &value : todoArray) {
+        if (value.isObject()) {
+            QJsonObject itemObj = value.toObject();
+            if (itemObj.contains("content")) {
+                QString content = itemObj["content"].toString();
+                QListWidgetItem *listItem = new QListWidgetItem(QIcon(":/delivery-bike.ico"), content);
+                todoList->addItem(listItem);
+            }
+        }
+    }
+
+    // Populate the InProgress list
+    for (const QJsonValue &value : inProgressArray) {
+        if (value.isObject()) {
+            QJsonObject itemObj = value.toObject();
+            if (itemObj.contains("content")) {
+                QString content = itemObj["content"].toString();
+                QListWidgetItem *listItem = new QListWidgetItem(QIcon(":/delivery-bike.ico"), content);
+                inProgressList->addItem(listItem);
+            }
+        }
+    }
+
+    // Populate the Done list
+    for (const QJsonValue &value : doneArray) {
+        if (value.isObject()) {
+            QJsonObject itemObj = value.toObject();
+            if (itemObj.contains("content")) {
+                QString content = itemObj["content"].toString();
+                QListWidgetItem *listItem = new QListWidgetItem(QIcon(":/delivery-bike.ico"), content);
+                doneList->addItem(listItem);
+            }
+        }
+    }
+
+    file.close();
 }
 
-
-
-
+int KanbanBoard::getOrderID()
+{
+    return ++orderId;
+}
 
 void KanbanBoard::handleAddDelivery()
 {
@@ -162,10 +227,11 @@ void KanbanBoard::handleAddDelivery()
             QMessageBox::warning(this,"Invalid Input","Enter complete data!!!From DeliveryInput");
             return;
         }
-        listItem=new QListWidgetItem(QIcon(":/delivery-bike.ico"),"Name : "+deliveryInput->getName()+"\nID : "+QString::number(++id)+"\nAddress : "+deliveryInput->getAddress()+"\nPhone : "+deliveryInput->getPhoneNumber()+"\nOrder : "+deliveryInput->getOrder()+"Total  : "+QString::number(deliveryInput->getTotal()));
+        listItem=new QListWidgetItem(QIcon(":/delivery-bike.ico"),"Name : "+deliveryInput->getName()+"\nID : "+QString::number(++orderId)+"\nAddress : "+deliveryInput->getAddress()+"\nPhone : "+deliveryInput->getPhoneNumber()+"\nOrder : "+deliveryInput->getOrder()+"Total  : "+QString::number(deliveryInput->getTotal()));
         todoList->addItem(listItem);
         customersName.append(deliveryInput->getName());
         customersPhoneNumbers.append(deliveryInput->getPhoneNumber());
+        customersAddresses.append(deliveryInput->getAddress());
         deliveryInput->setOrder("");
         deliveryInput->setTotal(0.0);
 

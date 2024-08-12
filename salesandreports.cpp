@@ -29,8 +29,24 @@ SalesAndReports::SalesAndReports(QWidget *parent)
     setLayout(mainLayout);
 }
 
-void SalesAndReports::addSalesRow(double total, bool physical, QString customerName)
+void SalesAndReports::addSalesRow(double total, bool physical, QString customerName, QString phoneNumber, QString address, QString order, QString orderID)
 {
+    QJsonObject customerJson;
+    QByteArray jsonData ;
+    QFile fIn("Customers.json");
+    if (fIn.open(QIODevice::ReadOnly)) {
+        try {
+            jsonData = fIn.readAll();
+            QJsonDocument jsonDoc(QJsonDocument::fromJson(jsonData));
+            QJsonObject jsonObj = jsonDoc.object();
+
+        } catch (json::parse_error &e) {
+            qDebug() << "Parse error: " << e.what();
+        }
+        fIn.close();
+    } else {
+        qDebug() << "Unable to open file.";
+    }
     salesTable->setColumnWidth(0,170);
     salesTable->setColumnWidth(4,127);
     revenue+=total;
@@ -49,6 +65,7 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
     salesTable->setCellWidget(salesTable->rowCount()-1,1,customer);
     ///////////Sales Type
     if(physical){
+        customerJson["PaymentType"]="Physical";
         tableItem =new QTableWidgetItem(QIcon(":/user.ico"),"Physical");
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
         salesTable->setItem(salesTable->rowCount()-1,2,tableItem);
@@ -56,7 +73,11 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
         tableItem->setForeground(QColor(Qt::green));
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
         salesTable->setItem(salesTable->rowCount()-1,3,tableItem);
+        tableItem =new QTableWidgetItem(QIcon(":/growth.ico"),QString::number(total));
+        tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
+        salesTable->setItem(salesTable->rowCount()-1,4,tableItem);
     }else{
+        customerJson["PaymentType"]="Delivery";
         tableItem =new QTableWidgetItem(QIcon(":/delivery-bike.ico"),"Delivery");
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
         salesTable->setItem(salesTable->rowCount()-1,2,tableItem);
@@ -65,9 +86,27 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
         salesTable->setItem(salesTable->rowCount()-1,3,tableItem);
     }
+
     tableItem =new QTableWidgetItem(QIcon(":/growth.ico"),QString::number(total));
     tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
     salesTable->setItem(salesTable->rowCount()-1,4,tableItem);
+    customerJson["Name"]=customerName;
+    customerJson["PhoneNumber"]=phoneNumber;
+    customerJson["Total"]=total;
+    customerJson["Address"]=address;
+    customerJson["Order"]=order;
+    customerJson["OrderID"]=orderID;
+    customersArray.append(customerJson);
+    QJsonObject rootObj;
+    rootObj["Customers"] = customersArray;
+    QJsonDocument saveDoc(rootObj);
+    QFile fOut("Customers.json");
+    if (fOut.open(QIODevice::WriteOnly)) {
+        fOut.write(saveDoc.toJson(QJsonDocument::Indented));
+        fOut.close();
+    } else {
+        qDebug() << "Unable to open file for writing.";
+    }
     for (int i = 0; i < salesTable->rowCount(); ++i) {
         salesTable->setRowHeight(i,60);
     }
@@ -81,17 +120,56 @@ void SalesAndReports::removeRow(int row)
     salesTable->removeRow(row);
 }
 
-void SalesAndReports::setDeliveryStatus(QString customerName)
+void SalesAndReports::setDeliveryStatus(QString customerName, QString customerAddress, QString customerPhoneNumber)
 {
-    for (int rows = 0; rows < salesTable->rowCount(); ++rows) {
-        if(qobject_cast<QPushButton*>(salesTable->cellWidget(rows,1))->text()==customerName){
-            tableItem =new QTableWidgetItem(QIcon(":/done.ico"),"Paid");
-            tableItem->setForeground(QColor(Qt::green));
-            tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
-            salesTable->setItem(rows,3,tableItem);
+    QJsonObject jsonObj;
+    QFile fIn("Customers.json");
+    if (fIn.open(QIODevice::ReadOnly)) {
+        try {
+            QByteArray jsonData = fIn.readAll();
+            QJsonDocument jsonDoc(QJsonDocument::fromJson(jsonData));
+            QJsonObject jsonObj = jsonDoc.object();
+
+        } catch (json::parse_error &e) {
+            qDebug() << "Parse error: " << e.what();
+        }
+        fIn.close();
+    } else {
+        qDebug() << "Unable to open file.";
+    }
+    if (!jsonObj.contains("Customers") || !jsonObj["Customers"].isArray()) {
+        qDebug() << "Invalid JSON structure.";
+        return;
+    }
+
+    QJsonArray customersJSONArray = jsonObj["Customers"].toArray();
+
+    // Loop through the customers array
+    for (int i = 0; i < customersJSONArray.size(); ++i) {
+        QJsonObject customer = customersJSONArray[i].toObject();
+
+        // Check if the customer matches the criteria
+        if (customer["Name"] == customerName && customer["Address"] == customerAddress && customer["PhoneNumber"] == customerPhoneNumber) {
+            // Update salesTable
+            for (int rows = 0; rows < salesTable->rowCount(); ++rows) {
+                QPushButton *button = qobject_cast<QPushButton*>(salesTable->cellWidget(rows, 1));
+                if (button && button->text() == customerName) {
+                    QTableWidgetItem *tableItem = new QTableWidgetItem(QIcon(":/done.ico"), "Paid");
+                    tableItem->setForeground(QColor(Qt::green));
+                    tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
+                    salesTable->setItem(rows, 3, tableItem);
+                }
+            }
+
+            // Update total revenue
+            double price = customer["Total"].toDouble();
+            double revenue = 0.0; // Initialize or update this value as needed
+            totalRevenue->setText("Total Revenue : " + QString::number(revenue + price) + "PKR" + "\n-----------------------\n" +
+                                  "Paid = " + QString::number(getNumberOfPaidTransactions()) + "\n-----------------------\n" +
+                                  "Unpaid = " + QString::number(getNumberOfUnPaidTransactions()));
         }
     }
-    totalRevenue->setText("Total Revenue : "+QString::number(revenue)+"PKR"+"\n-----------------------\n"+"Paid = "+QString::number(getNumberOfPaidTransactions())+"\n-----------------------\n"+"Unpaid = "+QString::number(getNumberOfUnPaidTransactions()));
+
 }
 
 int SalesAndReports::getNumberOfPaidTransactions()

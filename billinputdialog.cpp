@@ -17,7 +17,7 @@ BillInputDialog::BillInputDialog(QWidget *parent)
     cancelButton =new QPushButton("Cancel",this);
     addMoreButton =new QPushButton("Add More",this);
     formLayout = new QFormLayout();
-    formLayout->addRow("Name:", nameLine);
+    formLayout->addRow("Medicine:", nameLine);
     formLayout->addRow("Quantity:", quantityLine);
     formLayout->addRow("MG:", mgLine);
     formLayout->addRow("Company:", companyLine);

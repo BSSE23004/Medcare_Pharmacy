@@ -13,8 +13,12 @@
 #include <QMessageBox>
 #include <kanbanListWidget.h>
 #include <deliveryinputdialog.h>
-#include <nlohmann/json.hpp>
-#include <fstream>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QListWidgetItem>
+#include <QDebug>
 #include <QAbstractFileIconProvider>
 #include <salesandreports.h>
 using namespace nlohmann;
@@ -38,16 +42,18 @@ class KanbanBoard : public QWidget
     QPushButton *removeDeliveryButton;
     QListWidgetItem *listItem;
     SalesAndReports *salesMenu;
-    static int id;
+    static int orderId;
 public:
     QStringList customersName;
     QStringList customersPhoneNumbers;
+    QStringList customersAddresses;
     KanbanListWidget *doneList;
     DeliveryInputDialog * deliveryInput;
     explicit KanbanBoard(QWidget *parent = nullptr,SalesAndReports *menu=nullptr);
     ~KanbanBoard();
     void writeToJson();
     void readFromJson();
+    int getOrderID();
 private slots:
     void handleAddDelivery();
     void handleRemoveDelivery();

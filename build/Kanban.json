@@ -1,9 +1,14 @@
 {
     "Done": [
         {
-            "content": "Name : Ibrahim\nID : 1\nAddress : Hafiz Street\nPhone : 0321-6160617\nOrder : Medicine : Flegel Quantity : 1 Price : 40 Price/Quantity : 40\nMedicine : Panadoll Quantity : 1 Price : 20.0 Price/Quantity : 20\nTotal  : 60"
+            "content": "Name : Ibrahim\nID : 1\nAddress : Hafiz\nPhone : 0321-6160617\nOrder : Medicine : Moven Quantity : 1 Price : 100.0 Price/Quantity : 100\nTotal  : 100"
         }
     ],
-    "InProgress": [],
-    "ToDo": []
+    "InProgress": [
+    ],
+    "ToDo": [
+        {
+            "content": "Name : Ibrahim\nID : 1\nAddress : HEHE\nPhone : 0323-1212212\nOrder : Medicine : Panadol Quantity : 1 Price : 20.0 Price/Quantity : 20\nMedicine : Paracetamol Quantity : 1 Price : 50.0 Price/Quantity : 50\nTotal  : 70"
+        }
+    ]
 }
