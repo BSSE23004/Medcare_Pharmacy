@@ -11,6 +11,7 @@ CONFIG += c++17
 
 SOURCES += \
     billinputdialog.cpp \
+    custompushbutton.cpp \
     deliveryinputdialog.cpp \
     inputdialog.cpp \
     kanbanboard.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
 
 HEADERS += \
     billinputdialog.h \
+    custompushbutton.h \
     deliveryinputdialog.h \
     inputdialog.h \
     kanbanListWidget.h \

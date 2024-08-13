@@ -43,8 +43,8 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
         QJsonParseError parseError;
         QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
         if (parseError.error != QJsonParseError::NoError) {
-            qDebug() << "Parse error: " << parseError.errorString();
-            return;
+            qDebug() << "Parse error: " << parseError.errorString()<<"  In addSalesRow()";
+
         }
 
         if (jsonDoc.isObject()) {
@@ -52,16 +52,14 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
             if (jsonObj.contains("Customers") && jsonObj["Customers"].isArray()) {
                 customersArray = jsonObj["Customers"].toArray();
             } else {
-                qDebug() << "Invalid JSON structure.";
-                return;
+                qDebug() << "Invalid JSON structure.In addSalesRow()";
+
             }
         } else {
-            qDebug() << "JSON is not an object.";
-            return;
+            qDebug() << "JSON is not an object.In addSalesRow()";
         }
     } else {
-        qDebug() << "Unable to open file.";
-        return;
+        qDebug() << "Unable to open file.In addSalesRow()";
     }
 
     // Prepare new customer data
@@ -89,16 +87,15 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
     salesTable->setItem(salesTable->rowCount() - 1, 0, tableItem);
 
     // Customer NAME
-    QPushButton *customer = new QPushButton(QIcon(":/customer.ico"), customerName);
-    customer->setIconSize(QSize(50, 40));
-    salesTable->setCellWidget(salesTable->rowCount() - 1, 1, customer);
+
 
     // Sales Type
     if (physical) {
         tableItem = new QTableWidgetItem(QIcon(":/user.ico"), "Physical");
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
         salesTable->setItem(salesTable->rowCount() - 1, 2, tableItem);
-
+        CustomPushButton *customer = new CustomPushButton(QIcon(":/customer.ico"), customerName,order,true);
+        salesTable->setCellWidget(salesTable->rowCount() - 1, 1, customer);
         tableItem = new QTableWidgetItem(QIcon(":/done.ico"), "Paid");
         tableItem->setForeground(QColor(Qt::green));
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
@@ -107,7 +104,8 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
         tableItem = new QTableWidgetItem(QIcon(":/delivery-bike.ico"), "Delivery");
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
         salesTable->setItem(salesTable->rowCount() - 1, 2, tableItem);
-
+        CustomPushButton *customer = new CustomPushButton(QIcon(":/customer.ico"), customerName,order,false);
+        salesTable->setCellWidget(salesTable->rowCount() - 1, 1, customer);
         tableItem = new QTableWidgetItem(QIcon(":/unpaid.ico"), "UnPaid");
         tableItem->setForeground(QColor(Qt::red));
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
@@ -131,7 +129,7 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
         fOut.write(saveDoc.toJson(QJsonDocument::Indented));
         fOut.close();
     } else {
-        qDebug() << "Unable to open file for writing.";
+        qDebug() << "Unable to open file for writing.In addSalesRow()";
     }
     for (int i = 0; i < salesTable->rowCount(); ++i) {
         salesTable->setRowHeight(i,60);
@@ -160,20 +158,17 @@ void SalesAndReports::setDeliveryStatus(QString customerName, QString customerAd
         QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
 
         if (parseError.error != QJsonParseError::NoError) {
-            qDebug() << "Parse error: " << parseError.errorString();
-            return;
+            qDebug() << "Parse error: " << parseError.errorString()<<" In setDeliveryStatus()";
         }
 
         if (!jsonDoc.isObject()) {
-            qDebug() << "JSON is not an object.";
-            return;
+            qDebug() << "JSON is not an object.In setDeliveryStatus()";
         }
 
         jsonObj = jsonDoc.object();
 
         if (!jsonObj.contains("Customers") || !jsonObj["Customers"].isArray()) {
-            qDebug() << "Invalid JSON structure.";
-            return;
+            qDebug() << "Invalid JSON structure.In setDeliveryStatus()";
         }
     }
 

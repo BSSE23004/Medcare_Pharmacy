@@ -23,6 +23,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QFile>
+#include <custompushbutton.h>
 
 using namespace nlohmann;
 

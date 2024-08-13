@@ -443,12 +443,15 @@ void MainWindow::currentMenu()
 }
 
 
-
+int billInputHeight =100;
+int billInputWidth =400;
 void MainWindow::handleBillButton()
 {
     static QString order;
     static double totalForSalesAndReports=0.0;
     billInput =new BillInputDialog (this);
+    billInput->setMinimumHeight(billInputHeight);
+    billInput->setMinimumWidth(billInputWidth);
     int rowNumber=-1;
     connect(checkTimer,SIGNAL(timeout()),this,SLOT(handleLineEdits()));
     checkTimer->start(1000);
@@ -469,19 +472,19 @@ void MainWindow::handleBillButton()
         }
         QString newLine="";
         newLine.append(billInput->getName());
-        order.append(billInput->getName()+"  ");
+        order.append("Medicine : "+billInput->getName()+"\n");
         padRight(newLine);
         newLine.append(billInput->getQuantity());
-        order.append(billInput->getQuantity()+"  ");
+        order.append("Quantity : "+billInput->getQuantity()+"\n");
         padRight(newLine);
         newLine.append(medicinesTable->item(rowNumber,1)->text());
-        order.append(medicinesTable->item(rowNumber,1)->text()+"  ");
+        order.append("Price : "+medicinesTable->item(rowNumber,1)->text()+"\n");
         padRight(newLine);
         newLine.append(billInput->getmg());
-        order.append(billInput->getmg()+"  ");
+        order.append("MG : "+billInput->getmg()+"\n");
         padRight(newLine);
         newLine.append(QString::number(billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat()));
-        order.append(QString::number(billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat())+"  ");
+        order.append("$/Quantity : "+QString::number(billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat())+"\n");
         padRight(newLine);
         newLine.append("\n");
         order.append("\n");
@@ -498,6 +501,7 @@ void MainWindow::handleBillButton()
             medicinesTable->showRow(row);
         }
         if(billInput->isOkButtonClicked()){
+            order.append("\nTotal : "+QString::number(totalForSalesAndReports));
             salesMenu->addSalesRow(totalForSalesAndReports,true,"N/A","N/A","N/A",order);
             order="";
             totalForSalesAndReports=0.0;
@@ -507,7 +511,10 @@ void MainWindow::handleBillButton()
             handleBillButton();
         }
     }
-
+    billInput->setName("");
+    for (int row = 0; row < medicinesTable->rowCount(); ++row) {
+        medicinesTable->showRow(row);
+    }
 
 }
 
@@ -519,6 +526,8 @@ void MainWindow::handleOrderButton()
     int rowNumber=-1;
     int totalPricePerItem=0;
     billInput =new BillInputDialog (this);
+    billInput->setMinimumHeight(billInputHeight);
+    billInput->setMinimumWidth(billInputWidth);
     connect(checkTimer,SIGNAL(timeout()),this,SLOT(handleLineEdits()));
     checkTimer->start(1000);
     if (billInput->exec() == QDialog::Accepted) {
@@ -543,13 +552,20 @@ void MainWindow::handleOrderButton()
         }
         totalForSalesAndReports+=totalPricePerItem;
         kanbanBoard->deliveryInput->setTotal(kanbanBoard->deliveryInput->getTotal()+totalPricePerItem);
-        kanbanBoard->deliveryInput->setOrder(kanbanBoard->deliveryInput->getOrder()+"Medicine : "+billInput->getName()+" Quantity : "+billInput->getQuantity()+" Price : "+medicinesTable->item(rowNumber,1)->text()+" Price/Quantity : "+QString::number(totalPricePerItem)+"\n");
+        kanbanBoard->deliveryInput->setOrder(kanbanBoard->deliveryInput->getOrder()+"Medicine : "+billInput->getName()
+                                             +"\nQuantity : "+billInput->getQuantity()+
+                                             "\nPrice : "+medicinesTable->item(rowNumber,1)->text()+
+                                             "\nPrice/Quantity : "+QString::number(totalPricePerItem)+"\n\n");
         billInput->setName("");
         for (int row = 0; row < medicinesTable->rowCount(); ++row) {
             medicinesTable->showRow(row);
         }
         if(billInput->isOkButtonClicked()){
-            salesMenu->addSalesRow(totalForSalesAndReports,false,kanbanBoard->deliveryInput->getName(),kanbanBoard->deliveryInput->getPhoneNumber(),kanbanBoard->deliveryInput->getAddress(),kanbanBoard->deliveryInput->getOrder(),QString::number(kanbanBoard->getOrderID()));
+            salesMenu->addSalesRow(totalForSalesAndReports,false,kanbanBoard->deliveryInput->getName(),
+                                   kanbanBoard->deliveryInput->getPhoneNumber(),
+                                   kanbanBoard->deliveryInput->getAddress(),
+                                   kanbanBoard->deliveryInput->getOrder()+"\nTotal : "+QString::number(totalForSalesAndReports),
+                                   QString::number(kanbanBoard->getOrderID()));
             totalForSalesAndReports=0.0;
             return;
         }
@@ -557,7 +573,10 @@ void MainWindow::handleOrderButton()
             handleOrderButton();
         }
     }
-
+    billInput->setName("");
+    for (int row = 0; row < medicinesTable->rowCount(); ++row) {
+        medicinesTable->showRow(row);
+    }
 }
 
 
