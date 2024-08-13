@@ -5,6 +5,7 @@ int KanbanBoard::orderId=0;
 KanbanBoard::KanbanBoard(QWidget *parent, SalesAndReports *menu)
     : QWidget{parent}
 {
+    setOrderIDInitialValue();
     salesMenu=menu;
     mainLayout = new QVBoxLayout(this);
     boardLayout = new QHBoxLayout();
@@ -210,9 +211,60 @@ void KanbanBoard::readFromJson()
     file.close();
 }
 
+
+
+void KanbanBoard::setOrderIDInitialValue()
+{
+    int latestID = 0;
+    QFile fIn("Customers.json");
+
+    if (fIn.open(QIODevice::ReadOnly)) {
+        QByteArray jsonData = fIn.readAll();
+        fIn.close();
+
+        QJsonParseError parseError;
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
+
+        if (parseError.error != QJsonParseError::NoError) {
+            qDebug() << "Parse error: " << parseError.errorString();
+            return;
+        }
+
+        if (!jsonDoc.isObject()) {
+            qDebug() << "JSON is not an object.";
+            return;
+        }
+
+        QJsonObject jsonObj = jsonDoc.object();
+
+        if (!jsonObj.contains("Customers") || !jsonObj["Customers"].isArray()) {
+            qDebug() << "Invalid JSON structure.";
+            return;
+        }
+
+        QJsonArray customersJSONArray = jsonObj["Customers"].toArray();
+
+        // Loop through the customers array
+        for (const QJsonValue &value : customersJSONArray) {
+            QJsonObject customer = value.toObject();
+            if (customer.contains("OrderID")) {
+                QString orderIdStr = customer["OrderID"].toString();
+                bool ok;
+                latestID = orderIdStr.toInt(&ok);
+                if (ok && latestID > orderId) {
+                    orderId=latestID;
+                }
+            }
+        }
+    } else {
+        qDebug() << "Unable to open file.";
+    }
+
+}
+
 int KanbanBoard::getOrderID()
 {
-    return ++orderId;
+    return orderId+1;
 }
 
 void KanbanBoard::handleAddDelivery()

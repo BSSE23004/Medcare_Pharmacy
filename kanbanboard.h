@@ -53,6 +53,7 @@ public:
     ~KanbanBoard();
     void writeToJson();
     void readFromJson();
+    void setOrderIDInitialValue();
     int getOrderID();
 private slots:
     void handleAddDelivery();

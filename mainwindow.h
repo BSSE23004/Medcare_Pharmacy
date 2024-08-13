@@ -117,6 +117,7 @@ public:
     void filterTable(const QString &text);
     void writeMedicinesTableToJson();
     void readMedicineTableFromJson();
+    void settingColumnsWidth();
     ////////////////////////////Medicine Menu
     ////////////////////////////Bill Menu
     void billMenu();

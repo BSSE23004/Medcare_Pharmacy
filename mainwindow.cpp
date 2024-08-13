@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     readMedicineTableFromJson();
     kanbanBoard->readFromJson();
     connect(kanbanBoard->deliveryInput->orderButton,SIGNAL(clicked(bool)),this,SLOT(handleOrderButton()));
-    connect(kanbanBoard->doneList,SIGNAL(itemEntered(QListWidgetItem*)),this,SLOT(handleDoneList()));
+    connect(kanbanBoard->doneList,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(handleDoneList()));
     connect(searchBar, &QLineEdit::textChanged, this, &MainWindow::handleSearchBarAndButton);
     connect(searchButton,SIGNAL(clicked(bool)), this,SLOT(handleSearchBarAndButton()));
 }
@@ -123,8 +123,9 @@ void MainWindow::medicinesMenu()
     for (int col = 0; col < medicinesTable->columnCount(); ++col) {
         totalWidth+=medicinesTable->columnWidth(col);
     }
-    medicineTableGeometry=totalWidth+10;
-    medicinesTable->setGeometry(200,0,totalWidth+10,700);
+    medicineTableGeometry=totalWidth+50;
+    medicinesTable->setGeometry(200,0,medicineTableGeometry,700);
+    settingColumnsWidth();
     hbox->addWidget(medicinesTable);
     ////////////////////////////////////////Medicines Table
     searchBar =new QLineEdit(this);
@@ -271,6 +272,16 @@ void MainWindow::readMedicineTableFromJson()
 
 }
 
+void MainWindow::settingColumnsWidth()
+{
+    int numericColumnsWidth=70;
+    medicinesTable->setColumnWidth(0,150);
+    medicinesTable->setColumnWidth(4,150);
+    medicinesTable->setColumnWidth(1,numericColumnsWidth);
+    medicinesTable->setColumnWidth(2,numericColumnsWidth);
+    medicinesTable->setColumnWidth(3,numericColumnsWidth);
+}
+
 void MainWindow::billMenu()
 {
     receiptText="";
@@ -396,6 +407,7 @@ void MainWindow::currentMenu()
     searchButton->hide();
     medicinesTable->hide();
     medicinesTable->setGeometry(200,0,medicineTableGeometry,700);
+    settingColumnsWidth();
     /////////Medicine Menu
     /////////Bill Menu
     generateBillButton->hide();

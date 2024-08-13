@@ -24,8 +24,7 @@
 #include <QJsonArray>
 #include <QFile>
 
-using namespace  nlohmann;
-
+using namespace nlohmann;
 
 class SalesAndReports : public QWidget
 {
@@ -36,8 +35,8 @@ class SalesAndReports : public QWidget
     QTableWidgetItem *tableItem;
     QPushButton *totalRevenue;
     QPushButton *customer;
-    QJsonArray customersArray;
-    double revenue;
+    // QJsonArray customersArray;
+
 
 public:
     explicit SalesAndReports(QWidget *parent = nullptr);
@@ -46,6 +45,8 @@ public:
     void setDeliveryStatus(QString customerName,QString customerAddress,QString customerPhoneNumber);
     int getNumberOfPaidTransactions();
     int getNumberOfUnPaidTransactions();
+    double getTotalDuePayment();
+    double getTotalPaidPayment();
     ~SalesAndReports();
 
 signals:
