@@ -14,6 +14,8 @@ SalesAndReports::SalesAndReports(QWidget *parent)
     for (int i = 0; i < salesTable->columnCount(); ++i) {
         salesTable->setColumnWidth(i,150);
     }
+    salesTable->setColumnWidth(0, 170);
+    salesTable->setColumnWidth(4, 127);
     totalRevenue =new QPushButton();
     totalRevenue->setMinimumHeight(200);
     totalRevenue->setMinimumWidth(200);
@@ -62,7 +64,7 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
         qDebug() << "Unable to open file.In addSalesRow()";
     }
 
-    // Prepare new customer data
+
     QJsonObject customerJson;
     customerJson["Name"] = customerName;
     customerJson["PhoneNumber"] = phoneNumber;
@@ -72,9 +74,7 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
     customerJson["OrderID"] = orderID;
     customerJson["PaymentType"] = physical ? "Physical" : "Delivery";
 
-    // Prepare table items
-    salesTable->setColumnWidth(0, 170);
-    salesTable->setColumnWidth(4, 127);
+
     QTime currentTime = QTime::currentTime();
     QDate currentDate = QDate::currentDate();
     QString date = currentDate.toString("dd/MMM/yyyy");
@@ -86,10 +86,7 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
     tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
     salesTable->setItem(salesTable->rowCount() - 1, 0, tableItem);
 
-    // Customer NAME
 
-
-    // Sales Type
     if (physical) {
         tableItem = new QTableWidgetItem(QIcon(":/user.ico"), "Physical");
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
@@ -116,10 +113,8 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
     tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
     salesTable->setItem(salesTable->rowCount() - 1, 4, tableItem);
 
-    // Append new customer to array
     customersArray.append(customerJson);
 
-    // Write updated data back to Customers.json
     QJsonObject rootObj;
     rootObj["Customers"] = customersArray;
     QJsonDocument saveDoc(rootObj);
@@ -138,6 +133,55 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
                           +QString::number(getNumberOfPaidTransactions())+"\nPaid Amount = "
                           +QString::number(getTotalPaidPayment())+"\n-----------------------\n"+"Unpaid = "
                           +QString::number(getNumberOfUnPaidTransactions())+"\nUnPaid Amount = "+QString::number(getTotalDuePayment()));
+}
+
+void SalesAndReports::addSalesRowFromJSon(double total, bool physical, QString customerName, QString order, QString dateAndTime, QString paymentStatus)
+{
+    salesTable->setRowCount(salesTable->rowCount() + 1);
+
+    // Date & Time
+    QTableWidgetItem *tableItem = new QTableWidgetItem(QIcon(":/calender.ico"),dateAndTime);
+    tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
+    salesTable->setItem(salesTable->rowCount() - 1, 0, tableItem);
+
+
+    if (physical) {
+        tableItem = new QTableWidgetItem(QIcon(":/user.ico"), "Physical");
+        tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
+        salesTable->setItem(salesTable->rowCount() - 1, 2, tableItem);
+        CustomPushButton *customer = new CustomPushButton(QIcon(":/customer.ico"), customerName,order,true);
+        salesTable->setCellWidget(salesTable->rowCount() - 1, 1, customer);
+
+    } else {
+        tableItem = new QTableWidgetItem(QIcon(":/delivery-bike.ico"), "Delivery");
+        tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
+        salesTable->setItem(salesTable->rowCount() - 1, 2, tableItem);
+        CustomPushButton *customer = new CustomPushButton(QIcon(":/customer.ico"), customerName,order,false);
+        salesTable->setCellWidget(salesTable->rowCount() - 1, 1, customer);
+    }
+    if(paymentStatus=="Paid"){
+        tableItem = new QTableWidgetItem(QIcon(":/done.ico"), "Paid");
+        tableItem->setForeground(QColor(Qt::green));
+        tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
+        salesTable->setItem(salesTable->rowCount() - 1, 3, tableItem);
+    }else {
+        tableItem = new QTableWidgetItem(QIcon(":/unpaid.ico"), "UnPaid");
+        tableItem->setForeground(QColor(Qt::red));
+        tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
+        salesTable->setItem(salesTable->rowCount() - 1, 3, tableItem);
+    }
+
+    tableItem = new QTableWidgetItem(QIcon(":/growth.ico"), QString::number(total));
+    tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
+    salesTable->setItem(salesTable->rowCount() - 1, 4, tableItem);
+    for (int i = 0; i < salesTable->rowCount(); ++i) {
+        salesTable->setRowHeight(i,60);
+    }
+    totalRevenue->setText("Total Revenue : "+QString::number(getTotalDuePayment()+getTotalPaidPayment())+"PKR"+"\n-----------------------\n"+"Paid = "
+                          +QString::number(getNumberOfPaidTransactions())+"\nPaid Amount = "
+                          +QString::number(getTotalPaidPayment())+"\n-----------------------\n"+"Unpaid = "
+                          +QString::number(getNumberOfUnPaidTransactions())+"\nUnPaid Amount = "+QString::number(getTotalDuePayment()));
+
 }
 
 
@@ -173,14 +217,10 @@ void SalesAndReports::setDeliveryStatus(QString customerName, QString customerAd
     }
 
     QJsonArray customersJSONArray = jsonObj["Customers"].toArray();
-
-    // Loop through the customers array
+    qDebug()<<"I am here";
     for (int i = 0; i < customersJSONArray.size(); ++i) {
         QJsonObject customer = customersJSONArray[i].toObject();
-
-        // Check if the customer matches the criteria
         if (customer["Name"] == customerName && customer["Address"] == customerAddress && customer["PhoneNumber"] == customerPhoneNumber) {
-            // Update salesTable
             for (int rows = 0; rows < salesTable->rowCount(); ++rows) {
                 QPushButton *button = qobject_cast<QPushButton*>(salesTable->cellWidget(rows, 1));
                 if (button && button->text() == customerName) {
@@ -190,9 +230,6 @@ void SalesAndReports::setDeliveryStatus(QString customerName, QString customerAd
                     salesTable->setItem(rows, 3, tableItem);
                 }
             }
-
-            // Update total revenue
-            // double price = customer["Total"].toDouble();
             totalRevenue->setText("Total Revenue : "+QString::number(getTotalDuePayment()+getTotalPaidPayment())+"PKR"+"\n-----------------------\n"+"Paid = "
                                   +QString::number(getNumberOfPaidTransactions())+"\nPaid Amount = "
                                   +QString::number(getTotalPaidPayment())+"\n-----------------------\n"+"Unpaid = "
@@ -246,8 +283,128 @@ double SalesAndReports::getTotalPaidPayment()
     return totalPaid;
 }
 
+void SalesAndReports::readFromJson()
+{
+    QDate date =QDate::currentDate();
+    QJsonObject jsonObj;
+    QFile file("Sales.json");
+    if (file.open(QIODevice::ReadOnly)) {
+        QByteArray jsonData = file.readAll();
+        file.close();
+
+        QJsonParseError parseError;
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
+        if (parseError.error != QJsonParseError::NoError) {
+            qDebug() << "Parse error: " << parseError.errorString();
+            return;
+        }
+
+        if (jsonDoc.isObject()) {
+            jsonObj = jsonDoc.object();
+        } else {
+            qDebug() << "JSON is not an object.";
+        }
+    } else {
+        qDebug() << "Unable to open file.";
+    }
+
+    for (const QString &key : jsonObj.keys()) {
+        if(date.toString("dd/MMM/yyyy")==key){
+            QJsonArray date=jsonObj[key].toArray();
+            for (int i = 0; i < date.count(); ++i) {
+                QJsonObject tableRow= date.at(i).toObject();
+                QString dateandTime=tableRow["Date&Time"].toString();
+                QString paymentStatus=tableRow["Payment Status"].toString();
+                double total=tableRow["Total"].toString().toDouble();
+                QJsonObject button=tableRow["Button"].toObject();
+                QString nameOrLabel =button["Label"].toString();
+                QString order =button["Order"].toString();
+                bool physical =button["Physical"].toBool();
+                addSalesRowFromJSon(total,physical,nameOrLabel,order,dateandTime,paymentStatus);
+            }
+        }
+    }
+
+}
+
+void SalesAndReports::writeToJson() {
+    QFile fIn("Sales.json");
+    QJsonObject rootObj;
+    QJsonArray saleJsonTable;
+    QDate date = QDate::currentDate();
+    QString currentDate = date.toString("dd/MMM/yyyy");
+
+/////////////// Reading the existing JSON file
+    if (fIn.open(QIODevice::ReadOnly)) {
+        QByteArray jsonData = fIn.readAll();
+        fIn.close();
+
+        QJsonParseError parseError;
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
+        if (parseError.error != QJsonParseError::NoError) {
+            qDebug() << "Parse error: " << parseError.errorString() << " In SalesAndReports::writeToJson()";
+            return;
+        }
+
+        if (jsonDoc.isObject()) {
+            rootObj = jsonDoc.object();
+        } else {
+            qDebug() << "JSON is not an object. SalesAndReports::writeToJson()";
+            return;
+        }
+    } else {
+        qDebug() << "Unable to open file. SalesAndReports::writeToJson()";
+        return;
+    }
+    if (rootObj.contains(currentDate) && rootObj[currentDate].isArray()) {
+        saleJsonTable = rootObj[currentDate].toArray();
+    }
+    for (int row = saleJsonTable.count(); row < salesTable->rowCount(); ++row) {
+        QJsonObject jsonObj;
+        auto dateTimeItem = salesTable->item(row, 0);
+        if (dateTimeItem) {
+            jsonObj["Date&Time"] = dateTimeItem->text();
+        }
+        CustomPushButton *button = dynamic_cast<CustomPushButton *>(salesTable->cellWidget(row, 1));
+        if (button) {
+            QJsonObject buttonObj;
+            buttonObj["Order"] = button->correspondingOrder;
+            buttonObj["Label"] = button->buttonLabel;
+            buttonObj["Physical"] = button->physical;
+            jsonObj["Button"] = buttonObj;
+        }
+        auto salesTypeItem = salesTable->item(row, 2);
+        auto paymentStatusItem = salesTable->item(row, 3);
+        auto totalItem = salesTable->item(row, 4);
+        if (salesTypeItem) {
+            jsonObj["SalesType"] = salesTypeItem->text();
+        }
+        if (paymentStatusItem) {
+            jsonObj["Payment Status"] = paymentStatusItem->text();
+        }
+        if (totalItem) {
+            jsonObj["Total"] = totalItem->text();
+        }
+        saleJsonTable.append(jsonObj);
+    }
+
+    rootObj[currentDate] = saleJsonTable;
+
+    QJsonDocument saveDoc(rootObj);
+    QFile fOut("Sales.json");
+    if (fOut.open(QIODevice::WriteOnly)) {
+        fOut.write(saveDoc.toJson(QJsonDocument::Indented));
+        fOut.close();
+    } else {
+        qDebug() << "Unable to open file for writing. SalesAndReports::writeToJson()";
+    }
+}
+
+
+
 SalesAndReports::~SalesAndReports()
 {
+    delete customer;
     delete mainLayout;
     delete boardLayout;
     delete salesTable;

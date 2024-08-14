@@ -4,6 +4,7 @@ CustomPushButton::CustomPushButton(QIcon icon, QString label, QString newCorresp
     : QPushButton(parent), correspondingOrder(newCorrespondingOrder)
 {
     physical=newPhysical;
+    buttonLabel =label;
     setText(label);
     setIcon(icon);
     setIconSize(QSize(50, 40));

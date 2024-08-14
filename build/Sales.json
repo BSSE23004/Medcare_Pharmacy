@@ -1,0 +1,72 @@
+{
+    "13/Aug/2024": [
+        {
+            "Button": {
+                "Label": "N/A",
+                "Order": "Medicine : tagipmet\nQuantity : 1\nPrice : 350.0\nMG : 500\n$/Quantity : 350\n\n\nTotal : 350",
+                "Physical": true
+            },
+            "Date&Time": "16:33\n14/Aug/2024",
+            "Payment Status": "Paid",
+            "SalesType": "Physical",
+            "Total": "350"
+        },
+        {
+            "Button": {
+                "Label": "N/A",
+                "Order": "Medicine : Metformin\nQuantity : 1\nPrice : 40.0\nMG : 500\n$/Quantity : 40\n\nMedicine : Leflox\nQuantity : 1\nPrice : 60.0\nMG : 100\n$/Quantity : 60\n\n\nTotal : 100",
+                "Physical": true
+            },
+            "Date&Time": "16:34\n14/Aug/2024",
+            "Payment Status": "Paid",
+            "SalesType": "Physical",
+            "Total": "100"
+        }
+    ],
+    "14/Aug/2024": [
+        {
+            "Button": {
+                "Label": "N/A",
+                "Order": "Medicine : Aspirin\nQuantity : 1\nPrice : 12.0\nMG : 300\n$/Quantity : 12\n\nMedicine : Metformin\nQuantity : 1\nPrice : 40.0\nMG : 500\n$/Quantity : 40\n\n\nTotal : 52",
+                "Physical": true
+            },
+            "Date&Time": "16:27\n14/Aug/2024",
+            "Payment Status": "Paid",
+            "SalesType": "Physical",
+            "Total": "52"
+        },
+        {
+            "Button": {
+                "Label": "N/A",
+                "Order": "Medicine : Amoxicillin\nQuantity : 1\nPrice : 50.0\nMG : 500\n$/Quantity : 50\n\n\nTotal : 50",
+                "Physical": true
+            },
+            "Date&Time": "16:36\n14/Aug/2024",
+            "Payment Status": "Paid",
+            "SalesType": "Physical",
+            "Total": "50"
+        },
+        {
+            "Button": {
+                "Label": "Aspirin",
+                "Order": "Medicine : Losartan\nQuantity : 1\nPrice : 55.0\nPrice/Quantity : 55\n\n\nTotal : 55",
+                "Physical": false
+            },
+            "Date&Time": "17:49\n14/Aug/2024",
+            "Payment Status": "UnPaid",
+            "SalesType": "Delivery",
+            "Total": "55"
+        },
+        {
+            "Button": {
+                "Label": "qwe",
+                "Order": "Medicine : Leflox\nQuantity : 1\nPrice : 60.0\nPrice/Quantity : 60\n\n\nTotal : 60",
+                "Physical": false
+            },
+            "Date&Time": "17:58\n14/Aug/2024",
+            "Payment Status": "Paid",
+            "SalesType": "Delivery",
+            "Total": "60"
+        }
+    ]
+}

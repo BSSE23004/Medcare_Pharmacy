@@ -12,14 +12,14 @@ class CustomPushButton : public QPushButton
 {
     Q_OBJECT
 public:
+    QString correspondingOrder;
+    bool physical;
+    QString buttonLabel;
     CustomPushButton(QIcon icon, QString label, QString newCorrespondingOrder,bool newPhysical, QWidget *parent = nullptr);
 
 private slots:
     void handleButton();
 
-private:
-    QString correspondingOrder;
-    bool physical;
 };
 
 #endif // CUSTOMPUSHBUTTON_H

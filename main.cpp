@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
     w.setWindowTitle("Pharmacy");
-    w.setWindowOpacity(0.99);
+    w.setWindowOpacity(0.95);
     w.setWindowIcon(QIcon(":/pharmacy.ico"));
     w.showMaximized();
     w.setMinimumSize(600,600);

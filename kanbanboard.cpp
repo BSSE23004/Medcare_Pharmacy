@@ -208,6 +208,7 @@ void KanbanBoard::readFromJson()
         }
     }
 
+
     file.close();
 }
 

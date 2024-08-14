@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     ordersAndDeliveryMenu();
     readMedicineTableFromJson();
     kanbanBoard->readFromJson();
+    salesMenu->readFromJson();
     connect(kanbanBoard->deliveryInput->orderButton,SIGNAL(clicked(bool)),this,SLOT(handleOrderButton()));
     connect(kanbanBoard->doneList,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(handleDoneList()));
     connect(searchBar, &QLineEdit::textChanged, this, &MainWindow::handleSearchBarAndButton);
@@ -35,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow() {
     writeMedicinesTableToJson();
     kanbanBoard->writeToJson();
+    salesMenu->writeToJson();
     delete hbox;
     delete listMenu;
     delete hideButton;
@@ -263,7 +265,6 @@ void MainWindow::readMedicineTableFromJson()
             itemTable = new QTableWidgetItem(data4);
             itemTable->setFlags(itemTable->flags() & ~Qt::ItemIsEditable);
             medicinesTable->setItem(row, 4, itemTable);
-
             ++row;
         } else {
             qDebug() << "Invalid JSON object in array.";
@@ -458,6 +459,8 @@ void MainWindow::handleBillButton()
     if (billInput->exec() == QDialog::Accepted) {
         if(billInput->getName().isEmpty()||billInput->getQuantity().isEmpty()||billInput->getCompany().isEmpty()||billInput->getmg().isEmpty()){
             QMessageBox::warning(this,"Invalid Input","Enter complete data!!!");
+            order="";
+            totalForSalesAndReports=0.0;
             return;
         }
         for (int row = 0; row < medicinesTable->rowCount(); ++row) {
@@ -466,6 +469,8 @@ void MainWindow::handleBillButton()
                 rowNumber=row;
                 if(billInput->getmg()!=medicinesTable->item(row,3)->text()||billInput->getQuantity().toFloat()>medicinesTable->item(row,2)->text().toFloat()) {
                     QMessageBox::warning(this,"Invalid Input","Enter proper data!!!(Maybe Quantity OR Mg You entered is not correct)");
+                    order="";
+                    totalForSalesAndReports=0.0;
                     return;
                 }
             }
@@ -533,6 +538,7 @@ void MainWindow::handleOrderButton()
     if (billInput->exec() == QDialog::Accepted) {
         if(billInput->getName().isEmpty()||billInput->getQuantity().isEmpty()||billInput->getCompany().isEmpty()||billInput->getmg().isEmpty()){
             QMessageBox::warning(this,"Invalid Input","Enter complete data!!!");
+            totalForSalesAndReports=0.0;
             return;
         }
         for (int row = 0; row < medicinesTable->rowCount(); ++row) {
@@ -541,6 +547,7 @@ void MainWindow::handleOrderButton()
                 rowNumber=row;
                 if(billInput->getmg()!=medicinesTable->item(row,3)->text()||billInput->getQuantity().toFloat()>medicinesTable->item(row,2)->text().toFloat()) {
                     QMessageBox::warning(this,"Invalid Input","Enter proper data!!!(Maybe Quantity OR Mg You entered is not correct)");
+                    totalForSalesAndReports=0.0;
                     return;
                 }
             }
