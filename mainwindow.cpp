@@ -506,7 +506,7 @@ void MainWindow::handleBillButton()
             medicinesTable->showRow(row);
         }
         if(billInput->isOkButtonClicked()){
-            order.append("\nTotal : "+QString::number(totalForSalesAndReports));
+            order.append("\n\nTotal : "+QString::number(totalForSalesAndReports));
             salesMenu->addSalesRow(totalForSalesAndReports,true,"N/A","N/A","N/A",order);
             order="";
             totalForSalesAndReports=0.0;
@@ -571,7 +571,7 @@ void MainWindow::handleOrderButton()
             salesMenu->addSalesRow(totalForSalesAndReports,false,kanbanBoard->deliveryInput->getName(),
                                    kanbanBoard->deliveryInput->getPhoneNumber(),
                                    kanbanBoard->deliveryInput->getAddress(),
-                                   kanbanBoard->deliveryInput->getOrder()+"\nTotal : "+QString::number(totalForSalesAndReports),
+                                   kanbanBoard->deliveryInput->getOrder()+"\n\nTotal : "+QString::number(totalForSalesAndReports),
                                    QString::number(kanbanBoard->getOrderID()));
             totalForSalesAndReports=0.0;
             return;
@@ -644,14 +644,50 @@ void MainWindow::handleReceiptButton()
 
 void MainWindow::handleDoneList()
 {
-    for (int i = 0; i < kanbanBoard->customersName.count(); ++i) {
+    QJsonObject jsonObj;
+    QFile fIn("Customers.json");
+    if (fIn.open(QIODevice::ReadOnly)) {
+        QByteArray jsonData = fIn.readAll();
+        fIn.close();
+
+        QJsonParseError parseError;
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
+
+        if (parseError.error != QJsonParseError::NoError) {
+            qDebug() << "Parse error: " << parseError.errorString()<<" In setDeliveryStatus()";
+        }
+
+        if (!jsonDoc.isObject()) {
+            qDebug() << "JSON is not an object.In setDeliveryStatus()";
+        }
+
+        jsonObj = jsonDoc.object();
+
+        if (!jsonObj.contains("Customers") || !jsonObj["Customers"].isArray()) {
+            qDebug() << "Invalid JSON structure.In setDeliveryStatus()";
+        }
+    }
+
+    QJsonArray customersJSONArray = jsonObj["Customers"].toArray();
+    for (int i = 0; i < customersJSONArray.size(); ++i) {
+        QJsonObject customer = customersJSONArray[i].toObject();
         for (int j = 0; j < kanbanBoard->doneList->count(); ++j) {
             QListWidgetItem *item = kanbanBoard->doneList->item(j);
-            if(item && item->text().contains(kanbanBoard->customersName.at(i), Qt::CaseInsensitive)&& item->text().contains(kanbanBoard->customersPhoneNumbers.at(i), Qt::CaseInsensitive)&& item->text().contains(kanbanBoard->customersAddresses.at(i), Qt::CaseInsensitive)){
-                salesMenu->setDeliveryStatus(kanbanBoard->customersName.at(i),kanbanBoard->customersAddresses.at(i),kanbanBoard->customersPhoneNumbers.at(i));
+            qDebug()<<"Searching for name to setdeliveryStatus";
+            if(item && item->text().contains("Name : "+customer["Name"].toString()+"\nID : "+customer["OrderID"].toString()+"\nAddress : "+customer["Address"].toString()+"\nPhone : "+customer["PhoneNumber"].toString(), Qt::CaseInsensitive)){
+                salesMenu->setDeliveryStatus(customer["Name"].toString(),customer["Order"].toString());
             }
         }
     }
+
+    // for (int i = 0; i < kanbanBoard->customersName.count(); ++i) {
+    //     for (int j = 0; j < kanbanBoard->doneList->count(); ++j) {
+    //         QListWidgetItem *item = kanbanBoard->doneList->item(j);
+    //         if(item && item->text().contains(kanbanBoard->customersName.at(i), Qt::CaseInsensitive)&& item->text().contains(kanbanBoard->customersPhoneNumbers.at(i), Qt::CaseInsensitive)&& item->text().contains(kanbanBoard->customersAddresses.at(i), Qt::CaseInsensitive)){
+    //             salesMenu->setDeliveryStatus(kanbanBoard->customersName.at(i),kanbanBoard->customersAddresses.at(i),kanbanBoard->customersPhoneNumbers.at(i));
+    //         }
+    //     }
+    // }
 }
 
 

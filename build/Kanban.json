@@ -1,10 +1,7 @@
 {
     "Done": [
         {
-            "content": "Name : Aspirin\nID : 9\nAddress : Near 11 22 office\nPhone : 0321-6160617\nOrder : Medicine : Losartan\nQuantity : 1\nPrice : 55.0\nPrice/Quantity : 55\n\nTotal  : 55"
-        },
-        {
-            "content": "Name : qwe\nID : 10\nAddress : wqe\nPhone : qeqw-eqweqwe\nOrder : Medicine : Leflox\nQuantity : 1\nPrice : 60.0\nPrice/Quantity : 60\n\nTotal  : 60"
+            "content": "Name : Ibrahim\nID : 1\nAddress : Hafiz-Street\nPhone : 0321-6160617\nOrder : Medicine : Leflox\nQuantity : 1\nPrice : 60.0\nPrice/Quantity : 60\n\nTotal  : 60"
         }
     ],
     "InProgress": [

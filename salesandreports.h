@@ -43,7 +43,7 @@ public:
     void addSalesRow(double total=0.0,bool physical=true,QString customerName="N/A",QString phoneNumber="N/A",QString address="N/A",QString order="",QString orderID="N/A");
     void addSalesRowFromJSon(double total=0.0,bool physical=true,QString customerName="N/A",QString order="",QString dateAndTime="N/A",QString paymentStatus="N/A");
     void removeRow(int row);
-    void setDeliveryStatus(QString customerName,QString customerAddress,QString customerPhoneNumber);
+    void setDeliveryStatus(QString customerName,QString customerOrder);
     int getNumberOfPaidTransactions();
     int getNumberOfUnPaidTransactions();
     double getTotalDuePayment();
