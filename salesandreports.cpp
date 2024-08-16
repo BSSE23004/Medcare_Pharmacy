@@ -1,36 +1,58 @@
 #include "salesandreports.h"
 
-SalesAndReports::SalesAndReports(QWidget *parent)
+SalesAndReports::SalesAndReports(QWidget *parent, QTableWidget *NewMedicinesTable)
     : QWidget{parent}
 {
-    mainLayout = new QVBoxLayout(this);
-    boardLayout = new QHBoxLayout();
-    salesTable =new QTableWidget(0,5);
-    salesTable->setGeometry(175,0,850,700);
-    salesTable->setIconSize(QSize(50,40));
-    salesTable->setFont(QFont("Times New Roman",14));
-    QStringList headers={"Date","Customer","SalesType","Payment Status","Total"};
+    nOfTopSellings=5;
+    medicinesTable=NewMedicinesTable;
+    // Assuming this is within a widget's constructor or initialization function
+    salesTable = new QTableWidget(0, 5);
+    // Remove setGeometry; let layout handle positioning
+    // salesTable->setGeometry(175, 0, 850, 700);
+    salesTable->setIconSize(QSize(50, 40));
+    salesTable->setFont(QFont("Times New Roman", 14));
+    QStringList headers = {"Date", "Customer", "SalesType", "Payment Status", "Total"};
     salesTable->setHorizontalHeaderLabels(headers);
     for (int i = 0; i < salesTable->columnCount(); ++i) {
-        salesTable->setColumnWidth(i,150);
+        salesTable->setColumnWidth(i, 150);
     }
     salesTable->setColumnWidth(0, 170);
     salesTable->setColumnWidth(4, 127);
-    totalRevenue =new QPushButton();
+
+    totalRevenue = new QPushButton();
     totalRevenue->setMinimumHeight(200);
     totalRevenue->setMinimumWidth(200);
     totalRevenue->setIcon(QIcon(":/cash.ico"));
-    totalRevenue->setIconSize(QSize(70,70));
-    totalRevenue->setText("Total Revenue : "+QString::number(getTotalDuePayment()+getTotalPaidPayment())+"PKR"+"\n-----------------------\n"+"Paid = "
-                          +QString::number(getNumberOfPaidTransactions())+"\nPaid Amount = "
-                          +QString::number(getTotalPaidPayment())+"\n-----------------------\n"+"Unpaid = "
-                          +QString::number(getNumberOfUnPaidTransactions())+"\nUnPaid Amount = "+QString::number(getTotalDuePayment()));
-    totalRevenue->setFont(QFont("Times New Roman",18));
+    totalRevenue->setIconSize(QSize(70, 70));
+    totalRevenue->setText("Total Revenue : " + QString::number(getTotalDuePayment() + getTotalPaidPayment()) + "PKR\n-----------------------\n" +
+                          "Paid = " + QString::number(getNumberOfPaidTransactions()) + "\nPaid Amount = " +
+                          QString::number(getTotalPaidPayment()) + "\n-----------------------\n" +
+                          "Unpaid = " + QString::number(getNumberOfUnPaidTransactions()) + "\nUnPaid Amount = " + QString::number(getTotalDuePayment()));
+    totalRevenue->setFont(QFont("Times New Roman", 18));
     totalRevenue->setStyleSheet("color : DarkCyan");
+    topSellings = new QPushButton();
+    topSellings->setMinimumHeight(200);
+    topSellings->setMinimumWidth(200);
+    topSellings->setIcon(QIcon(":/growth.ico"));
+    topSellings->setIconSize(QSize(70, 70));
+    topSellings->setFont(QFont("Times New Roman", 18));
+    topSellings->setStyleSheet("color : DarkCyan");
+    topSellings->setText(getTopSellingMedicines(nOfTopSellings));
+    // Layouts
+    mainLayout = new QVBoxLayout(this);
+    buttonLayout = new QVBoxLayout();
+    boardLayout = new QHBoxLayout();
+
+    // Add widgets to layouts
+    buttonLayout->addWidget(totalRevenue);
+    buttonLayout->addWidget(topSellings);
     boardLayout->addWidget(salesTable);
-    boardLayout->addWidget(totalRevenue);
+    boardLayout->addLayout(buttonLayout);
     mainLayout->addLayout(boardLayout);
+
+    // Set the layout for the main widget
     setLayout(mainLayout);
+
 }
 
 void SalesAndReports::addSalesRow(double total, bool physical, QString customerName, QString phoneNumber, QString address, QString order, QString orderID)
@@ -91,7 +113,7 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
         tableItem = new QTableWidgetItem(QIcon(":/user.ico"), "Physical");
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
         salesTable->setItem(salesTable->rowCount() - 1, 2, tableItem);
-        CustomPushButton *customer = new CustomPushButton(QIcon(":/customer.ico"), customerName,order,true);
+        customer = new CustomPushButton(QIcon(":/customer.ico"), customerName,order,true);
         salesTable->setCellWidget(salesTable->rowCount() - 1, 1, customer);
         tableItem = new QTableWidgetItem(QIcon(":/done.ico"), "Paid");
         tableItem->setForeground(QColor(Qt::green));
@@ -101,7 +123,7 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
         tableItem = new QTableWidgetItem(QIcon(":/delivery-bike.ico"), "Delivery");
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
         salesTable->setItem(salesTable->rowCount() - 1, 2, tableItem);
-        CustomPushButton *customer = new CustomPushButton(QIcon(":/customer.ico"), customerName,order,false);
+        customer = new CustomPushButton(QIcon(":/customer.ico"), customerName,order,false);
         salesTable->setCellWidget(salesTable->rowCount() - 1, 1, customer);
         tableItem = new QTableWidgetItem(QIcon(":/unpaid.ico"), "UnPaid");
         tableItem->setForeground(QColor(Qt::red));
@@ -129,10 +151,13 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
     for (int i = 0; i < salesTable->rowCount(); ++i) {
         salesTable->setRowHeight(i,60);
     }
+    ////////////////Writing To Sales.json Also
+    writeToJson();
     totalRevenue->setText("Total Revenue : "+QString::number(getTotalDuePayment()+getTotalPaidPayment())+"PKR"+"\n-----------------------\n"+"Paid = "
                           +QString::number(getNumberOfPaidTransactions())+"\nPaid Amount = "
                           +QString::number(getTotalPaidPayment())+"\n-----------------------\n"+"Unpaid = "
                           +QString::number(getNumberOfUnPaidTransactions())+"\nUnPaid Amount = "+QString::number(getTotalDuePayment()));
+    topSellings->setText(getTopSellingMedicines(nOfTopSellings));
 }
 
 void SalesAndReports::addSalesRowFromJSon(double total, bool physical, QString customerName, QString order, QString dateAndTime, QString paymentStatus)
@@ -149,14 +174,14 @@ void SalesAndReports::addSalesRowFromJSon(double total, bool physical, QString c
         tableItem = new QTableWidgetItem(QIcon(":/user.ico"), "Physical");
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
         salesTable->setItem(salesTable->rowCount() - 1, 2, tableItem);
-        CustomPushButton *customer = new CustomPushButton(QIcon(":/customer.ico"), customerName,order,true);
+        customer = new CustomPushButton(QIcon(":/customer.ico"), customerName,order,true);
         salesTable->setCellWidget(salesTable->rowCount() - 1, 1, customer);
 
     } else {
         tableItem = new QTableWidgetItem(QIcon(":/delivery-bike.ico"), "Delivery");
         tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
         salesTable->setItem(salesTable->rowCount() - 1, 2, tableItem);
-        CustomPushButton *customer = new CustomPushButton(QIcon(":/customer.ico"), customerName,order,false);
+        customer = new CustomPushButton(QIcon(":/customer.ico"), customerName,order,false);
         salesTable->setCellWidget(salesTable->rowCount() - 1, 1, customer);
     }
     if(paymentStatus=="Paid"){
@@ -181,6 +206,7 @@ void SalesAndReports::addSalesRowFromJSon(double total, bool physical, QString c
                           +QString::number(getNumberOfPaidTransactions())+"\nPaid Amount = "
                           +QString::number(getTotalPaidPayment())+"\n-----------------------\n"+"Unpaid = "
                           +QString::number(getNumberOfUnPaidTransactions())+"\nUnPaid Amount = "+QString::number(getTotalDuePayment()));
+    topSellings->setText(getTopSellingMedicines(nOfTopSellings));
 
 }
 
@@ -192,7 +218,6 @@ void SalesAndReports::removeRow(int row)
 
 void SalesAndReports::setDeliveryStatus(QString customerName, QString customerOrder)
 {
-    qDebug()<<"I am in setDeliveryStatus";
     for (int rows = 0; rows < salesTable->rowCount(); ++rows) {
         CustomPushButton *button = qobject_cast<CustomPushButton*>(salesTable->cellWidget(rows, 1));
         if (button && button->text() == customerName&&button->correspondingOrder==customerOrder) {
@@ -206,6 +231,7 @@ void SalesAndReports::setDeliveryStatus(QString customerName, QString customerOr
                           +QString::number(getNumberOfPaidTransactions())+"\nPaid Amount = "
                           +QString::number(getTotalPaidPayment())+"\n-----------------------\n"+"Unpaid = "
                           +QString::number(getNumberOfUnPaidTransactions())+"\nUnPaid Amount = "+QString::number(getTotalDuePayment()));
+    topSellings->setText(getTopSellingMedicines(nOfTopSellings));
 
 }
 
@@ -251,6 +277,73 @@ double SalesAndReports::getTotalPaidPayment()
         }
     }
     return totalPaid;
+}
+
+
+QMultiMap<int, QString> SalesAndReports::getMedicineSales()
+{
+    QMultiMap<int,QString> bestSellings;
+    QDate date =QDate::currentDate();
+    QString currentDate =date.toString("dd/MMM/yyyy");
+    QJsonObject jsonObj;
+    QFile file("Sales.json");
+    if (file.open(QIODevice::ReadOnly)) {
+        QByteArray jsonData = file.readAll();
+        file.close();
+
+        QJsonParseError parseError;
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
+        if (parseError.error != QJsonParseError::NoError) {
+            qDebug() << "Parse error: " << parseError.errorString();
+        }
+
+        if (jsonDoc.isObject()) {
+            jsonObj = jsonDoc.object();
+        } else {
+            qDebug() << "JSON is not an object.";
+        }
+    } else {
+        qDebug() << "Unable to open file.";
+    }
+
+    if (jsonObj.contains(currentDate) && jsonObj[currentDate].isArray()) {
+        QJsonArray dateArray = jsonObj[currentDate].toArray();
+        for (int rows = 0; rows < medicinesTable->rowCount(); ++rows) {
+            QString medicineName = medicinesTable->item(rows, 0)->text();
+            int numberOfSales = 0;
+            for (const QJsonValue &value : dateArray) {
+                QJsonObject tableRow = value.toObject();
+                QJsonObject button = tableRow["Button"].toObject();
+                QString order = button["Order"].toString();
+                if (order.contains(medicineName, Qt::CaseInsensitive)) {
+                    ++numberOfSales;
+                }
+            }
+            bestSellings.insert(numberOfSales, medicineName);
+        }
+    } else {
+        qDebug() << "No data for the current date or invalid structure.";
+    }
+    return bestSellings;
+}
+
+QString SalesAndReports::getTopSellingMedicines(int topN)
+{
+    QMultiMap<int, QString> bestSellings = getMedicineSales();
+    QStringList topMedicines;
+    QMultiMap<int, QString>::const_iterator it = bestSellings.constEnd();
+    int count = 0;
+
+    while (it != bestSellings.constBegin() && count < topN) {
+        --it;
+        topMedicines.append(it.value());
+        ++count;
+    }
+    QString topSellingsText ="Top Sellings :";
+    for (int i = 0; i < topMedicines.count(); ++i) {
+        topSellingsText.append("\n"+QString::number(i+1)+". "+topMedicines.at(i));
+    }
+    return topSellingsText;
 }
 
 void SalesAndReports::readFromJson()
@@ -377,4 +470,5 @@ SalesAndReports::~SalesAndReports()
     delete salesTable;
     delete tableItem;
     delete totalRevenue;
+    delete topSellings;
 }

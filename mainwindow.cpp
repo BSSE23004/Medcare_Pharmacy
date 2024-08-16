@@ -22,9 +22,9 @@ MainWindow::MainWindow(QWidget *parent)
     //building menus
     billMenu();
     medicinesMenu();
+    readMedicineTableFromJson();
     salesAndReportsMenu();
     ordersAndDeliveryMenu();
-    readMedicineTableFromJson();
     kanbanBoard->readFromJson();
     salesMenu->readFromJson();
     connect(kanbanBoard->deliveryInput->orderButton,SIGNAL(clicked(bool)),this,SLOT(handleOrderButton()));
@@ -36,7 +36,6 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow() {
     writeMedicinesTableToJson();
     kanbanBoard->writeToJson();
-    salesMenu->writeToJson();
     delete hbox;
     delete listMenu;
     delete hideButton;
@@ -329,7 +328,7 @@ void MainWindow::ordersAndDeliveryMenu()
 
 void MainWindow::salesAndReportsMenu()
 {
-    salesMenu =new SalesAndReports(this);
+    salesMenu =new SalesAndReports(this,medicinesTable);
     salesMenu->setGeometry(175,0,1100,700);
     salesMenu->hide();
 }
@@ -673,7 +672,6 @@ void MainWindow::handleDoneList()
         QJsonObject customer = customersJSONArray[i].toObject();
         for (int j = 0; j < kanbanBoard->doneList->count(); ++j) {
             QListWidgetItem *item = kanbanBoard->doneList->item(j);
-            qDebug()<<"Searching for name to setdeliveryStatus";
             if(item && item->text().contains("Name : "+customer["Name"].toString()+"\nID : "+customer["OrderID"].toString()+"\nAddress : "+customer["Address"].toString()+"\nPhone : "+customer["PhoneNumber"].toString(), Qt::CaseInsensitive)){
                 salesMenu->setDeliveryStatus(customer["Name"].toString(),customer["Order"].toString());
             }

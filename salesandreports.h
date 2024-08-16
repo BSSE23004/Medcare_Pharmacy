@@ -24,6 +24,8 @@
 #include <QJsonArray>
 #include <QFile>
 #include <custompushbutton.h>
+#include <QMultiMap>
+#include <QSizePolicy>
 
 using namespace nlohmann;
 
@@ -31,15 +33,19 @@ class SalesAndReports : public QWidget
 {
     Q_OBJECT
     QVBoxLayout *mainLayout;
+    QVBoxLayout *buttonLayout;
     QHBoxLayout *boardLayout;
     QTableWidget *salesTable;
     QTableWidgetItem *tableItem;
     QPushButton *totalRevenue;
-    QPushButton *customer;
+    QPushButton *topSellings;
+    CustomPushButton *customer;
+    QTableWidget *medicinesTable;
+    int nOfTopSellings;
 
 
 public:
-    explicit SalesAndReports(QWidget *parent = nullptr);
+    explicit SalesAndReports(QWidget *parent = nullptr,QTableWidget *newMedicinesTable=nullptr);
     void addSalesRow(double total=0.0,bool physical=true,QString customerName="N/A",QString phoneNumber="N/A",QString address="N/A",QString order="",QString orderID="N/A");
     void addSalesRowFromJSon(double total=0.0,bool physical=true,QString customerName="N/A",QString order="",QString dateAndTime="N/A",QString paymentStatus="N/A");
     void removeRow(int row);
@@ -48,6 +54,8 @@ public:
     int getNumberOfUnPaidTransactions();
     double getTotalDuePayment();
     double getTotalPaidPayment();
+    QMultiMap<int,QString> getMedicineSales();
+    QString getTopSellingMedicines(int topN);
     void readFromJson();
     void writeToJson();
     ~SalesAndReports();
