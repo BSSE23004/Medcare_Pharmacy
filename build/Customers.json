@@ -1,0 +1,22 @@
+{
+    "Customers": [
+        {
+            "Address": "Hafiz Street",
+            "Name": "Ibrahim",
+            "Order": "Medicine : Leflox\nQuantity : 1\nPrice : 60.0\nPrice/Quantity : 60\n\n\n\nTotal : 60",
+            "OrderID": "1",
+            "PaymentType": "Delivery",
+            "PhoneNumber": "0321-6160617",
+            "Total": 60
+        },
+        {
+            "Address": "Hafiz-Colony",
+            "Name": "Kousar",
+            "Order": "Medicine : Cetirizine\nQuantity : 1\nPrice : 18.0\nPrice/Quantity : 18\n\n\n\nTotal : 18",
+            "OrderID": "2",
+            "PaymentType": "Delivery",
+            "PhoneNumber": "0306-3611844",
+            "Total": 18
+        }
+    ]
+}

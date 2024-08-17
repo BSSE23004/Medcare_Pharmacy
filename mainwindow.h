@@ -48,6 +48,7 @@
 #include <QtPrintSupport/QPrinter>
 #include <QPainter>
 #include <QtPrintSupport/QPrintDialog>
+#include <QtPrintSupport/QPrintPreviewDialog>
 #include <QString>
 #include <QApplication>
 #include <QPrinter>
@@ -56,6 +57,7 @@
 #include <QPrintPreviewDialog>
 #include <kanbanboard.h>
 #include <salesandreports.h>
+#include <customercare.h>
 
 
 using namespace nlohmann;
@@ -105,6 +107,9 @@ class MainWindow : public QMainWindow
 ////Sales&Reports Menu
     SalesAndReports *salesMenu;
 ////Sales&Reports Menu
+////CustomerCare Menu
+    CustomerCare *customerCare;
+////CustomerCare Menu
 
 
 public:
@@ -129,6 +134,9 @@ public:
     ////////////////////////////Sales&Reports Menu
     void salesAndReportsMenu();
     ////////////////////////////Sales&Reports Menu
+    ////////////////////////////CustomerCare Menu
+    void customerCareMenu();
+    ////////////////////////////CustomerCare Menu
 private slots:
     ////////////////////Medicine Menu
     void handleSearchBarAndButton();

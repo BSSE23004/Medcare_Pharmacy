@@ -13,10 +13,16 @@ SalesAndReports::SalesAndReports(QWidget *parent, QTableWidget *NewMedicinesTabl
     salesTable->setFont(QFont("Times New Roman", 14));
     QStringList headers = {"Date", "Customer", "SalesType", "Payment Status", "Total"};
     salesTable->setHorizontalHeaderLabels(headers);
-    for (int i = 0; i < salesTable->columnCount(); ++i) {
-        salesTable->setColumnWidth(i, 150);
-    }
-    salesTable->setColumnWidth(0, 170);
+    ////SetColumnWidth
+    /// date
+    salesTable->setColumnWidth(0, 155);
+    /// Customer PushButton
+    salesTable->setColumnWidth(1, 150);
+    /// SalesType
+    salesTable->setColumnWidth(2, 130);
+    /// Payment Status
+    salesTable->setColumnWidth(3, 135);
+    /// Total
     salesTable->setColumnWidth(4, 127);
 
     totalRevenue = new QPushButton();
@@ -29,14 +35,22 @@ SalesAndReports::SalesAndReports(QWidget *parent, QTableWidget *NewMedicinesTabl
                           QString::number(getTotalPaidPayment()) + "\n-----------------------\n" +
                           "Unpaid = " + QString::number(getNumberOfUnPaidTransactions()) + "\nUnPaid Amount = " + QString::number(getTotalDuePayment()));
     totalRevenue->setFont(QFont("Times New Roman", 18));
-    totalRevenue->setStyleSheet("color : DarkCyan");
+    totalRevenue->setStyleSheet("QPushButton {"
+                                "border-radius: 10px;"  // Adjust the radius value to control how round the corners are
+                                "color: goldenrod;"  // Optional: sets the text color
+                                "padding: 5px 10px;"  // Optional: sets padding to make the button size more appropriate
+                                "}");
     topSellings = new QPushButton();
     topSellings->setMinimumHeight(200);
     topSellings->setMinimumWidth(200);
     topSellings->setIcon(QIcon(":/growth.ico"));
     topSellings->setIconSize(QSize(70, 70));
     topSellings->setFont(QFont("Times New Roman", 18));
-    topSellings->setStyleSheet("color : DarkCyan");
+    topSellings->setStyleSheet("QPushButton {"
+                                "border-radius: 10px;"  // Adjust the radius value to control how round the corners are
+                                "color: green;"  // Optional: sets the text color
+                                "padding: 5px 10px;"  // Optional: sets padding to make the button size more appropriate
+                                "}");
     topSellings->setText(getTopSellingMedicines(nOfTopSellings));
     // Layouts
     mainLayout = new QVBoxLayout(this);

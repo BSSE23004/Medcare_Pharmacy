@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(hideButton,SIGNAL(clicked(bool)),this,SLOT(handleHideButton()));
     connect(listMenu,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(currentMenu()));
     //building menus
+    customerCareMenu();
     billMenu();
     medicinesMenu();
     readMedicineTableFromJson();
@@ -64,6 +65,7 @@ MainWindow::~MainWindow() {
     delete generateBillButton;
     delete kanbanBoard;
     delete salesMenu;
+    delete customerCare;
 }
 
 void MainWindow::makeListMenu()
@@ -284,10 +286,6 @@ void MainWindow::settingColumnsWidth()
 
 void MainWindow::billMenu()
 {
-    receiptText="";
-    receiptText.append("Receipt\n");
-    receiptText.append("===============================================================\n");
-    receiptText.append("Name             Quantity         Price            Mg         TotalPrice/item\n");
     generateBillButton =new QPushButton(QIcon(":/add.ico"),"Generate Bill",this);
     generateBillButton->setGeometry(750,0,205,60);
     generateBillButton->setIconSize(QSize(55,55));
@@ -308,7 +306,7 @@ void MainWindow::padRight(QString &text)
 {
 
     for (int i = text.size(); i < widthForString; ++i) {
-        text.append(" ");
+        text.append("-");
     }
     ++it;
     if(it%5==0){
@@ -331,6 +329,13 @@ void MainWindow::salesAndReportsMenu()
     salesMenu =new SalesAndReports(this,medicinesTable);
     salesMenu->setGeometry(175,0,1100,700);
     salesMenu->hide();
+}
+
+void MainWindow::customerCareMenu()
+{
+    customerCare =new CustomerCare(this);
+    customerCare->setGeometry(175,0,1100,700);
+    customerCare->hide();
 }
 
 
@@ -419,6 +424,9 @@ void MainWindow::currentMenu()
     /////////Sales&Reports Menu
     salesMenu->hide();
     /////////Sales&Reports Menu
+    /////////CustomerCare  Menu
+    customerCare->hide();
+    /////////CustomerCare  Menu
     if(listMenu->currentItem()->text()=="Medicines"){
         medicinesTable->show();
         searchButton->show();
@@ -439,7 +447,10 @@ void MainWindow::currentMenu()
     if(listMenu->currentItem()->text()=="Sales And Reports"){
         salesMenu->show();
     }
-
+    if(listMenu->currentItem()->text()=="Customer Care"){
+        customerCare->initializeList();
+        customerCare->show();
+    }
 }
 
 
@@ -605,10 +616,16 @@ void MainWindow::printReceipt(QString &text)
     text.append("===============================================================\n");
     text.append("Thank you for your purchase!\n");
     total=0;
+    QString finalText="";
+    finalText.append("Receipt\n");
+    finalText.append("===============================================================\n");
+    finalText.append("Name             Quantity         Price            Mg         TotalPrice/item\n");
+    finalText.append(text);
     // Create a printer object
     QPrinter printer;
-    printer.setPageSize(QPageSize(QPageSize::A4));
-    printer.setPageOrientation(QPageLayout::Portrait);
+    printer.setPrinterName("Microsoft Print to PDF");
+    printer.setPageSize(QPageSize::A4); // Ensure the page size is set
+    printer.setPageOrientation(QPageLayout::Portrait); // Ensure the orientation is set
 
     // Create a print dialog
     QPrintDialog printDialog(&printer);
@@ -618,7 +635,6 @@ void MainWindow::printReceipt(QString &text)
 
     // Create a painter to draw on the printer
     QPainter painter(&printer);
-
     // Set font and other properties
     QFont font = painter.font();
     font.setPointSize(12);
@@ -628,9 +644,19 @@ void MainWindow::printReceipt(QString &text)
     QRect rect = painter.viewport();
     int margin = 50;
     rect.adjust(margin, margin, -margin, -margin);
+    if (!rect.isValid()) {
+        qDebug() << "Invalid rectangle for drawing.";
+        painter.end();
+        return;
+    }
 
-    // Draw the text
-    painter.drawText(rect, Qt::AlignLeft | Qt::TextWordWrap, receiptText);
+    if (finalText.isEmpty()) {
+        qDebug() << "No text to print.";
+        painter.end();
+        return;
+    }
+
+    painter.drawText(rect, Qt::AlignLeft | Qt::TextWordWrap, finalText);
 
     painter.end(); // End the painting
     receiptText="";
@@ -677,15 +703,6 @@ void MainWindow::handleDoneList()
             }
         }
     }
-
-    // for (int i = 0; i < kanbanBoard->customersName.count(); ++i) {
-    //     for (int j = 0; j < kanbanBoard->doneList->count(); ++j) {
-    //         QListWidgetItem *item = kanbanBoard->doneList->item(j);
-    //         if(item && item->text().contains(kanbanBoard->customersName.at(i), Qt::CaseInsensitive)&& item->text().contains(kanbanBoard->customersPhoneNumbers.at(i), Qt::CaseInsensitive)&& item->text().contains(kanbanBoard->customersAddresses.at(i), Qt::CaseInsensitive)){
-    //             salesMenu->setDeliveryStatus(kanbanBoard->customersName.at(i),kanbanBoard->customersAddresses.at(i),kanbanBoard->customersPhoneNumbers.at(i));
-    //         }
-    //     }
-    // }
 }
 
 

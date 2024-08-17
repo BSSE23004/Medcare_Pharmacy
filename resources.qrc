@@ -15,11 +15,11 @@
         <file>add.ico</file>
         <file>removeButton.ico</file>
         <file>receipt.ico</file>
-        <file>resources.rc</file>
         <file>calender.ico</file>
         <file>cash.ico</file>
         <file>growth.ico</file>
         <file>done.ico</file>
         <file>unpaid.ico</file>
+        <file>details.ico</file>
     </qresource>
 </RCC>

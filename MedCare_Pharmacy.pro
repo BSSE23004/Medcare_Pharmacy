@@ -11,6 +11,8 @@ CONFIG += c++17
 
 SOURCES += \
     billinputdialog.cpp \
+    customercare.cpp \
+    customlistwidgetitem.cpp \
     custompushbutton.cpp \
     deliveryinputdialog.cpp \
     inputdialog.cpp \
@@ -21,6 +23,8 @@ SOURCES += \
 
 HEADERS += \
     billinputdialog.h \
+    customercare.h \
+    customlistwidgetitem.h \
     custompushbutton.h \
     deliveryinputdialog.h \
     inputdialog.h \
@@ -39,8 +43,6 @@ RESOURCES += \
    resources.qrc
 
 
-# RC_FILE =resources.rc
-
-
+RESOURCES +=resources.rc
 
 
