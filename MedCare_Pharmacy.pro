@@ -1,5 +1,7 @@
 QT       += core gui
 QT += core gui printsupport
+QT += network
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,18 +15,21 @@ SOURCES += \
     billinputdialog.cpp \
     customercare.cpp \
     customlistwidgetitem.cpp \
+    customlistwidgetitemforstaff.cpp \
     custompushbutton.cpp \
     deliveryinputdialog.cpp \
     inputdialog.cpp \
     kanbanboard.cpp \
     main.cpp \
     mainwindow.cpp \
-    salesandreports.cpp
+    salesandreports.cpp \
+    staffmenu.cpp
 
 HEADERS += \
     billinputdialog.h \
     customercare.h \
     customlistwidgetitem.h \
+    customlistwidgetitemforstaff.h \
     custompushbutton.h \
     deliveryinputdialog.h \
     inputdialog.h \
@@ -32,7 +37,8 @@ HEADERS += \
     kanbanboard.h \
     mainwindow.h \
     phonelineedit.h \
-    salesandreports.h
+    salesandreports.h \
+    staffmenu.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

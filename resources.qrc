@@ -21,5 +21,6 @@
         <file>done.ico</file>
         <file>unpaid.ico</file>
         <file>details.ico</file>
+        <file>send.ico</file>
     </qresource>
 </RCC>

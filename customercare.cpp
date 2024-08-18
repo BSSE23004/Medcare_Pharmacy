@@ -26,7 +26,9 @@ CustomerCare::CustomerCare(QWidget *parent)
 
     initializeList();
 
-    connect(customersList,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(handleListWidget()));
+
+
+
 }
 
 void CustomerCare::initializeList()

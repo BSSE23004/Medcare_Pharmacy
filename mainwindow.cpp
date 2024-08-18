@@ -451,6 +451,8 @@ void MainWindow::currentMenu()
         customerCare->initializeList();
         customerCare->show();
     }
+    if(listMenu->currentItem()->text()=="Staff"){
+    }
 }
 
 
