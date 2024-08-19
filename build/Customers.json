@@ -17,6 +17,24 @@
             "PaymentType": "Delivery",
             "PhoneNumber": "0306-3611844",
             "Total": 18
+        },
+        {
+            "Address": "N/A",
+            "Name": "N/A",
+            "Order": "Medicine : Panadol\nQuantity : 1\nPrice : 20.0\nMG : 500\n$/Quantity : 20\n\n\n\nTotal : 20",
+            "OrderID": "N/A",
+            "PaymentType": "Physical",
+            "PhoneNumber": "N/A",
+            "Total": 20
+        },
+        {
+            "Address": "superb",
+            "Name": "Ibbi",
+            "Order": "Medicine : nestle\nQuantity : 1\nPrice : 120.0\nPrice/Quantity : 120\n\n\n\nTotal : 120",
+            "OrderID": "3",
+            "PaymentType": "Delivery",
+            "PhoneNumber": "1122-2112111",
+            "Total": 120
         }
     ]
 }

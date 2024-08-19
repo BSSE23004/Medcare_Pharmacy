@@ -58,6 +58,7 @@
 #include <kanbanboard.h>
 #include <salesandreports.h>
 #include <customercare.h>
+#include <staffmenu.h>
 
 
 using namespace nlohmann;
@@ -110,6 +111,9 @@ class MainWindow : public QMainWindow
 ////CustomerCare Menu
     CustomerCare *customerCare;
 ////CustomerCare Menu
+////Staff Menu
+    StaffMenu *staffOption;
+////Staff Menu
 
 
 public:
@@ -137,6 +141,9 @@ public:
     ////////////////////////////CustomerCare Menu
     void customerCareMenu();
     ////////////////////////////CustomerCare Menu
+    ////////////////////////////Staff Menu
+    void staffMenu();
+    ////////////////////////////Staff Menu
 private slots:
     ////////////////////Medicine Menu
     void handleSearchBarAndButton();

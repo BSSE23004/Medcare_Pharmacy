@@ -154,5 +154,29 @@
             "SalesType": "Delivery",
             "Total": "18"
         }
+    ],
+    "20/Aug/2024": [
+        {
+            "Button": {
+                "Label": "N/A",
+                "Order": "Medicine : Panadol\nQuantity : 1\nPrice : 20.0\nMG : 500\n$/Quantity : 20\n\n\n\nTotal : 20",
+                "Physical": true
+            },
+            "Date&Time": "02:01\n20/Aug/2024",
+            "Payment Status": "Paid",
+            "SalesType": "Physical",
+            "Total": "20"
+        },
+        {
+            "Button": {
+                "Label": "Ibbi",
+                "Order": "Medicine : nestle\nQuantity : 1\nPrice : 120.0\nPrice/Quantity : 120\n\n\n\nTotal : 120",
+                "Physical": false
+            },
+            "Date&Time": "02:01\n20/Aug/2024",
+            "Payment Status": "UnPaid",
+            "SalesType": "Delivery",
+            "Total": "120"
+        }
     ]
 }

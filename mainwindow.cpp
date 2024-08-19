@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(hideButton,SIGNAL(clicked(bool)),this,SLOT(handleHideButton()));
     connect(listMenu,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(currentMenu()));
     //building menus
+    staffMenu();
     customerCareMenu();
     billMenu();
     medicinesMenu();
@@ -147,7 +148,17 @@ void MainWindow::medicinesMenu()
     addButton->setIconSize(QSize(55,55));
     removeButton->setIconSize(QSize(40,40));
     addButton->setFont(QFont("Times New Roman",14));
+    addButton->setStyleSheet("QPushButton {"
+                               "border-radius: 10px;"  // Adjust the radius value to control how round the corners are
+                               "color: green;"  // Optional: sets the text color
+                               "padding: 5px 10px;"  // Optional: sets padding to make the button size more appropriate
+                               "}");
     removeButton->setFont(QFont("Times New Roman",14));
+    removeButton->setStyleSheet("QPushButton {"
+                               "border-radius: 10px;"  // Adjust the radius value to control how round the corners are
+                               "color: red;"  // Optional: sets the text color
+                               "padding: 5px 10px;"  // Optional: sets padding to make the button size more appropriate
+                               "}");
     connect(addButton,SIGNAL(clicked(bool)),this,SLOT(handleAddRowButton()));
     connect(removeButton,SIGNAL(clicked(bool)),this,SLOT(handleRemoveRowButton()));
 
@@ -290,11 +301,21 @@ void MainWindow::billMenu()
     generateBillButton->setGeometry(750,0,205,60);
     generateBillButton->setIconSize(QSize(55,55));
     generateBillButton->setFont(QFont("Times New Roman",14));
+    generateBillButton->setStyleSheet("QPushButton {"
+                               "border-radius: 10px;"  // Adjust the radius value to control how round the corners are
+                               "color: green;"  // Optional: sets the text color
+                               "padding: 5px 10px;"  // Optional: sets padding to make the button size more appropriate
+                               "}");
     generateBillButton->hide();
     generateReceiptButton =new QPushButton(QIcon(":/receipt.ico"),"Generate Receipt",this);
-    generateReceiptButton->setGeometry(750,70,205,60);
+    generateReceiptButton->setGeometry(765,70,205,60);
     generateReceiptButton->setIconSize(QSize(50,50));
     generateReceiptButton->setFont(QFont("Times New Roman",14));
+    generateReceiptButton->setStyleSheet("QPushButton {"
+                               "border-radius: 10px;"  // Adjust the radius value to control how round the corners are
+                               "color: green;"  // Optional: sets the text color
+                               "padding: 5px 10px;"  // Optional: sets padding to make the button size more appropriate
+                               "}");
     generateReceiptButton->hide();
     connect(generateBillButton,SIGNAL(clicked(bool)),this,SLOT(handleBillButton()));
     connect(generateReceiptButton,SIGNAL(clicked(bool)),this,SLOT(handleReceiptButton()));
@@ -336,6 +357,13 @@ void MainWindow::customerCareMenu()
     customerCare =new CustomerCare(this);
     customerCare->setGeometry(175,0,1100,700);
     customerCare->hide();
+}
+
+void MainWindow::staffMenu()
+{
+    staffOption =new StaffMenu(this);
+    staffOption->setGeometry(175,0,1100,700);
+    staffOption->hide();
 }
 
 
@@ -427,6 +455,9 @@ void MainWindow::currentMenu()
     /////////CustomerCare  Menu
     customerCare->hide();
     /////////CustomerCare  Menu
+    /////////Staff Menu
+    staffOption->hide();
+    /////////Staff Menu
     if(listMenu->currentItem()->text()=="Medicines"){
         medicinesTable->show();
         searchButton->show();
@@ -452,6 +483,7 @@ void MainWindow::currentMenu()
         customerCare->show();
     }
     if(listMenu->currentItem()->text()=="Staff"){
+        staffOption->show();
     }
 }
 
