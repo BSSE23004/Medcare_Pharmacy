@@ -10,7 +10,9 @@
 #include <QFormLayout>
 #include <QString>
 #include <QLabel>
-// #include <phonelineedit.h>
+#include <phonelineedit.h>
+#include <emailLineEdit.h>
+#include <QIntValidator>
 
 class AddMemberDialog : public QDialog
 {
@@ -19,9 +21,11 @@ class AddMemberDialog : public QDialog
     QHBoxLayout *buttonLayout;
     QFormLayout *formLayout;
     QLineEdit *nameLine;
-    QLineEdit *phoneNumberLine;
-    QLineEdit *emailLine;
+    PhoneLineEdit *phoneNumberLine;
+    EmailLineEdit *emailLine;
     QLineEdit *addressLine;
+    QIntValidator *intvalidator;
+    QLineEdit *pin;
     QPushButton *okButton;
     QPushButton *cancelButton;
 public:
@@ -30,6 +34,7 @@ public:
     QString getEmail();
     QString getPhoneNumber();
     QString getAddress();
+    int getPin();
 private slots:
     void accept();
 };

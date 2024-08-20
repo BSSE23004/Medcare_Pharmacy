@@ -34,6 +34,7 @@ HEADERS += \
     customlistwidgetitemforstaff.h \
     custompushbutton.h \
     deliveryinputdialog.h \
+    emailLineEdit.h \
     inputdialog.h \
     kanbanListWidget.h \
     kanbanboard.h \

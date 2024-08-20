@@ -18,7 +18,6 @@
 #include <QtCharts/QBarCategoryAxis>
 #include <QtCharts/QValueAxis>
 #include <QtCharts/QChart>
-#include <nlohmann/json.hpp>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -27,7 +26,6 @@
 #include <QMultiMap>
 #include <QSizePolicy>
 
-using namespace nlohmann;
 
 class SalesAndReports : public QWidget
 {

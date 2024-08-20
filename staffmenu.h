@@ -10,6 +10,9 @@
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QInputDialog>
+#include <QMessageBox>
+
 
 
 class StaffMenu : public QWidget
@@ -21,6 +24,7 @@ class StaffMenu : public QWidget
     QHBoxLayout *mainLayout;
     QPushButton *addMember;
     QPushButton *removeMember;
+    QPushButton *memberInfoButton;
     QListWidget *staffList;
     QTableWidget *memberInfoTable;
 
@@ -31,6 +35,8 @@ public:
 
 private slots:
     void handleAddMemberButton();
+    void handlestaffList();
+    void handleAddingAttendance();
 };
 
 #endif // STAFFMENU_H

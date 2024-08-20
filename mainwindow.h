@@ -61,7 +61,6 @@
 #include <staffmenu.h>
 
 
-using namespace nlohmann;
 
 class MainWindow : public QMainWindow
 {

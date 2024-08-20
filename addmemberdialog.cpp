@@ -4,8 +4,11 @@ AddMemberDialog::AddMemberDialog(QWidget *parent) : QDialog{parent} {
 
     nameLine =new QLineEdit(this);
     addressLine =new QLineEdit(this);
-    emailLine =new QLineEdit(this);
-    phoneNumberLine =new QLineEdit(this);
+    emailLine =new EmailLineEdit(this);
+    intvalidator =new QIntValidator(this);
+    pin =new EmailLineEdit(this);
+    pin->setValidator(intvalidator);
+    phoneNumberLine =new PhoneLineEdit(this);
     okButton =new QPushButton("Ok",this);
     cancelButton =new QPushButton("Cancel",this);
     formLayout = new QFormLayout();
@@ -13,6 +16,7 @@ AddMemberDialog::AddMemberDialog(QWidget *parent) : QDialog{parent} {
     formLayout->addRow("Phone:", phoneNumberLine);
     formLayout->addRow("Email:", emailLine);
     formLayout->addRow("Address:", addressLine);
+    formLayout->addRow("Pin:", pin);
 
 
     buttonLayout = new QHBoxLayout;
@@ -47,6 +51,11 @@ QString AddMemberDialog::getPhoneNumber()
 QString AddMemberDialog::getAddress()
 {
     return addressLine->text();
+}
+
+int AddMemberDialog::getPin()
+{
+    return pin->text().toInt();
 }
 
 void AddMemberDialog::accept()

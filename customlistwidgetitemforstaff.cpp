@@ -1,11 +1,12 @@
 #include "customlistwidgetitemforstaff.h"
 
 
-CustomListWidgetItemForStaff::CustomListWidgetItemForStaff(QString name, QString newPhoneNumber, QString newAddress, QString newEmail, QIcon profilePic, QListWidget *parent)
+CustomListWidgetItemForStaff::CustomListWidgetItemForStaff(QString name, QString newPhoneNumber, QString newAddress, QString newEmail, int newPin, QIcon profilePic, QListWidget *parent)
  : QListWidgetItem{parent}
 {
     setText(name);
     setIcon(profilePic);
+    pin=newPin;
     phoneNumber=newPhoneNumber;
     address=newAddress;
     email=newEmail;
@@ -13,6 +14,7 @@ CustomListWidgetItemForStaff::CustomListWidgetItemForStaff(QString name, QString
 
 void CustomListWidgetItemForStaff::addNewAttendance(QString attendance)
 {
+    qDebug()<<"Here in addNewAttendance";
     QDate date=QDate::currentDate();
     QString currentDate =date.toString("dd/MMM/yyyy");
     attendances.append(attendance);
@@ -27,4 +29,14 @@ void CustomListWidgetItemForStaff::addAttendance(QString attendance)
 void CustomListWidgetItemForStaff::addDates(QString date)
 {
     dates.append(date);
+}
+
+QStringList CustomListWidgetItemForStaff::getDates()
+{
+    return dates;
+}
+
+QStringList CustomListWidgetItemForStaff::getattendances()
+{
+    return attendances;
 }

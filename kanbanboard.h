@@ -21,7 +21,6 @@
 #include <QDebug>
 #include <QAbstractFileIconProvider>
 #include <salesandreports.h>
-using namespace nlohmann;
 
 
 class KanbanBoard : public QWidget

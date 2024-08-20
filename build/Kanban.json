@@ -1,17 +1,11 @@
 {
     "Done": [
         {
-            "content": "Name : Ibrahim\nID : 1\nAddress : Hafiz Street\nPhone : 0321-6160617\nOrder : Medicine : Leflox\nQuantity : 1\nPrice : 60.0\nPrice/Quantity : 60\n\nTotal  : 60"
-        },
-        {
-            "content": "Name : Kousar\nID : 2\nAddress : Hafiz-Colony\nPhone : 0306-3611844\nOrder : Medicine : Cetirizine\nQuantity : 1\nPrice : 18.0\nPrice/Quantity : 18\n\nTotal  : 18"
+            "content": "Name : Ibrahim\nID : 1\nAddress : Hafiz-Street\nPhone : 0321-6160617\nOrder : Medicine : Metformin\nQuantity : 1\nPrice : 40.0\nPrice/Quantity : 40\n\nTotal  : 40"
         }
     ],
     "InProgress": [
     ],
     "ToDo": [
-        {
-            "content": "Name : Ibbi\nID : 3\nAddress : superb\nPhone : 1122-2112111\nOrder : Medicine : nestle\nQuantity : 1\nPrice : 120.0\nPrice/Quantity : 120\n\nTotal  : 120"
-        }
     ]
 }

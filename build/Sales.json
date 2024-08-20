@@ -1,160 +1,4 @@
 {
-    "17/Aug/2024": [
-        {
-            "Button": {
-                "Label": "N/A",
-                "Order": "Medicine : Leflox\nQuantity : 1\nPrice : 60.0\nMG : 100\n$/Quantity : 60\n\n\n\nTotal : 60",
-                "Physical": true
-            },
-            "Date&Time": "11:20\n17/Aug/2024",
-            "Payment Status": "Paid",
-            "SalesType": "Physical",
-            "Total": "60"
-        },
-        {
-            "Button": {
-                "Label": "N/A",
-                "Order": "Medicine : Nestle\nQuantity : 1\nPrice : 120.0\nMG : 50\n$/Quantity : 120\n\n\n\nTotal : 120",
-                "Physical": true
-            },
-            "Date&Time": "11:24\n17/Aug/2024",
-            "Payment Status": "Paid",
-            "SalesType": "Physical",
-            "Total": "120"
-        },
-        {
-            "Button": {
-                "Label": "N/A",
-                "Order": "Medicine : Ibuprofen\nQuantity : 1\nPrice : 15.0\nMG : 400\n$/Quantity : 15\n\nMedicine : Panadol\nQuantity : 1\nPrice : 20.0\nMG : 500\n$/Quantity : 20\n\n\n\nTotal : 35",
-                "Physical": true
-            },
-            "Date&Time": "11:25\n17/Aug/2024",
-            "Payment Status": "Paid",
-            "SalesType": "Physical",
-            "Total": "35"
-        },
-        {
-            "Button": {
-                "Label": "N/A",
-                "Order": "Medicine : Tagipmet\nQuantity : 2\nPrice : 350.0\nMG : 500\n$/Quantity : 700\n\nMedicine : Simvastatin\nQuantity : 1\nPrice : 45.0\nMG : 20\n$/Quantity : 45\n\nMedicine : Aspirin\nQuantity : 1\nPrice : 12.0\nMG : 300\n$/Quantity : 12\n\n\n\nTotal : 757",
-                "Physical": true
-            },
-            "Date&Time": "11:34\n17/Aug/2024",
-            "Payment Status": "Paid",
-            "SalesType": "Physical",
-            "Total": "757"
-        },
-        {
-            "Button": {
-                "Label": "N/A",
-                "Order": "Medicine : Panadol\nQuantity : 1\nPrice : 20.0\nMG : 500\n$/Quantity : 20\n\nMedicine : Hydrochlorothiaz\nQuantity : 1\nPrice : 30.0\nMG : 25\n$/Quantity : 30\n\n\n\nTotal : 50",
-                "Physical": true
-            },
-            "Date&Time": "11:35\n17/Aug/2024",
-            "Payment Status": "Paid",
-            "SalesType": "Physical",
-            "Total": "50"
-        },
-        {
-            "Button": {
-                "Label": "N/A",
-                "Order": "Medicine : Pan\nQuantity : 1\nPrice : 20.0\nMG : 500\n$/Quantity : 20\n\nMedicine : Hydrochlorothiaz\nQuantity : 1\nPrice : 30.0\nMG : 25\n$/Quantity : 30\n\n\n\nTotal : 50",
-                "Physical": true
-            },
-            "Date&Time": "11:43\n17/Aug/2024",
-            "Payment Status": "Paid",
-            "SalesType": "Physical",
-            "Total": "50"
-        },
-        {
-            "Button": {
-                "Label": "N/A",
-                "Order": "Medicine : Metformin\nQuantity : 1\nPrice : 40.0\nMG : 500\n$/Quantity : 40\n\nMedicine : Leflox\nQuantity : 1\nPrice : 60.0\nMG : 100\n$/Quantity : 60\n\nMedicine : Tagipmet\nQuantity : 1\nPrice : 350.0\nMG : 500\n$/Quantity : 350\n\n\n\nTotal : 450",
-                "Physical": true
-            },
-            "Date&Time": "11:49\n17/Aug/2024",
-            "Payment Status": "Paid",
-            "SalesType": "Physical",
-            "Total": "450"
-        },
-        {
-            "Button": {
-                "Label": "N/A",
-                "Order": "Medicine : Loratadine\nQuantity : 1\nPrice : 22.0\nMG : 10\n$/Quantity : 22\n\n\n\nTotal : 22",
-                "Physical": true
-            },
-            "Date&Time": "11:53\n17/Aug/2024",
-            "Payment Status": "Paid",
-            "SalesType": "Physical",
-            "Total": "22"
-        },
-        {
-            "Button": {
-                "Label": "N/A",
-                "Order": "Medicine : loratadine\nQuantity : 1\nPrice : 22.0\nMG : 10\n$/Quantity : 22\n\n\n\nTotal : 22",
-                "Physical": true
-            },
-            "Date&Time": "11:58\n17/Aug/2024",
-            "Payment Status": "Paid",
-            "SalesType": "Physical",
-            "Total": "22"
-        },
-        {
-            "Button": {
-                "Label": "N/A",
-                "Order": "Medicine : Panadol\nQuantity : 1\nPrice : 20.0\nMG : 500\n$/Quantity : 20\n\n\n\nTotal : 20",
-                "Physical": true
-            },
-            "Date&Time": "12:03\n17/Aug/2024",
-            "Payment Status": "Paid",
-            "SalesType": "Physical",
-            "Total": "20"
-        },
-        {
-            "Button": {
-                "Label": "N/A",
-                "Order": "Medicine : Panadol\nQuantity : 1\nPrice : 20.0\nMG : 500\n$/Quantity : 20\n\n\n\nTotal : 20",
-                "Physical": true
-            },
-            "Date&Time": "12:17\n17/Aug/2024",
-            "Payment Status": "Paid",
-            "SalesType": "Physical",
-            "Total": "20"
-        },
-        {
-            "Button": {
-                "Label": "N/A",
-                "Order": "Medicine : flegel\nQuantity : 1\nPrice : 25.0\nMG : 40\n$/Quantity : 25\n\n\n\nTotal : 25",
-                "Physical": true
-            },
-            "Date&Time": "12:21\n17/Aug/2024",
-            "Payment Status": "Paid",
-            "SalesType": "Physical",
-            "Total": "25"
-        },
-        {
-            "Button": {
-                "Label": "Ibrahim",
-                "Order": "Medicine : Leflox\nQuantity : 1\nPrice : 60.0\nPrice/Quantity : 60\n\n\n\nTotal : 60",
-                "Physical": false
-            },
-            "Date&Time": "14:22\n17/Aug/2024",
-            "Payment Status": "UnPaid",
-            "SalesType": "Delivery",
-            "Total": "60"
-        },
-        {
-            "Button": {
-                "Label": "Kousar",
-                "Order": "Medicine : Cetirizine\nQuantity : 1\nPrice : 18.0\nPrice/Quantity : 18\n\n\n\nTotal : 18",
-                "Physical": false
-            },
-            "Date&Time": "14:39\n17/Aug/2024",
-            "Payment Status": "UnPaid",
-            "SalesType": "Delivery",
-            "Total": "18"
-        }
-    ],
     "20/Aug/2024": [
         {
             "Button": {
@@ -162,21 +6,21 @@
                 "Order": "Medicine : Panadol\nQuantity : 1\nPrice : 20.0\nMG : 500\n$/Quantity : 20\n\n\n\nTotal : 20",
                 "Physical": true
             },
-            "Date&Time": "02:01\n20/Aug/2024",
+            "Date&Time": "22:00\n20/Aug/2024",
             "Payment Status": "Paid",
             "SalesType": "Physical",
             "Total": "20"
         },
         {
             "Button": {
-                "Label": "Ibbi",
-                "Order": "Medicine : nestle\nQuantity : 1\nPrice : 120.0\nPrice/Quantity : 120\n\n\n\nTotal : 120",
+                "Label": "Ibrahim",
+                "Order": "Medicine : Metformin\nQuantity : 1\nPrice : 40.0\nPrice/Quantity : 40\n\n\n\nTotal : 40",
                 "Physical": false
             },
-            "Date&Time": "02:01\n20/Aug/2024",
+            "Date&Time": "22:01\n20/Aug/2024",
             "Payment Status": "UnPaid",
             "SalesType": "Delivery",
-            "Total": "120"
+            "Total": "40"
         }
     ]
 }
