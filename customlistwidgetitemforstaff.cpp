@@ -14,9 +14,11 @@ CustomListWidgetItemForStaff::CustomListWidgetItemForStaff(QString name, QString
 
 void CustomListWidgetItemForStaff::addNewAttendance(QString attendance)
 {
-    qDebug()<<"Here in addNewAttendance";
     QDate date=QDate::currentDate();
     QString currentDate =date.toString("dd/MMM/yyyy");
+    if(dates.contains(currentDate)){
+        return;
+    }
     attendances.append(attendance);
     dates.append(currentDate);
 }
@@ -28,6 +30,9 @@ void CustomListWidgetItemForStaff::addAttendance(QString attendance)
 
 void CustomListWidgetItemForStaff::addDates(QString date)
 {
+    if(dates.contains(date)){
+        return;
+    }
     dates.append(date);
 }
 

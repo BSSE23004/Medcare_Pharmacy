@@ -37,6 +37,7 @@ private slots:
     void handleAddMemberButton();
     void handlestaffList();
     void handleAddingAttendance();
+    void handleRemoveMember();
 };
 
 #endif // STAFFMENU_H

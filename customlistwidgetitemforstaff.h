@@ -14,10 +14,10 @@
 class CustomListWidgetItemForStaff : public QListWidgetItem
 {
     Q_OBJECT
-    QStringList dates;
-    QStringList attendances;
 
 public:
+    QStringList dates;
+    QStringList attendances;
     QString phoneNumber;
     QString address;
     QString email;

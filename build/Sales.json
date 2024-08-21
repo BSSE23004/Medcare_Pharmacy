@@ -22,5 +22,18 @@
             "SalesType": "Delivery",
             "Total": "40"
         }
+    ],
+    "21/Aug/2024": [
+        {
+            "Button": {
+                "Label": "N/A",
+                "Order": "Medicine : Metformin\nQuantity : 1\nPrice : 40.0\nMG : 500\n$/Quantity : 40\n\n\n\nTotal : 40",
+                "Physical": true
+            },
+            "Date&Time": "23:22\n21/Aug/2024",
+            "Payment Status": "Paid",
+            "SalesType": "Physical",
+            "Total": "40"
+        }
     ]
 }

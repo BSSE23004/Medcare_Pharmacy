@@ -14,8 +14,8 @@ StaffMenu::StaffMenu(QWidget *parent)
     //setting Size
     staffList->setMaximumSize(200,600);
     staffList->setMinimumSize(200,600);
-    memberInfoTable->setMaximumSize(300,600);
-    memberInfoTable->setMinimumSize(300,600);
+    memberInfoTable->setMaximumSize(350,600);
+    memberInfoTable->setMinimumSize(350,600);
     addMember->setMaximumSize(270,100);
     addMember->setMinimumSize(270,100);
     removeMember->setMinimumSize(270,100);
@@ -24,8 +24,10 @@ StaffMenu::StaffMenu(QWidget *parent)
     memberInfoButton->setMaximumSize(400,100);
     staffList->setIconSize(QSize(60,70));
     staffList->setFont(QFont("Times New Roman",16));
-    memberInfoTable->setColumnWidth(0,149);
-    memberInfoTable->setColumnWidth(1,149);
+    memberInfoTable->setColumnWidth(0,170);
+    memberInfoTable->setColumnWidth(1,157);
+    memberInfoTable->setIconSize(QSize(50,50));
+    memberInfoTable->setFont(QFont("Times New Roman",14));
     //Styling
     addMember->setFont(QFont("Times New Roman",16));
     removeMember->setFont(QFont("Times New Roman",16));
@@ -63,7 +65,7 @@ StaffMenu::StaffMenu(QWidget *parent)
     connect(addMember,SIGNAL(clicked(bool)),this,SLOT(handleAddMemberButton()));
     connect(staffList,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(handlestaffList()));
     connect(memberInfoButton,SIGNAL(clicked(bool)),this,SLOT(handleAddingAttendance()));
-
+    connect(removeMember,SIGNAL(clicked(bool)),this,SLOT(handleRemoveMember()));
 }
 
 void StaffMenu::readFromJson()
@@ -113,6 +115,8 @@ void StaffMenu::readFromJson()
 
 }
 
+
+
 void StaffMenu::handleAddMemberButton()
 {
     AddMemberDialog *addMemberDialog =new AddMemberDialog(this);
@@ -132,13 +136,20 @@ void StaffMenu::handleAddMemberButton()
 void StaffMenu::handlestaffList()
 {
     memberInfoTable->setRowCount(0);
+    if(staffList->count()==0){
+        QMessageBox::warning(this,"Warning","There is none in the members list");
+        return;
+    }
     CustomListWidgetItemForStaff *staffItem =static_cast<CustomListWidgetItemForStaff *>(staffList->currentItem());
     for (int i = 0; i < staffItem->getDates().count(); ++i) {
         memberInfoTable->setRowCount(memberInfoTable->rowCount()+1);
+        memberInfoTable->setRowHeight(memberInfoTable->rowCount()-1,50);
         QTableWidgetItem *item =new QTableWidgetItem(QIcon(":/calender.ico"),staffItem->getDates().at(i));
-        memberInfoTable->setItem(memberInfoTable->rowCount(),0,item);
+        item->setFlags(item->flags()& ~Qt::ItemIsEditable);
+        memberInfoTable->setItem(memberInfoTable->rowCount()-1,0,item);
         item =new QTableWidgetItem(QIcon(":/attended.ico"),staffItem->getattendances().at(i));
-        memberInfoTable->setItem(memberInfoTable->rowCount(),0,item);
+        item->setFlags(item->flags()& ~Qt::ItemIsEditable);
+        memberInfoTable->setItem(memberInfoTable->rowCount()-1,1,item);
     }
     memberInfoButton->setIcon(staffItem->icon());
     memberInfoButton->setText("Email : "+staffItem->email+"\nPhone : "+staffItem->phoneNumber+"\nAddress : "+staffItem->address);
@@ -151,16 +162,43 @@ void StaffMenu::handleAddingAttendance()
         QMessageBox::warning(this,"Warning","There is none in the members list so whose attendance you want to mark!!");
         return;
     }
-    // CustomListWidgetItemForStaff *staffItem =static_cast<CustomListWidgetItemForStaff *>(staffList->currentItem());
+    CustomListWidgetItemForStaff *staffItem =static_cast<CustomListWidgetItemForStaff *>(staffList->currentItem());
     int pin =QInputDialog::getInt(this,"Pin","Enter pin for attendance : ");
-    if(pin==static_cast<CustomListWidgetItemForStaff *>(staffList->currentItem())->pin){
-        static_cast<CustomListWidgetItemForStaff *>(staffList->currentItem())->addNewAttendance("Present");
+    if(pin==staffItem->pin){
+        staffItem->addNewAttendance("Present");
+    }else {
+        QMessageBox::warning(this,"Warning","Entered Wrong Pin!!!");
+
     }
-    for (int i = 0; i < static_cast<CustomListWidgetItemForStaff *>(staffList->currentItem())->getDates().count(); ++i) {
+    for (int i = 0; i < staffItem->dates.count(); ++i) {
         memberInfoTable->setRowCount(memberInfoTable->rowCount()+1);
-        QTableWidgetItem *item =new QTableWidgetItem(QIcon(":/calender.ico"),static_cast<CustomListWidgetItemForStaff *>(staffList->currentItem())->getDates().at(i));
+        memberInfoTable->setRowHeight(memberInfoTable->rowCount()-1,50);
+        QTableWidgetItem *item =new QTableWidgetItem(QIcon(":/calender.ico"),staffItem->getDates().at(i));
+        item->setFlags(item->flags()& ~Qt::ItemIsEditable);
         memberInfoTable->setItem(memberInfoTable->rowCount()-1,0,item);
-        item =new QTableWidgetItem(QIcon(":/attended.ico"),static_cast<CustomListWidgetItemForStaff *>(staffList->currentItem())->getattendances().at(i));
+        item =new QTableWidgetItem(QIcon(":/attended.ico"),staffItem->getattendances().at(i));
+        item->setFlags(item->flags()& ~Qt::ItemIsEditable);
         memberInfoTable->setItem(memberInfoTable->rowCount()-1,1,item);
     }
+}
+
+void StaffMenu::handleRemoveMember()
+{
+    if(staffList->count()==0){
+        QMessageBox::warning(this,"Warning","There is none in the members list");
+        return;
+    }
+    if(staffList->count()==1){
+        QMessageBox::warning(this,"Warning","You can't delete last member \n at least one member is must!!!");
+        return;
+    }
+    QString email = QInputDialog::getText(this,"Email Box","Enter his Email : ");
+    for (int i = 0; i < staffList->count(); ++i) {
+        CustomListWidgetItemForStaff *staffItem =static_cast<CustomListWidgetItemForStaff *>(staffList->item(i));
+        if(email==staffItem->email){
+            delete staffList->takeItem(i);
+            return;
+        }
+    }
+    QMessageBox::warning(this,"Warning","No Member listed with this Email");
 }

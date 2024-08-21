@@ -17,6 +17,15 @@
             "PaymentType": "Delivery",
             "PhoneNumber": "0321-6160617",
             "Total": 40
+        },
+        {
+            "Address": "N/A",
+            "Name": "N/A",
+            "Order": "Medicine : Metformin\nQuantity : 1\nPrice : 40.0\nMG : 500\n$/Quantity : 40\n\n\n\nTotal : 40",
+            "OrderID": "N/A",
+            "PaymentType": "Physical",
+            "PhoneNumber": "N/A",
+            "Total": 40
         }
     ]
 }
