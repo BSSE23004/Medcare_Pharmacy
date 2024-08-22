@@ -65,17 +65,10 @@
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    QHBoxLayout *hbox;
 ////List Menu Items
     QListWidget *listMenu;
     QPushButton * hideButton;
-    QListWidgetItem *profile;
-    QListWidgetItem *medicines;
-    QListWidgetItem *ordersAndDelivery;
-    QListWidgetItem *staff;
-    QListWidgetItem *salesAndReports;
-    QListWidgetItem *bills;
-    QListWidgetItem *customers;
+    QListWidgetItem *listItems;
     QListWidgetItem *item;
 ////List Menu Items
 ////Medicines Menu
@@ -85,11 +78,6 @@ class MainWindow : public QMainWindow
     QTableWidgetItem *itemTable;
     QPushButton *addButton;
     QPushButton *removeButton;
-    QTableWidgetItem *name;
-    QTableWidgetItem *company;
-    QTableWidgetItem *mg;
-    QTableWidgetItem *price;
-    QTableWidgetItem *quantity;
     InputDialog *inputMedicine;
     int medicineTableGeometry;
 ////Medicines Menu

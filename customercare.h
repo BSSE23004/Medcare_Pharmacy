@@ -26,7 +26,6 @@ class CustomerCare : public QWidget
 public:
     explicit CustomerCare(QWidget *parent = nullptr);
     void initializeList();
-    ~CustomerCare();
 
 private slots:
     void handleListWidget();

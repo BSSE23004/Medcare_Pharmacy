@@ -71,10 +71,7 @@ void CustomerCare::initializeList()
     connect(customersList,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(handleListWidget()));
 }
 
-CustomerCare::~CustomerCare()
-{
-    delete customersList;
-}
+
 
 void CustomerCare::handleListWidget()
 {

@@ -43,7 +43,6 @@ public:
     void setIntValidatorRange(int start, int end);
     void setDoubleValidatorRange(double start, double end);
     void setCompanyLine(QString text);
-    ~BillInputDialog();
 
 signals:
     void nameTextChanged(const QString &text);

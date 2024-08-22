@@ -34,7 +34,6 @@ public:
     QPushButton *okButton;
     QPushButton *orderButton;
     DeliveryInputDialog(QWidget *parent = nullptr);
-    ~DeliveryInputDialog();
     QString getName();
     QString getAddress();
     QString getPhoneNumber();

@@ -62,57 +62,59 @@ StaffMenu::StaffMenu(QWidget *parent)
     mainLayout->addLayout(buttonsLayout);
     setLayout(mainLayout);
     //connection
-    connect(addMember,SIGNAL(clicked(bool)),this,SLOT(handleAddMemberButton()));
-    connect(staffList,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(handlestaffList()));
-    connect(memberInfoButton,SIGNAL(clicked(bool)),this,SLOT(handleAddingAttendance()));
-    connect(removeMember,SIGNAL(clicked(bool)),this,SLOT(handleRemoveMember()));
+    connect(addMember, &QPushButton::clicked, this, &StaffMenu::handleAddMemberButton);
+    connect(staffList, &QListWidget::currentItemChanged, this, &StaffMenu::handlestaffList);
+    connect(memberInfoButton, &QPushButton::clicked, this, &StaffMenu::handleAddingAttendance);
+    connect(removeMember, &QPushButton::clicked, this, &StaffMenu::handleRemoveMember);
 }
 
-void StaffMenu::readFromJson()
+
+void StaffMenu::writeToJson()
 {
-    // QJsonObject jsonObj;
-    // QDate date=QDate::currentDate();
-    // QString currentDate =date.toString("dd/MMM/yyyy");
-    // // Read existing data from Customers.json
-    // QJsonArray dateArray;
-    // QFile fIn("Staff.json");
-    // if (fIn.open(QIODevice::ReadOnly)) {
-    //     QByteArray jsonData = fIn.readAll();
-    //     fIn.close();
+    qDebug()<<"Writing StaffMenu to Json";
+    QJsonObject rootObj;
+    QJsonArray staffJsonList;
+    if(staffList->count()==0){
+        qDebug()<<"There is no staff member to write it to json!!";
+        return;
+    }
+    for (int row =0 ; row < staffList->count(); ++row) {
+        QJsonObject jsonObj;
+        CustomListWidgetItemForStaff *staffItem =static_cast<CustomListWidgetItemForStaff *>(staffList->item(row));
+        QStringList dates=staffItem->getDates();
+        QStringList attendances=staffItem->getattendances();
+        if(dates.count()>0){
+            QJsonObject datesAndAttendances;
+            for (int i = 0; i < dates.count(); ++i) {
+                datesAndAttendances[dates.at(i)]=attendances.at(i);
+            }
+            jsonObj["Dates&Attendances"]=datesAndAttendances;
+        }
+        jsonObj["Name"]=staffItem->text();
+        jsonObj["Pin"]=staffItem->pin;
+        jsonObj["Email"]=staffItem->email;
+        jsonObj["Address"]=staffItem->address;
+        jsonObj["PhoneNumber"]=staffItem->phoneNumber;
+        jsonObj["Icon"]=staffItem->icon().name();
+        staffJsonList.append(jsonObj);
+    }
 
-    //     QJsonParseError parseError;
-    //     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
-    //     if (parseError.error != QJsonParseError::NoError) {
-    //         qDebug() << "Parse error: " << parseError.errorString()<<"  In addAttendance()";
+    rootObj["Staff"] = staffJsonList;
 
-    //     }
+    QJsonDocument saveDoc(rootObj);
+    QFile fOut("Staff.json");
+    if (fOut.open(QIODevice::WriteOnly)) {
+        fOut.write(saveDoc.toJson(QJsonDocument::Indented));
+        fOut.close();
+    } else {
+        qDebug() << "Unable to open file for writing. StaffMenu::writeToJson()";
+    }
+}
 
-    //     if (jsonDoc.isObject()) {
-    //         jsonObj = jsonDoc.object();
-    //         if (jsonObj.contains(currentDate) && jsonObj[currentDate].isArray()) {
-    //             dateArray =jsonObj[currentDate].toArray();
-    //         } else {
-    //             qDebug() << "Invalid JSON structure.In addAttendance()";
-
-    //         }
-    //     } else {
-    //         qDebug() << "JSON is not an object.In addAttendance()";
-    //     }
-    // } else {
-    //     qDebug() << "Unable to open file.In addAttendance()";
-    // }
-    // for (auto keys : jsonObj.keys()) {
-    //     CustomListWidgetItemForStaff
-    //     QJsonArray jsonArray=jsonObj[keys].toArray();
-    //     for (int i = 0; i < jsonArray.count(); ++i) {
-    //         if(jsonArray[i].toObject()["Name"].toString()==this->text()){
-    //             attendances.append(jsonArray[i].toObject()["Attendance"].toString());
-    //             phoneNumber =jsonArray[i].toObject()["PhoneNumber"].toString();
-    //             email =jsonArray[i].toObject()["Email"].toString();
-    //         }
-    //     }
-    // }
-
+StaffMenu::~StaffMenu()
+{
+    qDebug()<<"Deleting StaffMenu";
+    writeToJson();
 }
 
 
@@ -131,6 +133,8 @@ void StaffMenu::handleAddMemberButton()
                                                                                   staffList);
         staffList->addItem(staffItem);
     }
+    qDebug()<<"delete addMemberDialog";
+    delete addMemberDialog;
 }
 
 void StaffMenu::handlestaffList()
@@ -170,7 +174,7 @@ void StaffMenu::handleAddingAttendance()
         QMessageBox::warning(this,"Warning","Entered Wrong Pin!!!");
 
     }
-    for (int i = 0; i < staffItem->dates.count(); ++i) {
+    for (int i = 0; i < staffItem->getDates().count(); ++i) {
         memberInfoTable->setRowCount(memberInfoTable->rowCount()+1);
         memberInfoTable->setRowHeight(memberInfoTable->rowCount()-1,50);
         QTableWidgetItem *item =new QTableWidgetItem(QIcon(":/calender.ico"),staffItem->getDates().at(i));

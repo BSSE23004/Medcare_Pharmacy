@@ -32,6 +32,7 @@ public:
     explicit StaffMenu(QWidget *parent = nullptr);
     void readFromJson();
     void writeToJson();
+    ~StaffMenu();
 
 private slots:
     void handleAddMemberButton();

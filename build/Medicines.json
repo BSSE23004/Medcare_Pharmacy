@@ -188,6 +188,13 @@
             "Name": "Metoprolol",
             "Price": "32.0",
             "Quantity": "90"
+        },
+        {
+            "Company": "Unilever",
+            "Mg": "100",
+            "Name": "Evion",
+            "Price": "50.0",
+            "Quantity": "100"
         }
     ]
 }

@@ -33,7 +33,6 @@ public:
     QString getmg();
     QString getQuantity();
     QString getCompany();
-    ~InputDialog();
 
 private slots:
     void accept();

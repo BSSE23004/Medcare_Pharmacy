@@ -1,7 +1,7 @@
 {
     "Done": [
         {
-            "content": "Name : Ibrahim\nID : 1\nAddress : Hafiz-Street\nPhone : 0321-6160617\nOrder : Medicine : Metformin\nQuantity : 1\nPrice : 40.0\nPrice/Quantity : 40\n\nTotal  : 40"
+            "content": "Name : Ibrahim\nID : 1\nAddress : Hafiz\nPhone : 0321-6160617\nOrder : Medicine : Flegel\nQuantity : 1\nPrice : 25.0\nPrice/Quantity : 25\n\nTotal  : 25"
         }
     ],
     "InProgress": [

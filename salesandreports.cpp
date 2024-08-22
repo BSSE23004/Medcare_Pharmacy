@@ -5,10 +5,7 @@ SalesAndReports::SalesAndReports(QWidget *parent, QTableWidget *NewMedicinesTabl
 {
     nOfTopSellings=5;
     medicinesTable=NewMedicinesTable;
-    // Assuming this is within a widget's constructor or initialization function
     salesTable = new QTableWidget(0, 5);
-    // Remove setGeometry; let layout handle positioning
-    // salesTable->setGeometry(175, 0, 850, 700);
     salesTable->setIconSize(QSize(50, 40));
     salesTable->setFont(QFont("Times New Roman", 14));
     QStringList headers = {"Date", "Customer", "SalesType", "Payment Status", "Total"};
@@ -246,7 +243,7 @@ void SalesAndReports::setDeliveryStatus(QString customerName, QString customerOr
                           +QString::number(getTotalPaidPayment())+"\n-----------------------\n"+"Unpaid = "
                           +QString::number(getNumberOfUnPaidTransactions())+"\nUnPaid Amount = "+QString::number(getTotalDuePayment()));
     topSellings->setText(getTopSellingMedicines(nOfTopSellings));
-
+    writeToJson();
 }
 
 int SalesAndReports::getNumberOfPaidTransactions()
@@ -476,13 +473,4 @@ void SalesAndReports::writeToJson() {
 
 
 
-SalesAndReports::~SalesAndReports()
-{
-    delete customer;
-    delete mainLayout;
-    delete boardLayout;
-    delete salesTable;
-    delete tableItem;
-    delete totalRevenue;
-    delete topSellings;
-}
+

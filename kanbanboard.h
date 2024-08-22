@@ -11,7 +11,6 @@
 #include <QInputDialog>
 #include <QDragEnterEvent>
 #include <QMessageBox>
-#include <kanbanListWidget.h>
 #include <deliveryinputdialog.h>
 #include <QFile>
 #include <QJsonDocument>
@@ -31,10 +30,10 @@ class KanbanBoard : public QWidget
     QHBoxLayout *buttonLayout;
     QVBoxLayout *todoLayout;
     QLabel *todoLabel;
-    KanbanListWidget *todoList;
+    QListWidget *todoList;
     QVBoxLayout *inProgressLayout;
     QLabel *inProgressLabel;
-    KanbanListWidget *inProgressList;
+    QListWidget *inProgressList;
     QVBoxLayout *doneLayout;
     QLabel *doneLabel;
     QPushButton *addDeliveryButton;
@@ -46,7 +45,7 @@ public:
     QStringList customersName;
     QStringList customersPhoneNumbers;
     QStringList customersAddresses;
-    KanbanListWidget *doneList;
+    QListWidget *doneList;
     DeliveryInputDialog * deliveryInput;
     explicit KanbanBoard(QWidget *parent = nullptr,SalesAndReports *menu=nullptr);
     ~KanbanBoard();

@@ -12,21 +12,27 @@ KanbanBoard::KanbanBoard(QWidget *parent, SalesAndReports *menu)
     // To Do Column
     todoLayout = new QVBoxLayout();
     todoLabel = new QLabel("To Do");
-    todoList = new KanbanListWidget();
+    todoList = new QListWidget();
+    todoList->setDragEnabled(true);
+    todoList->setAcceptDrops(true);
     todoLayout->addWidget(todoLabel);
     todoLayout->addWidget(todoList);
     todoList->setStyleSheet("color : red");
     // In Progress Column
     inProgressLayout = new QVBoxLayout();
     inProgressLabel = new QLabel("In Progress");
-    inProgressList = new KanbanListWidget();
+    inProgressList = new QListWidget();
+    inProgressList->setDragEnabled(true);
+    inProgressList->setAcceptDrops(true);
     inProgressLayout->addWidget(inProgressLabel);
     inProgressLayout->addWidget(inProgressList);
     inProgressList->setStyleSheet("color : yellow");
     // Done Column
     doneLayout = new QVBoxLayout();
     doneLabel = new QLabel("Done");
-    doneList = new KanbanListWidget();
+    doneList = new QListWidget();
+    doneList->setDragEnabled(true);
+    doneList->setAcceptDrops(true);
     doneLayout->addWidget(doneLabel);
     doneLayout->addWidget(doneList);
     doneList->setStyleSheet("color : green");
@@ -83,23 +89,14 @@ KanbanBoard::KanbanBoard(QWidget *parent, SalesAndReports *menu)
 
 KanbanBoard::~KanbanBoard()
 {
-    delete mainLayout;
-    delete boardLayout;
-    delete todoLayout;
-    delete todoLabel;
-    delete todoList;
-    delete inProgressLayout;
-    delete inProgressLabel;
-    delete inProgressList;
-    delete doneLayout;
-    delete doneLabel;
-    delete doneList;
-    delete addDeliveryButton;
-    delete listItem;
+    qDebug()<<"Destroying KanbanBoard";
+    writeToJson();
+    qDebug()<<"Destroyed KanbanBoard Successfully!!";
 }
 
 void KanbanBoard::writeToJson()
 {
+    qDebug()<<"Writing Kanban Board to json";
     // Create a QJsonObject to hold the JSON data
     QJsonObject kanbanFile;
 
@@ -142,6 +139,7 @@ void KanbanBoard::writeToJson()
         qDebug() << "Unable to open file for writing.";
     }
 
+    qDebug()<<"Wrote some kanbanFile";
 }
 
 void KanbanBoard::readFromJson()
@@ -274,13 +272,16 @@ void KanbanBoard::handleAddDelivery()
         deliveryInput->show();
         deliveryInput->setOkButtonClicked(false);
     }
-    // deliveryInput =new DeliveryInputDialog (this);
     if (deliveryInput->exec() == QDialog::Accepted) {
         if(deliveryInput->getName().isEmpty()||deliveryInput->getAddress().isEmpty()||deliveryInput->getPhoneNumber().isEmpty()||deliveryInput->getOrder().isEmpty()){
             QMessageBox::warning(this,"Invalid Input","Enter complete data!!!From DeliveryInput");
             return;
         }
-        listItem=new QListWidgetItem(QIcon(":/delivery-bike.ico"),"Name : "+deliveryInput->getName()+"\nID : "+QString::number(++orderId)+"\nAddress : "+deliveryInput->getAddress()+"\nPhone : "+deliveryInput->getPhoneNumber()+"\nOrder : "+deliveryInput->getOrder()+"Total  : "+QString::number(deliveryInput->getTotal()));
+        listItem=new QListWidgetItem(QIcon(":/delivery-bike.ico"),"Name : "+
+                                     deliveryInput->getName()+"\nID : "+QString::number(++orderId)+
+                                     "\nAddress : "+deliveryInput->getAddress()+"\nPhone : "+
+                                     deliveryInput->getPhoneNumber()+"\nOrder : "+deliveryInput->getOrder()
+                                     +"Total  : "+QString::number(deliveryInput->getTotal()));
         todoList->addItem(listItem);
         customersName.append(deliveryInput->getName());
         customersPhoneNumbers.append(deliveryInput->getPhoneNumber());
@@ -361,24 +362,6 @@ void KanbanBoard::handleListsItems()
         }
     }
 
-    // for (int i = 0; i < todoList->count(); ++i) {
-    //     for (int j = 0; j < inProgressList->count(); ++j) {
-    //         if (todoList->item(i)->text() == inProgressList->item(j)->text()) {
-    //             delete todoList->takeItem(i);
-    //             --i; // Adjust index i after deletion
-    //             break; // Exit inner loop since the item was removed
-    //         }
-    //     }
-    // }
-    // for (int j = 0; j < inProgressList->count(); ++j) {
-    //     for (int k = 0; k < doneList->count(); ++k) {
-    //         if (inProgressList->item(j)->text() == doneList->item(k)->text()) {
-    //             delete inProgressList->takeItem(j);
-    //             --j;
-    //             break;
-    //         }
-    //     }
-    // }
     // deleting duplicates
     for (int i = todoList->count() - 1; i >= 0; --i) {
         for (int j = i - 1; j >= 0; --j) {

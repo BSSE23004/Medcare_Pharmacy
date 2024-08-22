@@ -48,17 +48,7 @@ DeliveryInputDialog::DeliveryInputDialog(QWidget *parent): QDialog{parent} {
 
 }
 
-DeliveryInputDialog::~DeliveryInputDialog()
-{
-    delete mainLayout;
-    delete buttonLayout;
-    delete formLayout;
-    delete okButton;
-    delete cancelButton;
-    delete customerNameLine;
-    delete customerAddressLine;
-    delete customerPhoneNumberLine;
-}
+
 
 QString DeliveryInputDialog::getName()
 {

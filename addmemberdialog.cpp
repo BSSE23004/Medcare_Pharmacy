@@ -19,7 +19,7 @@ AddMemberDialog::AddMemberDialog(QWidget *parent) : QDialog{parent} {
     formLayout->addRow("Pin:", pin);
 
 
-    buttonLayout = new QHBoxLayout;
+    buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget(okButton);
     buttonLayout->addWidget(cancelButton);
 

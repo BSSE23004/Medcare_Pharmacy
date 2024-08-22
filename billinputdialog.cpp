@@ -91,26 +91,6 @@ void BillInputDialog::setCompanyLine(QString text)
     companyLine->setText(text);
 }
 
-
-
-BillInputDialog::~BillInputDialog()
-{
-    delete mainLayout;
-    delete buttonLayout;
-    delete formLayout;
-    delete nameLine;
-    delete mgLine;
-    delete quantityLine;
-    delete companyLine;
-    delete okButton;
-    delete cancelButton;
-    delete addMoreButton;
-    delete intValidator;
-    delete doubleValidator;
-}
-
-
-
 void BillInputDialog::accept()
 {
     QDialog::accept();

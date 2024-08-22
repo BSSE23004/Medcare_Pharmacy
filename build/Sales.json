@@ -1,39 +1,15 @@
 {
-    "20/Aug/2024": [
-        {
-            "Button": {
-                "Label": "N/A",
-                "Order": "Medicine : Panadol\nQuantity : 1\nPrice : 20.0\nMG : 500\n$/Quantity : 20\n\n\n\nTotal : 20",
-                "Physical": true
-            },
-            "Date&Time": "22:00\n20/Aug/2024",
-            "Payment Status": "Paid",
-            "SalesType": "Physical",
-            "Total": "20"
-        },
+    "22/Aug/2024": [
         {
             "Button": {
                 "Label": "Ibrahim",
-                "Order": "Medicine : Metformin\nQuantity : 1\nPrice : 40.0\nPrice/Quantity : 40\n\n\n\nTotal : 40",
+                "Order": "Medicine : Flegel\nQuantity : 1\nPrice : 25.0\nPrice/Quantity : 25\n\n\n\nTotal : 25",
                 "Physical": false
             },
-            "Date&Time": "22:01\n20/Aug/2024",
+            "Date&Time": "21:22\n22/Aug/2024",
             "Payment Status": "UnPaid",
             "SalesType": "Delivery",
-            "Total": "40"
-        }
-    ],
-    "21/Aug/2024": [
-        {
-            "Button": {
-                "Label": "N/A",
-                "Order": "Medicine : Metformin\nQuantity : 1\nPrice : 40.0\nMG : 500\n$/Quantity : 40\n\n\n\nTotal : 40",
-                "Physical": true
-            },
-            "Date&Time": "23:22\n21/Aug/2024",
-            "Payment Status": "Paid",
-            "SalesType": "Physical",
-            "Total": "40"
+            "Total": "25"
         }
     ]
 }

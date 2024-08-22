@@ -13,9 +13,6 @@ MainWindow::MainWindow(QWidget *parent)
     hideButton =new QPushButton("Hide Panel",this);
     hideButton->setIcon(QIcon(":/blind.ico"));
     hideButton->setGeometry(-2,670,182,30);
-    hbox=new QHBoxLayout();
-    hbox->addWidget(listMenu);
-    hbox->addWidget(hideButton);
     //Connections
     connect(hideButton,SIGNAL(clicked(bool)),this,SLOT(handleHideButton()));
     connect(listMenu,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(currentMenu()));
@@ -36,56 +33,27 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
+    qDebug()<<"Exiting Program....";
     writeMedicinesTableToJson();
-    kanbanBoard->writeToJson();
-    delete hbox;
-    delete listMenu;
-    delete hideButton;
-    delete profile;
-    delete medicines;
-    delete ordersAndDelivery;
-    delete staff;
-    delete salesAndReports;
-    delete bills;
-    delete customers;
-    delete item;
-    delete medicinesTable;
-    delete searchButton;
-    delete searchBar;
-    delete itemTable;
-    delete addButton;
-    delete name;
-    delete company;
-    delete mg;
-    delete price;
-    delete quantity;
-    delete inputMedicine;
-    delete removeButton;
-    delete billInput;
-    delete generateReceiptButton;
-    delete generateBillButton;
-    delete kanbanBoard;
-    delete salesMenu;
-    delete customerCare;
 }
 
 void MainWindow::makeListMenu()
 {
     listMenu =new QListWidget(this);
-    profile =new QListWidgetItem(QIcon(":/user.ico"),"Profile");
-    medicines=new QListWidgetItem(QIcon(":/Medicine.ico"),"Medicines");
-    ordersAndDelivery =new QListWidgetItem(QIcon(":/delivery-bike.ico"),"Orders&Delivery");
-    staff =new QListWidgetItem(QIcon(":/medical-team.ico"),"Staff");
-    salesAndReports =new QListWidgetItem(QIcon(":/business-report.ico"),"Sales And Reports");
-    bills =new QListWidgetItem(QIcon(":/bill.ico"),"Generate Bill");
-    customers =new QListWidgetItem(QIcon(":/customer.ico"),"Customer Care");
-    listMenu->insertItem(0,profile);
-    listMenu->insertItem(1,medicines);
-    listMenu->insertItem(2,ordersAndDelivery);
-    listMenu->insertItem(3,staff);
-    listMenu->insertItem(4,salesAndReports);
-    listMenu->insertItem(5,bills);
-    listMenu->insertItem(6,customers);
+    listItems =new QListWidgetItem(QIcon(":/user.ico"),"Profile");
+    listMenu->insertItem(0,listItems);
+    listItems=new QListWidgetItem(QIcon(":/Medicine.ico"),"Medicines");
+    listMenu->insertItem(1,listItems);
+    listItems =new QListWidgetItem(QIcon(":/delivery-bike.ico"),"Orders&Delivery");
+    listMenu->insertItem(2,listItems);
+    listItems =new QListWidgetItem(QIcon(":/medical-team.ico"),"Staff");
+    listMenu->insertItem(3,listItems);
+    listItems =new QListWidgetItem(QIcon(":/business-report.ico"),"Sales And Reports");
+    listMenu->insertItem(4,listItems);
+    listItems =new QListWidgetItem(QIcon(":/bill.ico"),"Generate Bill");
+    listMenu->insertItem(5,listItems);
+    listItems =new QListWidgetItem(QIcon(":/customer.ico"),"Customer Care");
+    listMenu->insertItem(6,listItems);
     listMenu->setFont(QFont("Times New Roman",14));
     setListWidgetSize(listMenu);
 }
@@ -108,11 +76,6 @@ void MainWindow::medicinesMenu()
 {
     ////////////////////////////////////////Medicines Table
     int totalWidth=0;
-    // if(medicinesTable!=nullptr){
-    //     hbox->removeWidget(medicinesTable);
-    //     delete medicinesTable;
-    //     delete searchButton;
-    // }
     medicinesTable =new QTableWidget(0,5,this);
     QStringList headers = { "Name","Price", "Quantity", "MG", "Company" };
     medicinesTable->setHorizontalHeaderLabels(headers);
@@ -130,7 +93,6 @@ void MainWindow::medicinesMenu()
     medicineTableGeometry=totalWidth+50;
     medicinesTable->setGeometry(200,0,medicineTableGeometry,700);
     settingColumnsWidth();
-    hbox->addWidget(medicinesTable);
     ////////////////////////////////////////Medicines Table
     searchBar =new QLineEdit(this);
     searchButton =new QPushButton(this);
@@ -181,6 +143,7 @@ void MainWindow::filterTable(const QString &text)
 
 void MainWindow::writeMedicinesTableToJson()
 {
+    qDebug()<<"Writing MedicinesTable to json";
     QJsonObject medicinesFile;
 
     // Create a QJsonArray to hold the rows of the table
@@ -258,7 +221,7 @@ void MainWindow::readMedicineTableFromJson()
             QString data3 = obj["Mg"].toString();
             QString data4 = obj["Company"].toString();
 
-            QTableWidgetItem *itemTable = new QTableWidgetItem(data0);
+            itemTable = new QTableWidgetItem(data0);
             itemTable->setFlags(itemTable->flags() & ~Qt::ItemIsEditable);
             medicinesTable->setItem(row, 0, itemTable);
 
@@ -302,9 +265,9 @@ void MainWindow::billMenu()
     generateBillButton->setIconSize(QSize(55,55));
     generateBillButton->setFont(QFont("Times New Roman",14));
     generateBillButton->setStyleSheet("QPushButton {"
-                               "border-radius: 10px;"  // Adjust the radius value to control how round the corners are
-                               "color: green;"  // Optional: sets the text color
-                               "padding: 5px 10px;"  // Optional: sets padding to make the button size more appropriate
+                               "border-radius: 10px;"
+                               "color: green;"
+                               "padding: 5px 10px;"
                                "}");
     generateBillButton->hide();
     generateReceiptButton =new QPushButton(QIcon(":/receipt.ico"),"Generate Receipt",this);
@@ -312,9 +275,9 @@ void MainWindow::billMenu()
     generateReceiptButton->setIconSize(QSize(50,50));
     generateReceiptButton->setFont(QFont("Times New Roman",14));
     generateReceiptButton->setStyleSheet("QPushButton {"
-                               "border-radius: 10px;"  // Adjust the radius value to control how round the corners are
-                               "color: green;"  // Optional: sets the text color
-                               "padding: 5px 10px;"  // Optional: sets padding to make the button size more appropriate
+                               "border-radius: 10px;"
+                               "color: green;"
+                               "padding: 5px 10px;"
                                "}");
     generateReceiptButton->hide();
     connect(generateBillButton,SIGNAL(clicked(bool)),this,SLOT(handleBillButton()));
@@ -392,21 +355,21 @@ void MainWindow::handleAddRowButton()
         }
         medicinesTable->setRowCount(medicinesTable->rowCount()+1);
 
-        name=new QTableWidgetItem(inputMedicine->getName());
-        company =new QTableWidgetItem(inputMedicine->getCompany());
-        price =new QTableWidgetItem(inputMedicine->getPrice());
-        mg =new QTableWidgetItem(inputMedicine->getmg());
-        quantity =new QTableWidgetItem(inputMedicine->getQuantity());
-        name->setFlags(name->flags()& ~Qt::ItemIsEditable);
-        company->setFlags(company->flags()& ~Qt::ItemIsEditable);
-        price->setFlags(price->flags()& ~Qt::ItemIsEditable);
-        mg->setFlags(mg->flags()& ~Qt::ItemIsEditable);
-        quantity->setFlags(quantity->flags()& ~Qt::ItemIsEditable);
-        medicinesTable->setItem(medicinesTable->rowCount()-1,0,name);
-        medicinesTable->setItem(medicinesTable->rowCount()-1,1,price);
-        medicinesTable->setItem(medicinesTable->rowCount()-1,2,quantity);
-        medicinesTable->setItem(medicinesTable->rowCount()-1,3,mg);
-        medicinesTable->setItem(medicinesTable->rowCount()-1,4,company);
+        itemTable=new QTableWidgetItem(inputMedicine->getName());
+        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
+        medicinesTable->setItem(medicinesTable->rowCount()-1,0,itemTable);
+        itemTable =new QTableWidgetItem(inputMedicine->getCompany());
+        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
+        medicinesTable->setItem(medicinesTable->rowCount()-1,4,itemTable);
+        itemTable =new QTableWidgetItem(inputMedicine->getPrice());
+        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
+        medicinesTable->setItem(medicinesTable->rowCount()-1,1,itemTable);
+        itemTable=new QTableWidgetItem(inputMedicine->getmg());
+        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
+        medicinesTable->setItem(medicinesTable->rowCount()-1,3,itemTable);
+        itemTable =new QTableWidgetItem(inputMedicine->getQuantity());
+        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
+        medicinesTable->setItem(medicinesTable->rowCount()-1,2,itemTable);
 
     }
 
@@ -731,7 +694,7 @@ void MainWindow::handleDoneList()
     for (int i = 0; i < customersJSONArray.size(); ++i) {
         QJsonObject customer = customersJSONArray[i].toObject();
         for (int j = 0; j < kanbanBoard->doneList->count(); ++j) {
-            QListWidgetItem *item = kanbanBoard->doneList->item(j);
+            item = kanbanBoard->doneList->item(j);
             if(item && item->text().contains("Name : "+customer["Name"].toString()+"\nID : "+customer["OrderID"].toString()+"\nAddress : "+customer["Address"].toString()+"\nPhone : "+customer["PhoneNumber"].toString(), Qt::CaseInsensitive)){
                 salesMenu->setDeliveryStatus(customer["Name"].toString(),customer["Order"].toString());
             }

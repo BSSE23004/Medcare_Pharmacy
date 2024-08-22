@@ -15,9 +15,9 @@ class CustomListWidgetItemForStaff : public QListWidgetItem
 {
     Q_OBJECT
 
-public:
     QStringList dates;
     QStringList attendances;
+public:
     QString phoneNumber;
     QString address;
     QString email;

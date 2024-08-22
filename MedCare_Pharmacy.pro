@@ -36,7 +36,6 @@ HEADERS += \
     deliveryinputdialog.h \
     emailLineEdit.h \
     inputdialog.h \
-    kanbanListWidget.h \
     kanbanboard.h \
     mainwindow.h \
     phonelineedit.h \

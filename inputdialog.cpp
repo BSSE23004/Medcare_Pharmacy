@@ -60,21 +60,6 @@ QString InputDialog::getCompany()
     return companyLine->text();
 }
 
-InputDialog::~InputDialog()
-{
-    delete mainLayout;
-    delete buttonLayout;
-    delete formLayout;
-    delete nameLine;
-    delete priceLine;
-    delete mgLine;
-    delete quantityLine;
-    delete companyLine;
-    delete okButton;
-    delete cancelButton;
-    delete intValidator;
-    delete doubleValidator;
-}
 
 void InputDialog::accept()
 {

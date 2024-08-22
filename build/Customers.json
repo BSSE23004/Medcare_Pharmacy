@@ -1,31 +1,13 @@
 {
     "Customers": [
         {
-            "Address": "N/A",
-            "Name": "N/A",
-            "Order": "Medicine : Panadol\nQuantity : 1\nPrice : 20.0\nMG : 500\n$/Quantity : 20\n\n\n\nTotal : 20",
-            "OrderID": "N/A",
-            "PaymentType": "Physical",
-            "PhoneNumber": "N/A",
-            "Total": 20
-        },
-        {
-            "Address": "Hafiz-Street",
+            "Address": "Hafiz",
             "Name": "Ibrahim",
-            "Order": "Medicine : Metformin\nQuantity : 1\nPrice : 40.0\nPrice/Quantity : 40\n\n\n\nTotal : 40",
+            "Order": "Medicine : Flegel\nQuantity : 1\nPrice : 25.0\nPrice/Quantity : 25\n\n\n\nTotal : 25",
             "OrderID": "1",
             "PaymentType": "Delivery",
             "PhoneNumber": "0321-6160617",
-            "Total": 40
-        },
-        {
-            "Address": "N/A",
-            "Name": "N/A",
-            "Order": "Medicine : Metformin\nQuantity : 1\nPrice : 40.0\nMG : 500\n$/Quantity : 40\n\n\n\nTotal : 40",
-            "OrderID": "N/A",
-            "PaymentType": "Physical",
-            "PhoneNumber": "N/A",
-            "Total": 40
+            "Total": 25
         }
     ]
 }
