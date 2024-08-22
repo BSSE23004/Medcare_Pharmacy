@@ -380,6 +380,7 @@ void SalesAndReports::readFromJson()
         }
     } else {
         qDebug() << "Unable to open file.";
+        return;
     }
 
     for (const QString &key : jsonObj.keys()) {

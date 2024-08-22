@@ -61,11 +61,58 @@ StaffMenu::StaffMenu(QWidget *parent)
     buttonsLayout->addWidget(removeMember);
     mainLayout->addLayout(buttonsLayout);
     setLayout(mainLayout);
+    readFromJson();
     //connection
     connect(addMember, &QPushButton::clicked, this, &StaffMenu::handleAddMemberButton);
     connect(staffList, &QListWidget::currentItemChanged, this, &StaffMenu::handlestaffList);
     connect(memberInfoButton, &QPushButton::clicked, this, &StaffMenu::handleAddingAttendance);
     connect(removeMember, &QPushButton::clicked, this, &StaffMenu::handleRemoveMember);
+}
+
+void StaffMenu::readFromJson()
+{
+    QJsonObject jsonObj;
+    QFile file("Staff.json");
+    if (file.open(QIODevice::ReadOnly)) {
+        QByteArray jsonData = file.readAll();
+        file.close();
+        QJsonParseError parseError;
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
+        if (parseError.error != QJsonParseError::NoError) {
+            qDebug() << "Parse error: " << parseError.errorString();
+            return;
+        }
+        if (jsonDoc.isObject()) {
+            jsonObj = jsonDoc.object();
+        } else {
+            qDebug() << "JSON is not an object.";
+        }
+    } else {
+        qDebug() << "Unable to open file.";
+        return;
+    }
+
+    QJsonArray staffArray =jsonObj["Staff"].toArray();
+    for (int i = 0; i < staffArray.count(); ++i) {
+        QJsonObject jsonMember =staffArray.at(i).toObject();
+        CustomListWidgetItemForStaff *staffMember =new CustomListWidgetItemForStaff(jsonMember["Name"].toString(),
+                                                                                     jsonMember["PhoneNumber"].toString(),
+                                                                                     jsonMember["Address"].toString(),
+                                                                                     jsonMember["Email"].toString(),
+                                                                                     jsonMember["Pin"].toInt(),jsonMember["Icon"].toString(),staffList);
+        if(jsonMember.contains("Dates&Attendances")){
+            QStringList dates;
+            QStringList attendances;
+            QJsonObject datesAndAttendancesJson = jsonMember["Dates&Attendances"].toObject();
+            for (auto keys : datesAndAttendancesJson.keys()) {
+                dates.append(keys);
+                attendances.append(datesAndAttendancesJson[keys].toString());
+            }
+            staffMember->setDates(dates);
+            staffMember->setAttendances(attendances);
+        }
+        staffList->addItem(staffMember);
+    }
 }
 
 
@@ -95,7 +142,7 @@ void StaffMenu::writeToJson()
         jsonObj["Email"]=staffItem->email;
         jsonObj["Address"]=staffItem->address;
         jsonObj["PhoneNumber"]=staffItem->phoneNumber;
-        jsonObj["Icon"]=staffItem->icon().name();
+        jsonObj["Icon"]=staffItem->iconName;
         staffJsonList.append(jsonObj);
     }
 
@@ -129,7 +176,7 @@ void StaffMenu::handleAddMemberButton()
                                                                                   addMemberDialog->getAddress(),
                                                                                   addMemberDialog->getEmail(),
                                                                                    addMemberDialog->getPin(),
-                                                                                  QIcon(QFileDialog::getOpenFileName(this,"Choose a .jpeg/.ico File","C://")),
+                                                                                  QFileDialog::getOpenFileName(this,"Choose a .jpeg/.ico File","C://"),
                                                                                   staffList);
         staffList->addItem(staffItem);
     }

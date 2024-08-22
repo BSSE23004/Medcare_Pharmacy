@@ -21,13 +21,18 @@ public:
     QString phoneNumber;
     QString address;
     QString email;
+    QString iconName;
     int pin;
-    explicit CustomListWidgetItemForStaff(QString name ,QString newPhoneNumber,QString newAddress,QString newEmail,int newPin,QIcon profilePic, QListWidget *parent = nullptr);
+    explicit CustomListWidgetItemForStaff(QString name ,QString newPhoneNumber,QString newAddress,QString newEmail,int newPin,QString profilePic, QListWidget *parent = nullptr);
     void addNewAttendance(QString attendance);
     void addAttendance(QString attendance);
     void addDates(QString date);
     QStringList getDates();
     QStringList getattendances();
+
+    void setDates(const QStringList &newDates);
+
+    void setAttendances(const QStringList &newAttendances);
 
 signals:
 };
