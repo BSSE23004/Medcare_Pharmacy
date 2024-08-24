@@ -64,10 +64,20 @@ KanbanBoard::KanbanBoard(QWidget *parent, SalesAndReports *menu)
     addDeliveryButton->setGeometry(850,0,205,60);
     addDeliveryButton->setIconSize(QSize(50,50));
     addDeliveryButton->setFont(QFont("Times New Roman",14));
+    addDeliveryButton->setStyleSheet("QPushButton {"
+                                      "border-radius: 10px;"
+                                      "color: green;"
+                                      "padding: 5px 10px;"
+                                      "}");
     removeDeliveryButton =new QPushButton(QIcon(":/removeButton.ico"),"Remove Delivery",this);
     removeDeliveryButton->setGeometry(850,0,205,60);
     removeDeliveryButton->setIconSize(QSize(40,50));
     removeDeliveryButton->setFont(QFont("Times New Roman",14));
+    removeDeliveryButton->setStyleSheet("QPushButton {"
+                                      "border-radius: 10px;"
+                                      "color: red;"
+                                      "padding: 5px 10px;"
+                                      "}");
     buttonLayout->addWidget(removeDeliveryButton);
     buttonLayout->addWidget(addDeliveryButton);
     // Add all columns to board layout

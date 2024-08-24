@@ -2,59 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QWidget>
-#include <QLabel>
-#include <QMovie>
-#include <QPushButton>
-#include <QMenu>
-#include <QLineEdit>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGridLayout>
-#include <QRadioButton>
-#include <QCheckBox>
-#include <QSpinBox>
-#include <QLCDNumber>
 #include <QTime>
 #include <QTimer>
-#include <QComboBox>
-#include <QSlider>
-#include <QListWidget>
-#include <QFontComboBox>
-#include <QTextEdit>
-#include <QTableWidget>
-#include <QTableWidgetItem>
-#include <QSizePolicy>
-#include <QCalendarWidget>
-#include <QInputDialog>
-#include <QColorDialog>
-#include <QFontDialog>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QDebug>
-#include <QSizeGrip>
-#include <QSizePolicy>
-#include <QStringList>
-#include <QFormLayout>
-#include <QFile>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QDebug>
 #include <inputdialog.h>
-#include <QJsonArray>
-#include <QJsonObject>
 #include <billinputdialog.h>
 #include <QtPrintSupport/QPrinter>
 #include <QPainter>
 #include <QtPrintSupport/QPrintDialog>
 #include <QtPrintSupport/QPrintPreviewDialog>
-#include <QString>
-#include <QApplication>
-#include <QPrinter>
-#include <QPainter>
-#include <QPrintDialog>
-#include <QPrintPreviewDialog>
 #include <kanbanboard.h>
 #include <salesandreports.h>
 #include <customercare.h>
@@ -65,6 +20,9 @@
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+////1st Window
+    QLineEdit *password;
+    QPushButton *mainProfilePIcture;
 ////List Menu Items
     QListWidget *listMenu;
     QPushButton * hideButton;
@@ -101,8 +59,6 @@ class MainWindow : public QMainWindow
 ////Staff Menu
     StaffMenu *staffOption;
 ////Staff Menu
-
-
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -132,6 +88,9 @@ public:
     void staffMenu();
     ////////////////////////////Staff Menu
 private slots:
+    ////////////////////1st Window
+    void handlePassword();
+
     ////////////////////Medicine Menu
     void handleSearchBarAndButton();
     void handleRemoveRowButton();

@@ -1,10 +1,27 @@
 #include "mainwindow.h"
 
 
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    //////////////1st Window
+    mainProfilePIcture=new QPushButton(this);
+    mainProfilePIcture->setIcon(QIcon(":/user.ico"));
+    mainProfilePIcture->setIconSize(QSize(300,150));
+    mainProfilePIcture->setGeometry(500,200,300,150);
+    mainProfilePIcture->setStyleSheet("QPushButton {"
+                             "border-radius: 10px;"
+                             "padding: 5px 10px;"
+                             "}");
+    password =new QLineEdit(this);
+    password->setGeometry(550,360,200,30);
+    password->setStyleSheet("QLineEdit {"
+                            "border-radius: 15px;"
+                            "}");
+    password->setPlaceholderText("            Enter Password here!!!");
+    password->setEchoMode(QLineEdit::EchoMode::Password);
+    connect(password,SIGNAL(textChanged(QString)),this,SLOT(handlePassword()));
+    ////// others
     medicineTableGeometry=0;
     total=0;
     checkTimer =new QTimer(this);
@@ -12,7 +29,14 @@ MainWindow::MainWindow(QWidget *parent)
     makeListMenu();
     hideButton =new QPushButton("Hide Panel",this);
     hideButton->setIcon(QIcon(":/blind.ico"));
-    hideButton->setGeometry(-2,670,182,30);
+    hideButton->setIconSize(QSize(30,30));
+    hideButton->setGeometry(-2,650,182,50);
+    hideButton->setFont(QFont("Times New Roman",14 ));
+    hideButton->setStyleSheet("QPushButton {"
+                                      "border-radius: 10px;"
+                                      "padding: 5px 10px;"
+                                      "}");
+    hideButton->hide();
     //Connections
     connect(hideButton,SIGNAL(clicked(bool)),this,SLOT(handleHideButton()));
     connect(listMenu,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(currentMenu()));
@@ -30,6 +54,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(kanbanBoard->doneList,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(handleDoneList()));
     connect(searchBar, &QLineEdit::textChanged, this, &MainWindow::handleSearchBarAndButton);
     connect(searchButton,SIGNAL(clicked(bool)), this,SLOT(handleSearchBarAndButton()));
+
+
 }
 
 MainWindow::~MainWindow() {
@@ -56,6 +82,7 @@ void MainWindow::makeListMenu()
     listMenu->insertItem(6,listItems);
     listMenu->setFont(QFont("Times New Roman",14));
     setListWidgetSize(listMenu);
+    listMenu->hide();
 }
 
 void MainWindow::setListWidgetSize(QListWidget *listWidget)
@@ -93,6 +120,7 @@ void MainWindow::medicinesMenu()
     medicineTableGeometry=totalWidth+50;
     medicinesTable->setGeometry(200,0,medicineTableGeometry,700);
     settingColumnsWidth();
+    medicinesTable->hide();
     ////////////////////////////////////////Medicines Table
     searchBar =new QLineEdit(this);
     searchButton =new QPushButton(this);
@@ -111,15 +139,15 @@ void MainWindow::medicinesMenu()
     removeButton->setIconSize(QSize(40,40));
     addButton->setFont(QFont("Times New Roman",14));
     addButton->setStyleSheet("QPushButton {"
-                               "border-radius: 10px;"  // Adjust the radius value to control how round the corners are
-                               "color: green;"  // Optional: sets the text color
-                               "padding: 5px 10px;"  // Optional: sets padding to make the button size more appropriate
+                               "border-radius: 10px;"
+                               "color: green;"
+                               "padding: 5px 10px;"
                                "}");
     removeButton->setFont(QFont("Times New Roman",14));
     removeButton->setStyleSheet("QPushButton {"
-                               "border-radius: 10px;"  // Adjust the radius value to control how round the corners are
-                               "color: red;"  // Optional: sets the text color
-                               "padding: 5px 10px;"  // Optional: sets padding to make the button size more appropriate
+                               "border-radius: 10px;"
+                               "color: red;"
+                               "padding: 5px 10px;"
                                "}");
     connect(addButton,SIGNAL(clicked(bool)),this,SLOT(handleAddRowButton()));
     connect(removeButton,SIGNAL(clicked(bool)),this,SLOT(handleRemoveRowButton()));
@@ -329,6 +357,17 @@ void MainWindow::staffMenu()
     staffOption->hide();
 }
 
+void MainWindow::handlePassword()
+{
+    if(password->text()=="2006"){
+        password->hide();
+        mainProfilePIcture->hide();
+        listMenu->show();
+        hideButton->show();
+
+    }
+}
+
 
 void MainWindow::handleSearchBarAndButton()
 {
@@ -382,7 +421,7 @@ void MainWindow::handleHideButton()
     static bool isHidden = false;
 
     if (!isHidden) {
-        hideButton->setText("Unhide Panel");
+        hideButton->setText("Show Panel");
         hideButton->setIcon(QIcon(":/unhide.ico"));
         listMenu->hide();
     } else {
@@ -701,7 +740,3 @@ void MainWindow::handleDoneList()
         }
     }
 }
-
-
-
-
