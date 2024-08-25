@@ -17,15 +17,14 @@ MainWindow::MainWindow(QWidget *parent)
     password->setGeometry(550,360,200,30);
     password->setStyleSheet("QLineEdit {"
                             "border-radius: 15px;"
+                            "padding-left: 15px;"
                             "}");
-    password->setPlaceholderText("            Enter Password here!!!");
+    password->setPlaceholderText("Enter Password here!!!");
     password->setEchoMode(QLineEdit::EchoMode::Password);
     connect(password,SIGNAL(textChanged(QString)),this,SLOT(handlePassword()));
     ////// others
-    medicineTableGeometry=0;
     total=0;
     checkTimer =new QTimer(this);
-    medicinesTable=nullptr;
     makeListMenu();
     hideButton =new QPushButton("Hide Panel",this);
     hideButton->setIcon(QIcon(":/blind.ico"));
@@ -44,23 +43,17 @@ MainWindow::MainWindow(QWidget *parent)
     staffMenu();
     customerCareMenu();
     billMenu();
-    medicinesMenu();
-    readMedicineTableFromJson();
+    makeMedicinesMenu();
     salesAndReportsMenu();
     ordersAndDeliveryMenu();
     kanbanBoard->readFromJson();
     salesMenu->readFromJson();
     connect(kanbanBoard->deliveryInput->orderButton,SIGNAL(clicked(bool)),this,SLOT(handleOrderButton()));
     connect(kanbanBoard->doneList,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(handleDoneList()));
-    connect(searchBar, &QLineEdit::textChanged, this, &MainWindow::handleSearchBarAndButton);
-    connect(searchButton,SIGNAL(clicked(bool)), this,SLOT(handleSearchBarAndButton()));
-
-
 }
 
 MainWindow::~MainWindow() {
     qDebug()<<"Exiting Program....";
-    writeMedicinesTableToJson();
 }
 
 void MainWindow::makeListMenu()
@@ -99,197 +92,19 @@ void MainWindow::setListWidgetSize(QListWidget *listWidget)
     listWidget->setIconSize(QSize(30,(totalHeight/listWidget->count())+10));
 }
 
-void MainWindow::medicinesMenu()
+void MainWindow::makeMedicinesMenu()
 {
-    ////////////////////////////////////////Medicines Table
-    int totalWidth=0;
-    medicinesTable =new QTableWidget(0,5,this);
-    QStringList headers = { "Name","Price", "Quantity", "MG", "Company" };
-    medicinesTable->setHorizontalHeaderLabels(headers);
-    medicinesTable->setFont(QFont("Times New Roman",14,13));
-    for (int row = 0; row < medicinesTable->rowCount(); ++row) {
-        for (int col = 0; col < medicinesTable->columnCount(); ++col) {
-            itemTable = new QTableWidgetItem();
-            itemTable->setFlags(itemTable->flags() & ~Qt::ItemIsEditable);
-            medicinesTable->setItem(row, col, itemTable);
-        }
-    }
-    for (int col = 0; col < medicinesTable->columnCount(); ++col) {
-        totalWidth+=medicinesTable->columnWidth(col);
-    }
-    medicineTableGeometry=totalWidth+50;
-    medicinesTable->setGeometry(200,0,medicineTableGeometry,700);
-    settingColumnsWidth();
-    medicinesTable->hide();
-    ////////////////////////////////////////Medicines Table
-    searchBar =new QLineEdit(this);
-    searchButton =new QPushButton(this);
-    searchButton->setIcon(QIcon(":/search.ico"));
-    addButton =new QPushButton(QIcon(":/add.ico"),"Add Row",this);
-    removeButton =new QPushButton(QIcon(":/removeButton.ico"),"Delete Row",this);
-    removeButton->hide();
-    addButton->hide();
-    searchButton->hide();
-    searchBar->hide();
-    searchButton->setGeometry(913,1,40,25);
-    searchBar->setGeometry(751,1,200,25);
-    addButton->setGeometry(750,50,205,60);
-    removeButton->setGeometry(750,130,205,60);
-    addButton->setIconSize(QSize(55,55));
-    removeButton->setIconSize(QSize(40,40));
-    addButton->setFont(QFont("Times New Roman",14));
-    addButton->setStyleSheet("QPushButton {"
-                               "border-radius: 10px;"
-                               "color: green;"
-                               "padding: 5px 10px;"
-                               "}");
-    removeButton->setFont(QFont("Times New Roman",14));
-    removeButton->setStyleSheet("QPushButton {"
-                               "border-radius: 10px;"
-                               "color: red;"
-                               "padding: 5px 10px;"
-                               "}");
-    connect(addButton,SIGNAL(clicked(bool)),this,SLOT(handleAddRowButton()));
-    connect(removeButton,SIGNAL(clicked(bool)),this,SLOT(handleRemoveRowButton()));
-
+    medicinesMenu =new MedicinesMenu(this);
+    medicinesMenu->setGeometry(600,0,800,700);
+    medicinesMenu->searchButton->setGeometry(800,30,20,25);
+    medicinesMenu->hide();
 }
 
-void MainWindow::filterTable(const QString &text)
-{
-    for (int row = 0; row < medicinesTable->rowCount(); ++row) {
-        bool match = false;
-        for (int column = 0; column < medicinesTable->columnCount(); ++column) {
-            itemTable = medicinesTable->item(row, column);
-            if (itemTable && itemTable->text().contains(text, Qt::CaseInsensitive)) {
-                match = true;
-                break;
-            }
-        }
-        medicinesTable->setRowHidden(row, !match);
-    }
-}
-
-void MainWindow::writeMedicinesTableToJson()
-{
-    qDebug()<<"Writing MedicinesTable to json";
-    QJsonObject medicinesFile;
-
-    // Create a QJsonArray to hold the rows of the table
-    QJsonArray medicinesArray;
-
-    // Iterate through each row in the medicinesTable
-    for (int row = 0; row < medicinesTable->rowCount(); ++row) {
-        QJsonObject jsonRow;
-
-        // Populate jsonRow with data from each cell in the row
-        jsonRow["Name"] = medicinesTable->item(row, 0) ? medicinesTable->item(row, 0)->text() : "";
-        jsonRow["Price"] = medicinesTable->item(row, 1) ? medicinesTable->item(row, 1)->text() : "";
-        jsonRow["Quantity"] = medicinesTable->item(row, 2) ? medicinesTable->item(row, 2)->text() : "";
-        jsonRow["Mg"] = medicinesTable->item(row, 3) ? medicinesTable->item(row, 3)->text() : "";
-        jsonRow["Company"] = medicinesTable->item(row, 4) ? medicinesTable->item(row, 4)->text() : "";
-
-        // Append the jsonRow to the QJsonArray
-        medicinesArray.append(jsonRow);
-    }
-
-    // Add the array to the root object
-    medicinesFile["MedicinesTable"] = medicinesArray;
-
-    // Create a QJsonDocument from the QJsonObject
-    QJsonDocument jsonDoc(medicinesFile);
-
-    // Write the JSON data to the file
-    QFile fOut("Medicines.json");
-    if (fOut.open(QIODevice::WriteOnly)) {
-        fOut.write(jsonDoc.toJson(QJsonDocument::Indented));
-        fOut.close();
-    } else {
-        qDebug() << "Unable to open file for writing.";
-    }
-}
-
-void MainWindow::readMedicineTableFromJson()
-{
-    // Load the JSON file
-    QFile file("Medicines.json");
-    if (!file.open(QIODevice::ReadOnly)) {
-        qDebug() << "Unable to open file.";
-        return;
-    }
-
-    // Parse the JSON data
-    QByteArray jsonData = file.readAll();
-    QJsonDocument jsonDoc(QJsonDocument::fromJson(jsonData));
-    file.close();
-
-    if (!jsonDoc.isObject()) {
-        qDebug() << "JSON document is not an object.";
-        return;
-    }
-
-    QJsonObject jsonObj = jsonDoc.object();
-
-    // Check if the JSON object contains the necessary key
-    if (!jsonObj.contains("MedicinesTable") || !jsonObj["MedicinesTable"].isArray()) {
-        qDebug() << "JSON object is missing 'MedicinesTable' or it is not an array.";
-        return;
-    }
-
-    QJsonArray medicineTableFromJson = jsonObj["MedicinesTable"].toArray();
-    medicinesTable->setRowCount(medicineTableFromJson.size());
-
-    int row = 0;
-    for (const QJsonValue &value : medicineTableFromJson) {
-        if (value.isObject()) {
-            QJsonObject obj = value.toObject();
-
-            QString data0 = obj["Name"].toString();
-            QString data1 = obj["Price"].toString();
-            QString data2 = obj["Quantity"].toString();
-            QString data3 = obj["Mg"].toString();
-            QString data4 = obj["Company"].toString();
-
-            itemTable = new QTableWidgetItem(data0);
-            itemTable->setFlags(itemTable->flags() & ~Qt::ItemIsEditable);
-            medicinesTable->setItem(row, 0, itemTable);
-
-            itemTable = new QTableWidgetItem(data1);
-            itemTable->setFlags(itemTable->flags() & ~Qt::ItemIsEditable);
-            medicinesTable->setItem(row, 1, itemTable);
-
-            itemTable = new QTableWidgetItem(data2);
-            itemTable->setFlags(itemTable->flags() & ~Qt::ItemIsEditable);
-            medicinesTable->setItem(row, 2, itemTable);
-
-            itemTable = new QTableWidgetItem(data3);
-            itemTable->setFlags(itemTable->flags() & ~Qt::ItemIsEditable);
-            medicinesTable->setItem(row, 3, itemTable);
-
-            itemTable = new QTableWidgetItem(data4);
-            itemTable->setFlags(itemTable->flags() & ~Qt::ItemIsEditable);
-            medicinesTable->setItem(row, 4, itemTable);
-            ++row;
-        } else {
-            qDebug() << "Invalid JSON object in array.";
-        }
-    }
-
-}
-
-void MainWindow::settingColumnsWidth()
-{
-    int numericColumnsWidth=70;
-    medicinesTable->setColumnWidth(0,150);
-    medicinesTable->setColumnWidth(4,150);
-    medicinesTable->setColumnWidth(1,numericColumnsWidth);
-    medicinesTable->setColumnWidth(2,numericColumnsWidth);
-    medicinesTable->setColumnWidth(3,numericColumnsWidth);
-}
 
 void MainWindow::billMenu()
 {
     generateBillButton =new QPushButton(QIcon(":/add.ico"),"Generate Bill",this);
-    generateBillButton->setGeometry(750,0,205,60);
+    generateBillButton->setGeometry(900,100,205,60);
     generateBillButton->setIconSize(QSize(55,55));
     generateBillButton->setFont(QFont("Times New Roman",14));
     generateBillButton->setStyleSheet("QPushButton {"
@@ -299,7 +114,7 @@ void MainWindow::billMenu()
                                "}");
     generateBillButton->hide();
     generateReceiptButton =new QPushButton(QIcon(":/receipt.ico"),"Generate Receipt",this);
-    generateReceiptButton->setGeometry(765,70,205,60);
+    generateReceiptButton->setGeometry(915,300,205,60);
     generateReceiptButton->setIconSize(QSize(50,50));
     generateReceiptButton->setFont(QFont("Times New Roman",14));
     generateReceiptButton->setStyleSheet("QPushButton {"
@@ -338,7 +153,7 @@ void MainWindow::ordersAndDeliveryMenu()
 
 void MainWindow::salesAndReportsMenu()
 {
-    salesMenu =new SalesAndReports(this,medicinesTable);
+    salesMenu =new SalesAndReports(this,medicinesMenu->medicinesTable);
     salesMenu->setGeometry(175,0,1100,700);
     salesMenu->hide();
 }
@@ -369,50 +184,7 @@ void MainWindow::handlePassword()
 }
 
 
-void MainWindow::handleSearchBarAndButton()
-{
-    filterTable(searchBar->text());
-}
 
-void MainWindow::handleRemoveRowButton()
-{
-    int rowNumber = QInputDialog ::getInt(this,"Delete Row","Enter Row number to delete");
-    if(rowNumber>0&&rowNumber<=medicinesTable->rowCount()){
-        medicinesTable->removeRow(rowNumber-1);
-    }else{
-        QMessageBox::warning(this,"Invalid Input","Enter a Number from the Table!!!");
-    }
-}
-
-void MainWindow::handleAddRowButton()
-{
-    inputMedicine =new InputDialog(this);
-    if (inputMedicine->exec() == QDialog::Accepted) {
-        if(inputMedicine->getName().isEmpty()||inputMedicine->getQuantity().isEmpty()||inputMedicine->getCompany().isEmpty()||inputMedicine->getPrice().isEmpty()||inputMedicine->getmg().isEmpty()){
-            QMessageBox::warning(this,"Invalid Input","Enter complete data!!!");
-            return;
-        }
-        medicinesTable->setRowCount(medicinesTable->rowCount()+1);
-
-        itemTable=new QTableWidgetItem(inputMedicine->getName());
-        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
-        medicinesTable->setItem(medicinesTable->rowCount()-1,0,itemTable);
-        itemTable =new QTableWidgetItem(inputMedicine->getCompany());
-        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
-        medicinesTable->setItem(medicinesTable->rowCount()-1,4,itemTable);
-        itemTable =new QTableWidgetItem(inputMedicine->getPrice());
-        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
-        medicinesTable->setItem(medicinesTable->rowCount()-1,1,itemTable);
-        itemTable=new QTableWidgetItem(inputMedicine->getmg());
-        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
-        medicinesTable->setItem(medicinesTable->rowCount()-1,3,itemTable);
-        itemTable =new QTableWidgetItem(inputMedicine->getQuantity());
-        itemTable->setFlags(itemTable->flags()& ~Qt::ItemIsEditable);
-        medicinesTable->setItem(medicinesTable->rowCount()-1,2,itemTable);
-
-    }
-
-}
 
 
 
@@ -436,13 +208,10 @@ void MainWindow::handleHideButton()
 void MainWindow::currentMenu()
 {
     /////////Medicine Menu
-    removeButton->hide();
-    addButton->hide();
-    searchBar->hide();
-    searchButton->hide();
-    medicinesTable->hide();
-    medicinesTable->setGeometry(200,0,medicineTableGeometry,700);
-    settingColumnsWidth();
+    medicinesMenu->hide();
+    medicinesMenu->medicinesTable->hide();
+    medicinesMenu->medicinesTable->setGeometry(medicinesMenu->medicineTableGeometry);
+    medicinesMenu->settingColumnsWidth();
     /////////Medicine Menu
     /////////Bill Menu
     generateBillButton->hide();
@@ -460,32 +229,30 @@ void MainWindow::currentMenu()
     /////////Staff Menu
     staffOption->hide();
     /////////Staff Menu
-    if(listMenu->currentItem()->text()=="Medicines"){
-        medicinesTable->show();
-        searchButton->show();
-        searchBar->show();
-        addButton->show();
-        removeButton->show();
+    QString currentText =listMenu->currentItem()->text();
+    if(currentText=="Medicines"){
+        medicinesMenu->medicinesTable->show();
+        medicinesMenu->show();
     }
-    if(listMenu->currentItem()->text()=="Generate Bill"){
-        medicinesTable->show();
+    if(currentText=="Orders&Delivery"){
+        kanbanBoard->show();
+        medicinesMenu->medicinesTable->show();
+        medicinesMenu->medicinesTable->setGeometry(820,0,510,700);
+    }
+    if(currentText=="Staff"){
+        staffOption->show();
+    }
+    if(currentText=="Sales And Reports"){
+        salesMenu->show();
+    }
+    if(currentText=="Generate Bill"){
+        medicinesMenu->medicinesTable->show();
         generateBillButton->show();
         generateReceiptButton->show();
     }
-    if(listMenu->currentItem()->text()=="Orders&Delivery"){
-        kanbanBoard->show();
-        medicinesTable->setGeometry(820,0,470,700);
-        medicinesTable->show();
-    }
-    if(listMenu->currentItem()->text()=="Sales And Reports"){
-        salesMenu->show();
-    }
-    if(listMenu->currentItem()->text()=="Customer Care"){
+    if(currentText=="Customer Care"){
         customerCare->initializeList();
         customerCare->show();
-    }
-    if(listMenu->currentItem()->text()=="Staff"){
-        staffOption->show();
     }
 }
 
@@ -509,11 +276,11 @@ void MainWindow::handleBillButton()
             totalForSalesAndReports=0.0;
             return;
         }
-        for (int row = 0; row < medicinesTable->rowCount(); ++row) {
-            itemTable =medicinesTable->item(row,0);
-            if(itemTable && itemTable->text().contains(billInput->getName(), Qt::CaseInsensitive)){
+        for (int row = 0; row < medicinesMenu->medicinesTable->rowCount(); ++row) {
+            medicinesMenu->itemTable =medicinesMenu->medicinesTable->item(row,0);
+            if(medicinesMenu->itemTable && medicinesMenu->itemTable->text().contains(billInput->getName(), Qt::CaseInsensitive)){
                 rowNumber=row;
-                if(billInput->getmg()!=medicinesTable->item(row,3)->text()||billInput->getQuantity().toFloat()>medicinesTable->item(row,2)->text().toFloat()) {
+                if(billInput->getmg()!=medicinesMenu->medicinesTable->item(row,3)->text()||billInput->getQuantity().toFloat()>medicinesMenu->medicinesTable->item(row,2)->text().toFloat()) {
                     QMessageBox::warning(this,"Invalid Input","Enter proper data!!!(Maybe Quantity OR Mg You entered is not correct)");
                     order="";
                     totalForSalesAndReports=0.0;
@@ -528,14 +295,14 @@ void MainWindow::handleBillButton()
         newLine.append(billInput->getQuantity());
         order.append("Quantity : "+billInput->getQuantity()+"\n");
         padRight(newLine);
-        newLine.append(medicinesTable->item(rowNumber,1)->text());
-        order.append("Price : "+medicinesTable->item(rowNumber,1)->text()+"\n");
+        newLine.append(medicinesMenu->medicinesTable->item(rowNumber,1)->text());
+        order.append("Price : "+medicinesMenu->medicinesTable->item(rowNumber,1)->text()+"\n");
         padRight(newLine);
         newLine.append(billInput->getmg());
         order.append("MG : "+billInput->getmg()+"\n");
         padRight(newLine);
-        newLine.append(QString::number(billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat()));
-        order.append("$/Quantity : "+QString::number(billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat())+"\n");
+        newLine.append(QString::number(billInput->getQuantity().toFloat()*medicinesMenu->medicinesTable->item(rowNumber,1)->text().toFloat()));
+        order.append("$/Quantity : "+QString::number(billInput->getQuantity().toFloat()*medicinesMenu->medicinesTable->item(rowNumber,1)->text().toFloat())+"\n");
         padRight(newLine);
         newLine.append("\n");
         order.append("\n");
@@ -544,12 +311,12 @@ void MainWindow::handleBillButton()
             total+=0;
             totalForSalesAndReports+=0;
         }else {
-            total+=billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat();
-            totalForSalesAndReports+=billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat();
+            total+=billInput->getQuantity().toFloat()*medicinesMenu->medicinesTable->item(rowNumber,1)->text().toFloat();
+            totalForSalesAndReports+=billInput->getQuantity().toFloat()*medicinesMenu->medicinesTable->item(rowNumber,1)->text().toFloat();
         }
         billInput->setName("");
-        for (int row = 0; row < medicinesTable->rowCount(); ++row) {
-            medicinesTable->showRow(row);
+        for (int row = 0; row < medicinesMenu->medicinesTable->rowCount(); ++row) {
+            medicinesMenu->medicinesTable->showRow(row);
         }
         if(billInput->isOkButtonClicked()){
             order.append("\n\nTotal : "+QString::number(totalForSalesAndReports));
@@ -563,8 +330,8 @@ void MainWindow::handleBillButton()
         }
     }
     billInput->setName("");
-    for (int row = 0; row < medicinesTable->rowCount(); ++row) {
-        medicinesTable->showRow(row);
+    for (int row = 0; row < medicinesMenu->medicinesTable->rowCount(); ++row) {
+        medicinesMenu->medicinesTable->showRow(row);
     }
 
 }
@@ -587,11 +354,11 @@ void MainWindow::handleOrderButton()
             totalForSalesAndReports=0.0;
             return;
         }
-        for (int row = 0; row < medicinesTable->rowCount(); ++row) {
-            itemTable =medicinesTable->item(row,0);
-            if(itemTable && itemTable->text().contains(billInput->getName(), Qt::CaseInsensitive)){
+        for (int row = 0; row <medicinesMenu->medicinesTable->rowCount(); ++row) {
+            medicinesMenu->itemTable =medicinesMenu->medicinesTable->item(row,0);
+            if(medicinesMenu->itemTable && medicinesMenu->itemTable->text().contains(billInput->getName(), Qt::CaseInsensitive)){
                 rowNumber=row;
-                if(billInput->getmg()!=medicinesTable->item(row,3)->text()||billInput->getQuantity().toFloat()>medicinesTable->item(row,2)->text().toFloat()) {
+                if(billInput->getmg()!=medicinesMenu->medicinesTable->item(row,3)->text()||billInput->getQuantity().toFloat()>medicinesMenu->medicinesTable->item(row,2)->text().toFloat()) {
                     QMessageBox::warning(this,"Invalid Input","Enter proper data!!!(Maybe Quantity OR Mg You entered is not correct)");
                     totalForSalesAndReports=0.0;
                     return;
@@ -601,17 +368,17 @@ void MainWindow::handleOrderButton()
         if(rowNumber==-1){
             totalPricePerItem+=0;
         }else{
-            totalPricePerItem+=billInput->getQuantity().toFloat()*medicinesTable->item(rowNumber,1)->text().toFloat();
+            totalPricePerItem+=billInput->getQuantity().toFloat()*medicinesMenu->medicinesTable->item(rowNumber,1)->text().toFloat();
         }
         totalForSalesAndReports+=totalPricePerItem;
         kanbanBoard->deliveryInput->setTotal(kanbanBoard->deliveryInput->getTotal()+totalPricePerItem);
         kanbanBoard->deliveryInput->setOrder(kanbanBoard->deliveryInput->getOrder()+"Medicine : "+billInput->getName()
                                              +"\nQuantity : "+billInput->getQuantity()+
-                                             "\nPrice : "+medicinesTable->item(rowNumber,1)->text()+
+                                             "\nPrice : "+medicinesMenu->medicinesTable->item(rowNumber,1)->text()+
                                              "\nPrice/Quantity : "+QString::number(totalPricePerItem)+"\n\n");
         billInput->setName("");
-        for (int row = 0; row < medicinesTable->rowCount(); ++row) {
-            medicinesTable->showRow(row);
+        for (int row = 0; row < medicinesMenu->medicinesTable->rowCount(); ++row) {
+           medicinesMenu->medicinesTable->showRow(row);
         }
         if(billInput->isOkButtonClicked()){
             salesMenu->addSalesRow(totalForSalesAndReports,false,kanbanBoard->deliveryInput->getName(),
@@ -627,23 +394,23 @@ void MainWindow::handleOrderButton()
         }
     }
     billInput->setName("");
-    for (int row = 0; row < medicinesTable->rowCount(); ++row) {
-        medicinesTable->showRow(row);
+    for (int row = 0; row < medicinesMenu->medicinesTable->rowCount(); ++row) {
+        medicinesMenu->medicinesTable->showRow(row);
     }
 }
 
 
 void MainWindow::handleLineEdits()
 {
-    for (int row = 0; row < medicinesTable->rowCount(); ++row) {
-        itemTable =medicinesTable->item(row,0);
-        if(itemTable && itemTable->text().contains(billInput->getName(), Qt::CaseInsensitive)){
-            billInput->setIntValidatorRange(0,medicinesTable->item(row,3)->text().toInt());
-            billInput->setDoubleValidatorRange(0.0,medicinesTable->item(row,2)->text().toFloat());
-            billInput->setCompanyLine(medicinesTable->item(row,4)->text());
+    for (int row = 0; row < medicinesMenu->medicinesTable->rowCount(); ++row) {
+        medicinesMenu->itemTable =medicinesMenu->medicinesTable->item(row,0);
+        if(medicinesMenu->itemTable && medicinesMenu->itemTable->text().contains(billInput->getName(), Qt::CaseInsensitive)){
+            billInput->setIntValidatorRange(0,medicinesMenu->medicinesTable->item(row,3)->text().toInt());
+            billInput->setDoubleValidatorRange(0.0,medicinesMenu->medicinesTable->item(row,2)->text().toFloat());
+            billInput->setCompanyLine(medicinesMenu->medicinesTable->item(row,4)->text());
         }
     }
-    filterTable(billInput->getName());
+    medicinesMenu->filterTable(billInput->getName());
 }
 
 void MainWindow::printReceipt(QString &text)

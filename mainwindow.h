@@ -14,6 +14,7 @@
 #include <salesandreports.h>
 #include <customercare.h>
 #include <staffmenu.h>
+#include <medicinesmenu.h>
 
 
 
@@ -30,14 +31,7 @@ class MainWindow : public QMainWindow
     QListWidgetItem *item;
 ////List Menu Items
 ////Medicines Menu
-    QTableWidget *medicinesTable;
-    QPushButton *searchButton;
-    QLineEdit *searchBar;
-    QTableWidgetItem *itemTable;
-    QPushButton *addButton;
-    QPushButton *removeButton;
-    InputDialog *inputMedicine;
-    int medicineTableGeometry;
+    MedicinesMenu *medicinesMenu;
 ////Medicines Menu
 ////Bill Menu
     QPushButton *generateBillButton;
@@ -65,11 +59,7 @@ public:
     void makeListMenu();
     void setListWidgetSize(QListWidget *listWidget);
     ////////////////////////////Medicine Menu
-    void medicinesMenu();
-    void filterTable(const QString &text);
-    void writeMedicinesTableToJson();
-    void readMedicineTableFromJson();
-    void settingColumnsWidth();
+    void makeMedicinesMenu();
     ////////////////////////////Medicine Menu
     ////////////////////////////Bill Menu
     void billMenu();
@@ -92,9 +82,7 @@ private slots:
     void handlePassword();
 
     ////////////////////Medicine Menu
-    void handleSearchBarAndButton();
-    void handleRemoveRowButton();
-    void handleAddRowButton();
+
     ////////////////////Medicine Menu
     ////////////////////List Menu
     void handleHideButton();

@@ -4,13 +4,25 @@
             "Address": "Hafiz-Street",
             "Dates&Attendances": {
                 "22/Aug/2024": "Present",
-                "24/Aug/2024": "Present"
+                "24/Aug/2024": "Present",
+                "25/Aug/2024": "Present"
             },
             "Email": "bsse23004@itu.edu.pk",
             "Icon": "C:/Users/Mufasa/OneDrive/Documents/Git/Testing-Git/ibrahim.jpeg",
             "Name": "Ibrahim",
             "PhoneNumber": "0321-6160617",
             "Pin": 2006
+        },
+        {
+            "Address": "Super-Town",
+            "Dates&Attendances": {
+                "25/Aug/2024": "Present"
+            },
+            "Email": "habibsattar00@gmail.com",
+            "Icon": "C:/Users/Mufasa/OneDrive/Documents/Git/Testing-Git/Habeeb.jpeg",
+            "Name": "Habeeb",
+            "PhoneNumber": "0321-6160460",
+            "Pin": 2000
         }
     ]
 }

@@ -8,6 +8,24 @@
             "PaymentType": "Delivery",
             "PhoneNumber": "0321-6160617",
             "Total": 25
+        },
+        {
+            "Address": "Super-Town",
+            "Name": "Habeeb",
+            "Order": "Medicine : Metformin\nQuantity : 1\nPrice : 40.0\nPrice/Quantity : 40\n\n\n\nTotal : 40",
+            "OrderID": "2",
+            "PaymentType": "Delivery",
+            "PhoneNumber": "0321-6160460",
+            "Total": 40
+        },
+        {
+            "Address": "N/A",
+            "Name": "N/A",
+            "Order": "Medicine : Omeprazole\nQuantity : 1\nPrice : 28.0\nMG : 20\n$/Quantity : 28\n\n\n\nTotal : 28",
+            "OrderID": "N/A",
+            "PaymentType": "Physical",
+            "PhoneNumber": "N/A",
+            "Total": 28
         }
     ]
 }

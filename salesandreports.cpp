@@ -14,13 +14,13 @@ SalesAndReports::SalesAndReports(QWidget *parent, QTableWidget *NewMedicinesTabl
     /// date
     salesTable->setColumnWidth(0, 155);
     /// Customer PushButton
-    salesTable->setColumnWidth(1, 150);
+    salesTable->setColumnWidth(1, 180);
     /// SalesType
     salesTable->setColumnWidth(2, 130);
     /// Payment Status
     salesTable->setColumnWidth(3, 135);
     /// Total
-    salesTable->setColumnWidth(4, 127);
+    salesTable->setColumnWidth(4, 130);
 
     totalRevenue = new QPushButton();
     totalRevenue->setMinimumHeight(200);
@@ -409,7 +409,7 @@ void SalesAndReports::writeToJson() {
     QDate date = QDate::currentDate();
     QString currentDate = date.toString("dd/MMM/yyyy");
 
-/////////////// Reading the existing JSON file
+    // Reading the existing JSON file
     if (fIn.open(QIODevice::ReadOnly)) {
         QByteArray jsonData = fIn.readAll();
         fIn.close();
@@ -428,10 +428,15 @@ void SalesAndReports::writeToJson() {
     } else {
         qDebug() << "Unable to open file. SalesAndReports::writeToJson()";
     }
+
+    // If the current date exists, clear the array
     if (rootObj.contains(currentDate) && rootObj[currentDate].isArray()) {
         saleJsonTable = rootObj[currentDate].toArray();
+        saleJsonTable = QJsonArray();  // Clear the existing array
     }
-    for (int row = saleJsonTable.count(); row < salesTable->rowCount(); ++row) {
+
+    // Populate the JSON array with the contents of the salesTable
+    for (int row = 0; row < salesTable->rowCount(); ++row) {
         QJsonObject jsonObj;
         auto dateTimeItem = salesTable->item(row, 0);
         if (dateTimeItem) {
@@ -452,6 +457,7 @@ void SalesAndReports::writeToJson() {
             jsonObj["SalesType"] = salesTypeItem->text();
         }
         if (paymentStatusItem) {
+            qDebug() << "Changed Payment Status in Sales.json also";
             jsonObj["Payment Status"] = paymentStatusItem->text();
         }
         if (totalItem) {
@@ -460,8 +466,10 @@ void SalesAndReports::writeToJson() {
         saleJsonTable.append(jsonObj);
     }
 
+    // Update the root object with the new array
     rootObj[currentDate] = saleJsonTable;
 
+    // Write the updated JSON back to the file
     QJsonDocument saveDoc(rootObj);
     QFile fOut("Sales.json");
     if (fOut.open(QIODevice::WriteOnly)) {
@@ -471,6 +479,7 @@ void SalesAndReports::writeToJson() {
         qDebug() << "Unable to open file for writing. SalesAndReports::writeToJson()";
     }
 }
+
 
 
 

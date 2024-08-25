@@ -23,6 +23,7 @@ SOURCES += \
     kanbanboard.cpp \
     main.cpp \
     mainwindow.cpp \
+    medicinesmenu.cpp \
     salesandreports.cpp \
     staffmenu.cpp
 
@@ -38,6 +39,7 @@ HEADERS += \
     inputdialog.h \
     kanbanboard.h \
     mainwindow.h \
+    medicinesmenu.h \
     phonelineedit.h \
     salesandreports.h \
     staffmenu.h

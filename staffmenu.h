@@ -18,10 +18,10 @@
 class StaffMenu : public QWidget
 {
     Q_OBJECT
-    QLabel *member;
-    QLabel *memberInfo;
     QVBoxLayout *buttonsLayout;
     QHBoxLayout *mainLayout;
+    QLabel *member;
+    QLabel *memberInfo;
     QPushButton *addMember;
     QPushButton *removeMember;
     QPushButton *memberInfoButton;
