@@ -15,6 +15,7 @@
 #include <customercare.h>
 #include <staffmenu.h>
 #include <medicinesmenu.h>
+#include <signuppage.h>
 
 
 
@@ -22,8 +23,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 ////1st Window
-    QLineEdit *password;
-    QPushButton *mainProfilePIcture;
+    SignUpPage *loginPage;
 ////List Menu Items
     QListWidget *listMenu;
     QPushButton * hideButton;
@@ -79,8 +79,8 @@ public:
     ////////////////////////////Staff Menu
 private slots:
     ////////////////////1st Window
-    void handlePassword();
-
+    void onSignUpButtonClicked();
+    void onSignUpLabelClicked();
     ////////////////////Medicine Menu
 
     ////////////////////Medicine Menu

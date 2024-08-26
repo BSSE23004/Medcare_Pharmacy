@@ -11,5 +11,18 @@
             "SalesType": "Delivery",
             "Total": "25"
         }
+    ],
+    "26/Aug/2024": [
+        {
+            "Button": {
+                "Label": "N/A",
+                "Order": "Medicine : Loratadine\nQuantity : 1\nPrice : 22.0\nMG : 10\n$/Quantity : 22\n\n\n\nTotal : 22",
+                "Physical": true
+            },
+            "Date&Time": "18:46\n26/Aug/2024",
+            "Payment Status": "Paid",
+            "SalesType": "Physical",
+            "Total": "22"
+        }
     ]
 }

@@ -5,23 +5,14 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     //////////////1st Window
-    mainProfilePIcture=new QPushButton(this);
-    mainProfilePIcture->setIcon(QIcon(":/user.ico"));
-    mainProfilePIcture->setIconSize(QSize(300,150));
-    mainProfilePIcture->setGeometry(500,200,300,150);
-    mainProfilePIcture->setStyleSheet("QPushButton {"
-                             "border-radius: 10px;"
-                             "padding: 5px 10px;"
-                             "}");
-    password =new QLineEdit(this);
-    password->setGeometry(550,360,200,30);
-    password->setStyleSheet("QLineEdit {"
-                            "border-radius: 15px;"
-                            "padding-left: 15px;"
-                            "}");
-    password->setPlaceholderText("Enter Password here!!!");
-    password->setEchoMode(QLineEdit::EchoMode::Password);
-    connect(password,SIGNAL(textChanged(QString)),this,SLOT(handlePassword()));
+    loginPage = new SignUpPage("Login",this);
+    loginPage->resize(400, 300);
+    loginPage->setStyleSheet(
+        "QWidget {"
+        "background-color: transparent;"  // Correct the spelling: "background-color"
+        "border-radius: 10px;"
+        "}");
+    loginPage->setGeometry(400,200,500,300);
     ////// others
     total=0;
     checkTimer =new QTimer(this);
@@ -32,11 +23,13 @@ MainWindow::MainWindow(QWidget *parent)
     hideButton->setGeometry(-2,650,182,50);
     hideButton->setFont(QFont("Times New Roman",14 ));
     hideButton->setStyleSheet("QPushButton {"
-                                      "border-radius: 10px;"
-                                      "padding: 5px 10px;"
-                                      "}");
+                              "border-radius: 10px;"
+                              "padding: 5px 10px;"
+                              "}");
     hideButton->hide();
     //Connections
+    connect(loginPage->signUpButton, &QPushButton::clicked, this, &MainWindow::onSignUpButtonClicked);
+    connect(loginPage->signUp, &ClickableLabel::clicked, this, &MainWindow::onSignUpLabelClicked);
     connect(hideButton,SIGNAL(clicked(bool)),this,SLOT(handleHideButton()));
     connect(listMenu,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(currentMenu()));
     //building menus
@@ -59,8 +52,6 @@ MainWindow::~MainWindow() {
 void MainWindow::makeListMenu()
 {
     listMenu =new QListWidget(this);
-    listItems =new QListWidgetItem(QIcon(":/user.ico"),"Profile");
-    listMenu->insertItem(0,listItems);
     listItems=new QListWidgetItem(QIcon(":/Medicine.ico"),"Medicines");
     listMenu->insertItem(1,listItems);
     listItems =new QListWidgetItem(QIcon(":/delivery-bike.ico"),"Orders&Delivery");
@@ -74,7 +65,6 @@ void MainWindow::makeListMenu()
     listItems =new QListWidgetItem(QIcon(":/customer.ico"),"Customer Care");
     listMenu->insertItem(6,listItems);
     listMenu->setFont(QFont("Times New Roman",14));
-    setListWidgetSize(listMenu);
     listMenu->hide();
 }
 
@@ -108,20 +98,20 @@ void MainWindow::billMenu()
     generateBillButton->setIconSize(QSize(55,55));
     generateBillButton->setFont(QFont("Times New Roman",14));
     generateBillButton->setStyleSheet("QPushButton {"
-                               "border-radius: 10px;"
-                               "color: green;"
-                               "padding: 5px 10px;"
-                               "}");
+                                      "border-radius: 10px;"
+                                      "color: green;"
+                                      "padding: 5px 10px;"
+                                      "}");
     generateBillButton->hide();
     generateReceiptButton =new QPushButton(QIcon(":/receipt.ico"),"Generate Receipt",this);
     generateReceiptButton->setGeometry(915,300,205,60);
     generateReceiptButton->setIconSize(QSize(50,50));
     generateReceiptButton->setFont(QFont("Times New Roman",14));
     generateReceiptButton->setStyleSheet("QPushButton {"
-                               "border-radius: 10px;"
-                               "color: green;"
-                               "padding: 5px 10px;"
-                               "}");
+                                         "border-radius: 10px;"
+                                         "color: green;"
+                                         "padding: 5px 10px;"
+                                         "}");
     generateReceiptButton->hide();
     connect(generateBillButton,SIGNAL(clicked(bool)),this,SLOT(handleBillButton()));
     connect(generateReceiptButton,SIGNAL(clicked(bool)),this,SLOT(handleReceiptButton()));
@@ -172,16 +162,94 @@ void MainWindow::staffMenu()
     staffOption->hide();
 }
 
-void MainWindow::handlePassword()
+void MainWindow::onSignUpButtonClicked()
 {
-    if(password->text()=="2006"){
-        password->hide();
-        mainProfilePIcture->hide();
+    QString email = loginPage->emailEdit->text();
+    QString password = loginPage->passwordEdit->text();
+
+    if (email.isEmpty() || password.isEmpty()) {
+        QMessageBox::warning(this, "Input Error", "Please fill in all fields.");
+        return;
+    }
+
+    if (loginPage->page_name == "Login") {
+        QJsonObject jsonObj;
+        QFile file("Credentials.json");
+        if (file.open(QIODevice::ReadOnly)) {
+            QByteArray jsonData = file.readAll();
+            file.close();
+
+            QJsonParseError parseError;
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
+            if (parseError.error != QJsonParseError::NoError) {
+                qDebug() << "Parse error: " << parseError.errorString();
+                return;
+            }
+
+            if (jsonDoc.isObject()) {
+                jsonObj = jsonDoc.object();
+            } else {
+                qDebug() << "JSON is not an object.";
+                return;
+            }
+        } else {
+            qDebug() << "Unable to open file.";
+            return;
+        }
+
+        if (jsonObj["Email"].toString() == email && jsonObj["Password"].toString() == password) {
+            QMessageBox::information(this, "Login Successful", "Thank you for logging in!");
+            loginPage->hide();
+            listItems =new QListWidgetItem(QIcon(":/user.ico"),jsonObj["Name"].toString());
+            listMenu->insertItem(0,listItems);
+            setListWidgetSize(listMenu);
+            listMenu->show();
+            hideButton->show();
+        } else {
+            QMessageBox::warning(this, "Login Failed", "Invalid email or password.");
+        }
+    } else if (loginPage->page_name == "Signup") {
+        QMessageBox::information(this, "Signup Successful", "Thank you for signing up!");
+        QJsonObject credentials;
+        credentials["Name"] = loginPage->nameEdit->text();
+        credentials["Email"] = email;
+        credentials["Password"] = password;
+        QJsonDocument jsonDoc(credentials);
+        QFile fOut("Credentials.json");
+        if (fOut.open(QIODevice::WriteOnly)) {
+            fOut.write(jsonDoc.toJson(QJsonDocument::Indented));
+            fOut.close();
+        } else {
+            qDebug() << "Unable to open Credentials.json file for writing.";
+        }
+
+        loginPage->hide();
+        listItems =new QListWidgetItem(QIcon(":/user.ico"),loginPage->nameEdit->text());
+        listMenu->insertItem(0,listItems);
+        setListWidgetSize(listMenu);
         listMenu->show();
         hideButton->show();
-
+    } else {
+        qDebug() << "Unknown page name: " << loginPage->page_name;
     }
 }
+
+
+void MainWindow::onSignUpLabelClicked()
+{
+    delete loginPage;
+    loginPage =new SignUpPage("Signup",this);
+    loginPage->resize(400, 300);
+    loginPage->setStyleSheet(
+        "QWidget {"
+        "background-color: transparent;"
+        "border-radius: 10px;"
+        "}");
+    loginPage->setGeometry(400,200,500,300);
+    loginPage->show();
+    connect(loginPage->signUpButton, &QPushButton::clicked, this, &MainWindow::onSignUpButtonClicked);
+}
+
 
 
 
@@ -378,7 +446,7 @@ void MainWindow::handleOrderButton()
                                              "\nPrice/Quantity : "+QString::number(totalPricePerItem)+"\n\n");
         billInput->setName("");
         for (int row = 0; row < medicinesMenu->medicinesTable->rowCount(); ++row) {
-           medicinesMenu->medicinesTable->showRow(row);
+            medicinesMenu->medicinesTable->showRow(row);
         }
         if(billInput->isOkButtonClicked()){
             salesMenu->addSalesRow(totalForSalesAndReports,false,kanbanBoard->deliveryInput->getName(),
@@ -424,26 +492,22 @@ void MainWindow::printReceipt(QString &text)
     finalText.append("===============================================================\n");
     finalText.append("Name             Quantity         Price            Mg         TotalPrice/item\n");
     finalText.append(text);
-    // Create a printer object
+
     QPrinter printer;
     printer.setPrinterName("Microsoft Print to PDF");
-    printer.setPageSize(QPageSize::A4); // Ensure the page size is set
-    printer.setPageOrientation(QPageLayout::Portrait); // Ensure the orientation is set
+    printer.setPageSize(QPageSize::A4);
+    printer.setPageOrientation(QPageLayout::Portrait);
 
-    // Create a print dialog
     QPrintDialog printDialog(&printer);
     if (printDialog.exec() != QDialog::Accepted) {
-        return; // User cancelled the print dialog
+        return;
     }
 
-    // Create a painter to draw on the printer
     QPainter painter(&printer);
-    // Set font and other properties
     QFont font = painter.font();
     font.setPointSize(12);
     painter.setFont(font);
 
-    // Calculate the area to print
     QRect rect = painter.viewport();
     int margin = 50;
     rect.adjust(margin, margin, -margin, -margin);
@@ -461,7 +525,7 @@ void MainWindow::printReceipt(QString &text)
 
     painter.drawText(rect, Qt::AlignLeft | Qt::TextWordWrap, finalText);
 
-    painter.end(); // End the painting
+    painter.end();
     receiptText="";
 }
 

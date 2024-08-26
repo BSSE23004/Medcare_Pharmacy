@@ -26,6 +26,15 @@
             "PaymentType": "Physical",
             "PhoneNumber": "N/A",
             "Total": 28
+        },
+        {
+            "Address": "N/A",
+            "Name": "N/A",
+            "Order": "Medicine : Loratadine\nQuantity : 1\nPrice : 22.0\nMG : 10\n$/Quantity : 22\n\n\n\nTotal : 22",
+            "OrderID": "N/A",
+            "PaymentType": "Physical",
+            "PhoneNumber": "N/A",
+            "Total": 22
         }
     ]
 }

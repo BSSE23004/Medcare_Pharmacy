@@ -19,9 +19,9 @@ CustomerCare::CustomerCare(QWidget *parent)
     detailButton->setIconSize(QSize(50,50));
     detailButton->setFont(QFont("Times New Roman",16));
     detailButton->setStyleSheet("QPushButton {"
-                          "border-radius: 10px;"  // Adjust the radius value to control how round the corners are
-                          "color: DodgerBlue;"  // Optional: sets the text color
-                          "padding: 5px 10px;"  // Optional: sets padding to make the button size more appropriate
+                          "border-radius: 10px;"
+                          "color: DodgerBlue;"
+                          "padding: 5px 10px;"
                           "}");
 
     initializeList();

@@ -33,9 +33,9 @@ SalesAndReports::SalesAndReports(QWidget *parent, QTableWidget *NewMedicinesTabl
                           "Unpaid = " + QString::number(getNumberOfUnPaidTransactions()) + "\nUnPaid Amount = " + QString::number(getTotalDuePayment()));
     totalRevenue->setFont(QFont("Times New Roman", 18));
     totalRevenue->setStyleSheet("QPushButton {"
-                                "border-radius: 10px;"  // Adjust the radius value to control how round the corners are
-                                "color: goldenrod;"  // Optional: sets the text color
-                                "padding: 5px 10px;"  // Optional: sets padding to make the button size more appropriate
+                                "border-radius: 10px;"
+                                "color: goldenrod;"
+                                "padding: 5px 10px;"
                                 "}");
     topSellings = new QPushButton();
     topSellings->setMinimumHeight(200);
@@ -44,31 +44,28 @@ SalesAndReports::SalesAndReports(QWidget *parent, QTableWidget *NewMedicinesTabl
     topSellings->setIconSize(QSize(70, 70));
     topSellings->setFont(QFont("Times New Roman", 18));
     topSellings->setStyleSheet("QPushButton {"
-                                "border-radius: 10px;"  // Adjust the radius value to control how round the corners are
-                                "color: green;"  // Optional: sets the text color
-                                "padding: 5px 10px;"  // Optional: sets padding to make the button size more appropriate
+                                "border-radius: 10px;"
+                                "color: green;"
+                                "padding: 5px 10px;"
                                 "}");
     topSellings->setText(getTopSellingMedicines(nOfTopSellings));
     // Layouts
     mainLayout = new QVBoxLayout(this);
     buttonLayout = new QVBoxLayout();
     boardLayout = new QHBoxLayout();
-
-    // Add widgets to layouts
     buttonLayout->addWidget(totalRevenue);
     buttonLayout->addWidget(topSellings);
     boardLayout->addWidget(salesTable);
     boardLayout->addLayout(buttonLayout);
     mainLayout->addLayout(boardLayout);
 
-    // Set the layout for the main widget
     setLayout(mainLayout);
 
 }
 
 void SalesAndReports::addSalesRow(double total, bool physical, QString customerName, QString phoneNumber, QString address, QString order, QString orderID)
 {
-    // Read existing data from Customers.json
+    // Reading existing data from Customers.json
     QFile fIn("Customers.json");
     QJsonArray customersArray;
     if (fIn.open(QIODevice::ReadOnly)) {
@@ -114,7 +111,7 @@ void SalesAndReports::addSalesRow(double total, bool physical, QString customerN
     QString time = currentTime.toString("hh:mm");
     salesTable->setRowCount(salesTable->rowCount() + 1);
 
-    // Date & Time
+    // Date &Time
     QTableWidgetItem *tableItem = new QTableWidgetItem(QIcon(":/calender.ico"), time + "\n" + date);
     tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
     salesTable->setItem(salesTable->rowCount() - 1, 0, tableItem);
@@ -175,7 +172,7 @@ void SalesAndReports::addSalesRowFromJSon(double total, bool physical, QString c
 {
     salesTable->setRowCount(salesTable->rowCount() + 1);
 
-    // Date & Time
+    // Date &Time
     QTableWidgetItem *tableItem = new QTableWidgetItem(QIcon(":/calender.ico"),dateAndTime);
     tableItem->setFlags(tableItem->flags() & ~Qt::ItemIsEditable);
     salesTable->setItem(salesTable->rowCount() - 1, 0, tableItem);
@@ -429,13 +426,11 @@ void SalesAndReports::writeToJson() {
         qDebug() << "Unable to open file. SalesAndReports::writeToJson()";
     }
 
-    // If the current date exists, clear the array
     if (rootObj.contains(currentDate) && rootObj[currentDate].isArray()) {
         saleJsonTable = rootObj[currentDate].toArray();
-        saleJsonTable = QJsonArray();  // Clear the existing array
+        saleJsonTable = QJsonArray();
     }
 
-    // Populate the JSON array with the contents of the salesTable
     for (int row = 0; row < salesTable->rowCount(); ++row) {
         QJsonObject jsonObj;
         auto dateTimeItem = salesTable->item(row, 0);
@@ -466,10 +461,7 @@ void SalesAndReports::writeToJson() {
         saleJsonTable.append(jsonObj);
     }
 
-    // Update the root object with the new array
     rootObj[currentDate] = saleJsonTable;
-
-    // Write the updated JSON back to the file
     QJsonDocument saveDoc(rootObj);
     QFile fOut("Sales.json");
     if (fOut.open(QIODevice::WriteOnly)) {

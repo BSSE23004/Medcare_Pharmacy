@@ -107,10 +107,8 @@ KanbanBoard::~KanbanBoard()
 void KanbanBoard::writeToJson()
 {
     qDebug()<<"Writing Kanban Board to json";
-    // Create a QJsonObject to hold the JSON data
     QJsonObject kanbanFile;
 
-    // Create QJsonArray for "ToDo" and populate it
     QJsonArray todoArray;
     for (int i = 0; i < todoList->count(); ++i) {
         QJsonObject obj;
@@ -119,7 +117,6 @@ void KanbanBoard::writeToJson()
     }
     kanbanFile["ToDo"] = todoArray;
 
-    // Create QJsonArray for "InProgress" and populate it
     QJsonArray inProgressArray;
     for (int i = 0; i < inProgressList->count(); ++i) {
         QJsonObject obj;
@@ -128,7 +125,6 @@ void KanbanBoard::writeToJson()
     }
     kanbanFile["InProgress"] = inProgressArray;
 
-    // Create QJsonArray for "Done" and populate it
     QJsonArray doneArray;
     for (int i = 0; i < doneList->count(); ++i) {
         QJsonObject obj;
@@ -137,10 +133,8 @@ void KanbanBoard::writeToJson()
     }
     kanbanFile["Done"] = doneArray;
 
-    // Create QJsonDocument from the QJsonObject
     QJsonDocument jsonDoc(kanbanFile);
 
-    // Write the JSON data to file
     QFile fOut("Kanban.json");
     if (fOut.open(QIODevice::WriteOnly)) {
         fOut.write(jsonDoc.toJson(QJsonDocument::Indented));
@@ -170,7 +164,6 @@ void KanbanBoard::readFromJson()
 
     QJsonObject jsonObj = jsonDoc.object();
 
-    // Check if the JSON object contains the necessary keys
     if (!jsonObj.contains("ToDo") || !jsonObj.contains("InProgress") || !jsonObj.contains("Done")) {
         qDebug() << "JSON object is missing required keys.";
         return;
@@ -180,7 +173,6 @@ void KanbanBoard::readFromJson()
     QJsonArray inProgressArray = jsonObj["InProgress"].toArray();
     QJsonArray doneArray = jsonObj["Done"].toArray();
 
-    // Populate the ToDo list
     for (const QJsonValue &value : todoArray) {
         if (value.isObject()) {
             QJsonObject itemObj = value.toObject();
@@ -192,7 +184,6 @@ void KanbanBoard::readFromJson()
         }
     }
 
-    // Populate the InProgress list
     for (const QJsonValue &value : inProgressArray) {
         if (value.isObject()) {
             QJsonObject itemObj = value.toObject();
@@ -204,7 +195,6 @@ void KanbanBoard::readFromJson()
         }
     }
 
-    // Populate the Done list
     for (const QJsonValue &value : doneArray) {
         if (value.isObject()) {
             QJsonObject itemObj = value.toObject();
@@ -253,7 +243,6 @@ void KanbanBoard::setOrderIDInitialValue()
 
         QJsonArray customersJSONArray = jsonObj["Customers"].toArray();
 
-        // Loop through the customers array
         for (const QJsonValue &value : customersJSONArray) {
             QJsonObject customer = value.toObject();
             if (customer.contains("OrderID")) {
@@ -347,7 +336,8 @@ void KanbanBoard::handleListsItems()
         for (int j = 0; j < inProgressList->count(); ++j) {
             if (inProgressList->item(j)->text() == doneText) {
                 delete inProgressList->takeItem(j);
-                --j; // Adjust index after deletion
+                // Adjusting index after deletion
+                --j;
             }
         }
 
@@ -355,7 +345,8 @@ void KanbanBoard::handleListsItems()
         for (int k = 0; k < todoList->count(); ++k) {
             if (todoList->item(k)->text() == doneText) {
                 delete todoList->takeItem(k);
-                --k; // Adjust index after deletion
+                // Adjusting index after deletion
+                --k;
             }
         }
     }
@@ -367,7 +358,8 @@ void KanbanBoard::handleListsItems()
         for (int j = 0; j < todoList->count(); ++j) {
             if (todoList->item(j)->text() == inProgressText) {
                 delete todoList->takeItem(j);
-                --j; // Adjust index after deletion
+                // Adjust index after deletion
+                --j;
             }
         }
     }

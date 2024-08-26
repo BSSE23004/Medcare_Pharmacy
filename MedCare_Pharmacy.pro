@@ -14,6 +14,7 @@ CONFIG += c++17
 SOURCES += \
     addmemberdialog.cpp \
     billinputdialog.cpp \
+    clickablelabel.cpp \
     customercare.cpp \
     customlistwidgetitem.cpp \
     customlistwidgetitemforstaff.cpp \
@@ -25,11 +26,13 @@ SOURCES += \
     mainwindow.cpp \
     medicinesmenu.cpp \
     salesandreports.cpp \
+    signuppage.cpp \
     staffmenu.cpp
 
 HEADERS += \
     addmemberdialog.h \
     billinputdialog.h \
+    clickablelabel.h \
     customercare.h \
     customlistwidgetitem.h \
     customlistwidgetitemforstaff.h \
@@ -42,6 +45,7 @@ HEADERS += \
     medicinesmenu.h \
     phonelineedit.h \
     salesandreports.h \
+    signuppage.h \
     staffmenu.h
 
 # Default rules for deployment.
