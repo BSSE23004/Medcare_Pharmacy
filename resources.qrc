@@ -22,5 +22,8 @@
         <file>unpaid.ico</file>
         <file>details.ico</file>
         <file>attended.ico</file>
+        <file>add-image.ico</file>
+        <file>email.ico</file>
+        <file>phone.ico</file>
     </qresource>
 </RCC>

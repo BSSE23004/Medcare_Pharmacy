@@ -10,7 +10,6 @@
 #include <QVBoxLayout>
 #include <QTableWidgetItem>
 #include <QDate>
-// #include <QTabWidget>
 #include <QPushButton>
 #include <QtCharts/QChartView>
 #include <QtCharts/QBarSeries>

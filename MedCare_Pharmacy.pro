@@ -25,6 +25,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     medicinesmenu.cpp \
+    profilemenu.cpp \
     salesandreports.cpp \
     signuppage.cpp \
     staffmenu.cpp
@@ -43,7 +44,9 @@ HEADERS += \
     kanbanboard.h \
     mainwindow.h \
     medicinesmenu.h \
+    phoneinputDialog.h \
     phonelineedit.h \
+    profilemenu.h \
     salesandreports.h \
     signuppage.h \
     staffmenu.h

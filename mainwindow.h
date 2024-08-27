@@ -16,6 +16,7 @@
 #include <staffmenu.h>
 #include <medicinesmenu.h>
 #include <signuppage.h>
+#include <profilemenu.h>
 
 
 
@@ -29,7 +30,12 @@ class MainWindow : public QMainWindow
     QPushButton * hideButton;
     QListWidgetItem *listItems;
     QListWidgetItem *item;
+    QString profileName;
+    QString email;
 ////List Menu Items
+////Profile Menu
+    ProfileMenu *profileMenu;
+////Profile Menu
 ////Medicines Menu
     MedicinesMenu *medicinesMenu;
 ////Medicines Menu
@@ -58,6 +64,9 @@ public:
     ~MainWindow();
     void makeListMenu();
     void setListWidgetSize(QListWidget *listWidget);
+    ////////////////////////////Profile Menu
+    void makeProfileMenu();
+    ////////////////////////////Profile Menu
     ////////////////////////////Medicine Menu
     void makeMedicinesMenu();
     ////////////////////////////Medicine Menu

@@ -9,7 +9,6 @@ class EmailLineEdit : public QLineEdit {
 
 public:
     EmailLineEdit(QWidget *parent = nullptr) : QLineEdit{parent} {
-        // Regular expression for a basic email validation
         QRegularExpression emailRegex(R"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})");
         QRegularExpressionValidator *validator = new QRegularExpressionValidator(emailRegex, this);
         setValidator(validator);
@@ -17,7 +16,6 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent *event) override {
-        // Allow input only for valid email characters
         if ((event->key() >= Qt::Key_0 && event->key() <= Qt::Key_9) ||
             (event->key() >= Qt::Key_A && event->key() <= Qt::Key_Z) ||
             (event->key() >= Qt::Key_A && event->key() <= Qt::Key_Z) ||

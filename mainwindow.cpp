@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(hideButton,SIGNAL(clicked(bool)),this,SLOT(handleHideButton()));
     connect(listMenu,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(currentMenu()));
     //building menus
+
     staffMenu();
     customerCareMenu();
     billMenu();
@@ -82,11 +83,17 @@ void MainWindow::setListWidgetSize(QListWidget *listWidget)
     listWidget->setIconSize(QSize(30,(totalHeight/listWidget->count())+10));
 }
 
+void MainWindow::makeProfileMenu()
+{
+    profileMenu =new ProfileMenu(this,email);
+    profileMenu->setGeometry(0,0,1100,700);
+    profileMenu->hide();
+}
+
 void MainWindow::makeMedicinesMenu()
 {
     medicinesMenu =new MedicinesMenu(this);
     medicinesMenu->setGeometry(600,0,800,700);
-    medicinesMenu->searchButton->setGeometry(800,30,20,25);
     medicinesMenu->hide();
 }
 
@@ -164,7 +171,7 @@ void MainWindow::staffMenu()
 
 void MainWindow::onSignUpButtonClicked()
 {
-    QString email = loginPage->emailEdit->text();
+    email = loginPage->emailEdit->text();
     QString password = loginPage->passwordEdit->text();
 
     if (email.isEmpty() || password.isEmpty()) {
@@ -202,6 +209,8 @@ void MainWindow::onSignUpButtonClicked()
             loginPage->hide();
             listItems =new QListWidgetItem(QIcon(":/user.ico"),jsonObj["Name"].toString());
             listMenu->insertItem(0,listItems);
+            // getting profile NAme so that I can use it currentMenu() slot
+            profileName=jsonObj["Name"].toString();
             setListWidgetSize(listMenu);
             listMenu->show();
             hideButton->show();
@@ -226,12 +235,15 @@ void MainWindow::onSignUpButtonClicked()
         loginPage->hide();
         listItems =new QListWidgetItem(QIcon(":/user.ico"),loginPage->nameEdit->text());
         listMenu->insertItem(0,listItems);
+        // getting profile NAme so that I can use it currentMenu() slot
+        profileName=loginPage->nameEdit->text();
         setListWidgetSize(listMenu);
         listMenu->show();
         hideButton->show();
     } else {
         qDebug() << "Unknown page name: " << loginPage->page_name;
     }
+    makeProfileMenu();
 }
 
 
@@ -275,6 +287,9 @@ void MainWindow::handleHideButton()
 
 void MainWindow::currentMenu()
 {
+    /////////Profile Menu
+    profileMenu->hide();
+    /////////Profile Menu
     /////////Medicine Menu
     medicinesMenu->hide();
     medicinesMenu->medicinesTable->hide();
@@ -298,6 +313,9 @@ void MainWindow::currentMenu()
     staffOption->hide();
     /////////Staff Menu
     QString currentText =listMenu->currentItem()->text();
+    if(currentText==profileName){
+        profileMenu->show();
+    }
     if(currentText=="Medicines"){
         medicinesMenu->medicinesTable->show();
         medicinesMenu->show();
