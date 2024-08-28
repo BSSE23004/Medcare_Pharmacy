@@ -17,6 +17,8 @@
 #include <medicinesmenu.h>
 #include <signuppage.h>
 #include <profilemenu.h>
+#include <sliderdialog.h>
+#include <QFontDialog>
 
 
 
@@ -35,6 +37,7 @@ class MainWindow : public QMainWindow
 ////List Menu Items
 ////Profile Menu
     ProfileMenu *profileMenu;
+    SliderDialog *sliderDialog;
 ////Profile Menu
 ////Medicines Menu
     MedicinesMenu *medicinesMenu;
@@ -90,6 +93,11 @@ private slots:
     ////////////////////1st Window
     void onSignUpButtonClicked();
     void onSignUpLabelClicked();
+    ////////////////////Profile Menu
+    void handleSetFontButton();
+    void handleSetOpacityButton();
+    void handleSetOpacity();
+    ////////////////////Profile Menu
     ////////////////////Medicine Menu
 
     ////////////////////Medicine Menu

@@ -25,5 +25,7 @@
         <file>add-image.ico</file>
         <file>email.ico</file>
         <file>phone.ico</file>
+        <file>setting.ico</file>
+        <file>clock.ico</file>
     </qresource>
 </RCC>

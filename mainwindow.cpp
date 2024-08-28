@@ -86,8 +86,10 @@ void MainWindow::setListWidgetSize(QListWidget *listWidget)
 void MainWindow::makeProfileMenu()
 {
     profileMenu =new ProfileMenu(this,email);
-    profileMenu->setGeometry(0,0,1100,700);
+    profileMenu->setGeometry(175,0,1100,700);
     profileMenu->hide();
+    connect(profileMenu->setWindowsOpacity,&QPushButton::clicked,this,&MainWindow::handleSetOpacityButton);
+    connect(profileMenu->setWindowsFont,&QPushButton::clicked,this,&MainWindow::handleSetFontButton);
 }
 
 void MainWindow::makeMedicinesMenu()
@@ -244,6 +246,7 @@ void MainWindow::onSignUpButtonClicked()
         qDebug() << "Unknown page name: " << loginPage->page_name;
     }
     makeProfileMenu();
+
 }
 
 
@@ -260,6 +263,27 @@ void MainWindow::onSignUpLabelClicked()
     loginPage->setGeometry(400,200,500,300);
     loginPage->show();
     connect(loginPage->signUpButton, &QPushButton::clicked, this, &MainWindow::onSignUpButtonClicked);
+}
+
+void MainWindow::handleSetFontButton()
+{
+    bool ok;
+    this->setFont(QFontDialog::getFont(&ok,this));
+}
+
+void MainWindow::handleSetOpacityButton()
+{
+    sliderDialog =new SliderDialog(this);
+    connect(sliderDialog->slider,&QSlider::sliderMoved,this,&MainWindow::handleSetOpacity);
+    if(sliderDialog->exec()==QDialog::Accepted){
+        return;
+    }
+}
+
+void MainWindow::handleSetOpacity()
+{
+    double opacityValue = static_cast<double>(sliderDialog->slider->value()) / 100.0;
+    this->setWindowOpacity(opacityValue);
 }
 
 

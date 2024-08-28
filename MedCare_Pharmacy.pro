@@ -28,6 +28,7 @@ SOURCES += \
     profilemenu.cpp \
     salesandreports.cpp \
     signuppage.cpp \
+    sliderdialog.cpp \
     staffmenu.cpp
 
 HEADERS += \
@@ -49,6 +50,7 @@ HEADERS += \
     profilemenu.h \
     salesandreports.h \
     signuppage.h \
+    sliderdialog.h \
     staffmenu.h
 
 # Default rules for deployment.
