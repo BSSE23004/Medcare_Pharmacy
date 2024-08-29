@@ -65,18 +65,18 @@ ProfileMenu::ProfileMenu(QWidget *parent, QString newEmail)
     setWindowsFont->setFont(QFont("Times New Roman",16));
     setWindowsFont->setFixedSize(QSize(300,150));
     setWindowsFont->setStyleSheet("QPushButton {"
-                                     "border-radius: 10px;"
-                                     "padding: 5px 10px;"
-                                     "}");
+                                  "border-radius: 10px;"
+                                  "padding: 5px 10px;"
+                                  "}");
 
     clock =new QPushButton(QIcon(":/clock.ico"),"");
     clock->setIconSize(QSize(50, 50));
     clock->setFont(QFont("Times New Roman",16));
     clock->setFixedSize(QSize(300,150));
     clock->setStyleSheet("QPushButton {"
-                                  "border-radius: 10px;"
-                                  "padding: 5px 10px;"
-                                  "}");
+                         "border-radius: 10px;"
+                         "padding: 5px 10px;"
+                         "}");
 
 
     contactBoardLayout->addWidget(contactInfoHeader);
@@ -170,10 +170,15 @@ void ProfileMenu::readFromJson(){
         return;
     }
     if(jsonObj.contains("ProfilePic")&&jsonObj.contains("PhoneNumber")){
-    addImage->setIcon(QIcon(jsonObj["ProfilePic"].toString()));
-    addImage->setText("");
-    addImage->setIconSize(QSize(300,350));
-    addPhoneNumber->setText(jsonObj["PhoneNumber"].toString());
+        if(jsonObj["ProfilePic"].toString()!=""){
+            addImage->setIcon(QIcon(jsonObj["ProfilePic"].toString()));
+            addImage->setText("");
+            addImage->setIconSize(QSize(300,350));
+        }
+        if(jsonObj["PhoneNumber"].toString()!=""){
+            addPhoneNumber->setText(jsonObj["PhoneNumber"].toString());
+        }
+
     }
 }
 

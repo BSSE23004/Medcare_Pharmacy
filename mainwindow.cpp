@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
-
+double MainWindow::totalForSalesAndReports=0.0;
+QString MainWindow::order="";
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -111,6 +112,7 @@ void MainWindow::billMenu()
                                       "color: green;"
                                       "padding: 5px 10px;"
                                       "}");
+    generateBillButton->setCheckable(true);
     generateBillButton->hide();
     generateReceiptButton =new QPushButton(QIcon(":/receipt.ico"),"Generate Receipt",this);
     generateReceiptButton->setGeometry(915,300,205,60);
@@ -268,7 +270,17 @@ void MainWindow::onSignUpLabelClicked()
 void MainWindow::handleSetFontButton()
 {
     bool ok;
-    this->setFont(QFontDialog::getFont(&ok,this));
+    QFont font =QFontDialog::getFont(&ok,this);
+    this->setFont(font);
+    profileMenu->setFont(font);
+    medicinesMenu->setFont(font);
+    kanbanBoard->setFont(font);
+    staffOption->setFont(font);
+    customerCare->setFont(font);
+    salesMenu->setFont(font);
+    hideButton->setFont(font);
+    generateBillButton->setFont(font);
+    generateReceiptButton->setFont(font);
 }
 
 void MainWindow::handleSetOpacityButton()
@@ -371,8 +383,11 @@ int billInputHeight =100;
 int billInputWidth =400;
 void MainWindow::handleBillButton()
 {
-    static QString order;
-    static double totalForSalesAndReports=0.0;
+    if(generateBillButton->isChecked()){
+        totalForSalesAndReports=0.0;
+        order="";
+        receiptText="";
+    }
     billInput =new BillInputDialog (this);
     billInput->setMinimumHeight(billInputHeight);
     billInput->setMinimumWidth(billInputWidth);
@@ -429,16 +444,13 @@ void MainWindow::handleBillButton()
             medicinesMenu->medicinesTable->showRow(row);
         }
         if(billInput->isOkButtonClicked()){
-            order.append("\n\nTotal : "+QString::number(totalForSalesAndReports));
-            salesMenu->addSalesRow(totalForSalesAndReports,true,"N/A","N/A","N/A",order);
-            order="";
-            totalForSalesAndReports=0.0;
             return;
         }
         if(billInput->isAddMoreButtonClicked()){
             handleBillButton();
         }
     }
+
     billInput->setName("");
     for (int row = 0; row < medicinesMenu->medicinesTable->rowCount(); ++row) {
         medicinesMenu->medicinesTable->showRow(row);
@@ -523,17 +535,20 @@ void MainWindow::handleLineEdits()
     medicinesMenu->filterTable(billInput->getName());
 }
 
-void MainWindow::printReceipt(QString &text)
+void MainWindow::printReceipt(QString &receiptText)
 {
-    text.append("\nTotal : "+QString::number(total)+"\n");
-    text.append("===============================================================\n");
-    text.append("Thank you for your purchase!\n");
+    receiptText.append("\nTotal : "+QString::number(total)+"\n");
+    receiptText.append("===============================================================\n");
+    receiptText.append("Thank you for your purchase!\n");
     total=0;
     QString finalText="";
     finalText.append("Receipt\n");
     finalText.append("===============================================================\n");
     finalText.append("Name             Quantity         Price            Mg         TotalPrice/item\n");
-    finalText.append(text);
+    finalText.append(receiptText);
+    finalText.append("\nTotal : "+QString::number(total)+"\n");
+    finalText.append("===============================================================\n");
+    finalText.append("Thank you for your purchase!\n");
 
     QPrinter printer;
     printer.setPrinterName("Microsoft Print to PDF");
@@ -542,6 +557,9 @@ void MainWindow::printReceipt(QString &text)
 
     QPrintDialog printDialog(&printer);
     if (printDialog.exec() != QDialog::Accepted) {
+        receiptText="";
+        order="";
+        totalForSalesAndReports=0.0;
         return;
     }
 
@@ -569,6 +587,12 @@ void MainWindow::printReceipt(QString &text)
 
     painter.end();
     receiptText="";
+    if(order!=""&&totalForSalesAndReports!=0.0){
+        order.append("\n\nTotal : "+QString::number(totalForSalesAndReports));
+        salesMenu->addSalesRow(totalForSalesAndReports,true,"N/A","N/A","N/A",order);
+        order="";
+        totalForSalesAndReports=0.0;
+    }
 }
 
 void MainWindow::handleReceiptButton()

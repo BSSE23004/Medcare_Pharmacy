@@ -55,6 +55,8 @@ class MainWindow : public QMainWindow
 ////Orders&Delivery Menu
 ////Sales&Reports Menu
     SalesAndReports *salesMenu;
+    static QString order;
+    static double totalForSalesAndReports;
 ////Sales&Reports Menu
 ////CustomerCare Menu
     CustomerCare *customerCare;
