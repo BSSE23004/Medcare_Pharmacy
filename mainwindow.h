@@ -19,6 +19,7 @@
 #include <profilemenu.h>
 #include <sliderdialog.h>
 #include <QFontDialog>
+#include <QVector>
 
 
 
@@ -50,6 +51,8 @@ class MainWindow : public QMainWindow
     QString receiptText;
     double total;
 ////Bill Menu
+    static QStringList orderedMedicinesName;
+    static QStringList  orderedMedicinesQuantity;
 ////Orders&Delivery Menu
     KanbanBoard *kanbanBoard;
 ////Orders&Delivery Menu
@@ -79,6 +82,7 @@ public:
     void billMenu();
     void padRight(QString& text);
     ////////////////////////////Bill Menu
+    void maintainMedicinesTable(QStringList &,QStringList &);
     ////////////////////////////Orders&Delivery Menu
     void ordersAndDeliveryMenu();
     ////////////////////////////Orders&Delivery Menu

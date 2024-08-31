@@ -1,0 +1,13 @@
+{
+    "Customers": [
+        {
+            "Address": "Hafiz-Street",
+            "Name": "Abdul Sattar",
+            "Order": "Medicine : Tagipmet\nQuantity : 1.5\nPrice : 350.0\nPrice/Quantity : 525\n\n\n\nTotal : 525",
+            "OrderID": "1",
+            "PaymentType": "Delivery",
+            "PhoneNumber": "0320-7891011",
+            "Total": 525
+        }
+    ]
+}

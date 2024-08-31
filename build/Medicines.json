@@ -5,14 +5,14 @@
             "Mg": "500",
             "Name": "Panadol",
             "Price": "20.0",
-            "Quantity": "100"
+            "Quantity": "99"
         },
         {
             "Company": "Bayer",
             "Mg": "500",
             "Name": "Paracetamol",
             "Price": "25.0",
-            "Quantity": "150"
+            "Quantity": "140"
         },
         {
             "Company": "Pfizer",
@@ -33,7 +33,7 @@
             "Mg": "300",
             "Name": "Aspirin",
             "Price": "12.0",
-            "Quantity": "120"
+            "Quantity": "119"
         },
         {
             "Company": "Zyrtec",
@@ -103,7 +103,7 @@
             "Mg": "500",
             "Name": "Tagipmet",
             "Price": "350.0",
-            "Quantity": "250"
+            "Quantity": "249"
         },
         {
             "Company": "Prilosec",

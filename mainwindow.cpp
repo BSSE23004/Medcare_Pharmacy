@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 
 double MainWindow::totalForSalesAndReports=0.0;
+QStringList MainWindow::orderedMedicinesName;
+QStringList MainWindow::orderedMedicinesQuantity;
 QString MainWindow::order="";
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -142,6 +144,21 @@ void MainWindow::padRight(QString &text)
         return;
     }
     widthForString+=12;
+}
+
+void MainWindow::maintainMedicinesTable(QStringList &medicinesName, QStringList &medicinesQuantity)
+{
+    for (int i = 0; i < medicinesName.count(); ++i) {
+        for (int row = 0; row <medicinesMenu->medicinesTable->rowCount(); ++row) {
+            if(medicinesMenu->medicinesTable->item(row,0)->text().contains(medicinesName.at(i),Qt::CaseInsensitive)){
+                QTableWidgetItem *item =new QTableWidgetItem (QString::number(medicinesMenu->medicinesTable->item(row,2)->text().toFloat()-medicinesQuantity.at(i).toFloat()));
+                item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+                medicinesMenu->medicinesTable->setItem(row,2,item);
+            }
+        }
+    }
+    medicinesName.clear();
+    medicinesQuantity.clear();
 }
 
 void MainWindow::ordersAndDeliveryMenu()
@@ -432,6 +449,8 @@ void MainWindow::handleBillButton()
         newLine.append("\n");
         order.append("\n");
         receiptText.append(newLine);
+        orderedMedicinesName.push_back(billInput->getName());
+        orderedMedicinesQuantity.push_back(billInput->getQuantity());
         if(rowNumber==-1){
             total+=0;
             totalForSalesAndReports+=0;
@@ -444,6 +463,7 @@ void MainWindow::handleBillButton()
             medicinesMenu->medicinesTable->showRow(row);
         }
         if(billInput->isOkButtonClicked()){
+            handleReceiptButton();
             return;
         }
         if(billInput->isAddMoreButtonClicked()){
@@ -498,11 +518,14 @@ void MainWindow::handleOrderButton()
                                              +"\nQuantity : "+billInput->getQuantity()+
                                              "\nPrice : "+medicinesMenu->medicinesTable->item(rowNumber,1)->text()+
                                              "\nPrice/Quantity : "+QString::number(totalPricePerItem)+"\n\n");
+        orderedMedicinesName.push_back(billInput->getName());
+        orderedMedicinesQuantity.push_back(billInput->getQuantity());
         billInput->setName("");
         for (int row = 0; row < medicinesMenu->medicinesTable->rowCount(); ++row) {
             medicinesMenu->medicinesTable->showRow(row);
         }
         if(billInput->isOkButtonClicked()){
+            maintainMedicinesTable(orderedMedicinesName,orderedMedicinesQuantity);
             salesMenu->addSalesRow(totalForSalesAndReports,false,kanbanBoard->deliveryInput->getName(),
                                    kanbanBoard->deliveryInput->getPhoneNumber(),
                                    kanbanBoard->deliveryInput->getAddress(),
@@ -537,10 +560,6 @@ void MainWindow::handleLineEdits()
 
 void MainWindow::printReceipt(QString &receiptText)
 {
-    receiptText.append("\nTotal : "+QString::number(total)+"\n");
-    receiptText.append("===============================================================\n");
-    receiptText.append("Thank you for your purchase!\n");
-    total=0;
     QString finalText="";
     finalText.append("Receipt\n");
     finalText.append("===============================================================\n");
@@ -549,7 +568,7 @@ void MainWindow::printReceipt(QString &receiptText)
     finalText.append("\nTotal : "+QString::number(total)+"\n");
     finalText.append("===============================================================\n");
     finalText.append("Thank you for your purchase!\n");
-
+    total=0;
     QPrinter printer;
     printer.setPrinterName("Microsoft Print to PDF");
     printer.setPageSize(QPageSize::A4);
@@ -560,6 +579,8 @@ void MainWindow::printReceipt(QString &receiptText)
         receiptText="";
         order="";
         totalForSalesAndReports=0.0;
+        orderedMedicinesName.clear();
+        orderedMedicinesQuantity.clear();
         return;
     }
 
@@ -589,6 +610,7 @@ void MainWindow::printReceipt(QString &receiptText)
     receiptText="";
     if(order!=""&&totalForSalesAndReports!=0.0){
         order.append("\n\nTotal : "+QString::number(totalForSalesAndReports));
+        maintainMedicinesTable(orderedMedicinesName,orderedMedicinesQuantity);
         salesMenu->addSalesRow(totalForSalesAndReports,true,"N/A","N/A","N/A",order);
         order="";
         totalForSalesAndReports=0.0;

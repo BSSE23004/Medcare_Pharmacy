@@ -37,7 +37,7 @@ ProfileMenu::ProfileMenu(QWidget *parent, QString newEmail)
     contactInfoHeader->setFont(titleFont);
     contactInfoHeader->setAlignment(Qt::AlignCenter);
 
-    addImage = new QPushButton(QIcon(":/add-image.ico"), "Add Image");
+    addImage = new QPushButton(QIcon(":/add-image.ico"),"Add Image");
     addImage->setIconSize(QSize(100, 200));
     addImage->setFont(QFont("Times New Roman",16));
     addImage->setFixedSize(QSize(300,350));
@@ -133,8 +133,10 @@ void ProfileMenu::writeToJson()
         qDebug() << "Unable to open file.";
         return;
     }
-    jsonObj["PhoneNumber"]=addPhoneNumber->text();
-    jsonObj["ProfilePic"]=iconName;
+    if(iconName!=""&&addPhoneNumber->text()!=""){
+        jsonObj["PhoneNumber"]=addPhoneNumber->text();
+        jsonObj["ProfilePic"]=iconName;
+    }
     QJsonDocument jsonDoc(jsonObj);
     QFile fOut("Credentials.json");
     if (fOut.open(QIODevice::WriteOnly)) {
@@ -200,8 +202,8 @@ void ProfileMenu::handleProfilePic()
 {
     if(addImage->text()=="Add Image"){
         iconName=QFileDialog::getOpenFileName(this,"Choose a .jpeg/.ico File","C://");
-        addImage->setIcon(QIcon(iconName));
         addImage->setText("");
+        addImage->setIcon(QIcon(iconName));
         addImage->setIconSize(QSize(300,350));
     }
 }
